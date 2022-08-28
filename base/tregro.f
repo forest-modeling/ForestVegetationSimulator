@@ -1,4 +1,9 @@
       SUBROUTINE TREGRO
+
+C#ifdef FVS_DATA_API
+      use snag_data, only: copy_snag_data
+C#endif /* FVS_DATA_API */
+
       IMPLICIT NONE
 C----------
 C BASE $Id$
@@ -41,6 +46,9 @@ C-----------
 C  CALL GRINCR TO COMPUTE INCREMENTS AND SEE IF BUG MODELS ARE ACTIVE.
 C-----------
       CALL GRINCR (DEBUG,1,LTMGO,LMPBGO,LDFBGO,LBWEGO,LCVATV)
+C#ifdef FVS_DATA_API
+      call copy_snag_data()
+C#endif /* FVS_DATA_API */
       CALL getAmStopping (ISTOPDONE)
       IF (ISTOPDONE.NE.0) RETURN
       CALL fvsGetRtnCode(IRTNCD)

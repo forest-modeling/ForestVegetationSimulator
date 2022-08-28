@@ -55,6 +55,10 @@ C
       LOGICAL DEBUG,LCVGO
       INTEGER IBA
       INTEGER IRSTRTCD,ISTOPDONE,IRTNCD,ISTOPRES,lenCl
+
+C-- F2PY signature hints
+Cf2py intent(out) irtncd
+
 C
 C     ******************     EXECUTION BEGINS     ******************
 C
@@ -78,7 +82,6 @@ C     FIND THE RESTART, AND BRANCH AS REQUIRED
 
       call fvsRestart (IRSTRTCD)
       call fvsGetRtnCode(IRTNCD)
-
       IF (DEBUG) WRITE(JOSTND,*) "In FVS, IRSTRTCD=",IRSTRTCD,
      >                           " IRTNCD=",IRTNCD
       if (IRTNCD.ne.0) return

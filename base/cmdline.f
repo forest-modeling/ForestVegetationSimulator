@@ -51,6 +51,10 @@ c     the fortran routines. Only routines with character data have both language
       character(len=lenCL) theCmdLine
       character(len=1024) cmdLcopy
 
+
+cf2py intent(in) thecmdline,lencl
+cf2py intent(out) irtncd
+
 c     make sure the files are closed if resetting with the cmdLine.
 c     (this is only done if a none-zero return or restart code is set)
 
@@ -224,6 +228,9 @@ c     open/reopen the keyword/output file.
       subroutine fvsGetStoppointCodes (spptcd,spptyr)
       implicit none
 
+
+cf2py intent(out) spptcd, spptyr
+
       include "GLBLCNTL.F77"
 
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE :: FVSGETSTOPPOINTCODES
@@ -238,6 +245,9 @@ c     open/reopen the keyword/output file.
 
       subroutine fvsSetStoppointCodes (spptcd,spptyr)
       implicit none
+
+
+cf2py intent(in) spptcd, spptyr
 
       include "GLBLCNTL.F77"
 
@@ -254,6 +264,9 @@ c     open/reopen the keyword/output file.
 
       subroutine fvsGetRestartCode (restrtcd)
       implicit none
+
+
+cf2py intent(out) restrtcd
 
       include "GLBLCNTL.F77"
 
@@ -275,6 +288,9 @@ c     open/reopen the keyword/output file.
 
       subroutine fvsRestart (restrtcd)
       implicit none
+
+
+cf2py intent(out) rstrtcd
 
       include "GLBLCNTL.F77"
 
@@ -319,6 +335,9 @@ cc     -        " restrtcd=",restrtcd
       subroutine fvsRestartLastStand(restrtcd)
       implicit none
 
+
+cf2py intent(out) restrtcd
+
       include "GLBLCNTL.F77"
 
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE :: FVSRESTARTLASTSTAND
@@ -341,6 +360,9 @@ cc     -        " restrtcd=",restrtcd
 
       subroutine fvsGetKeywordFileName (fn,mxch,nch)
       implicit none
+
+
+cf2py intent(inout) fn, mxch, nch
 
       include "GLBLCNTL.F77"
 
@@ -368,6 +390,9 @@ C     nch of 251 is key to save, not load, filename
 
       subroutine fvsSetRtnCode (rtnCode)
       implicit none
+
+cf2py intent(in) rtncode
+
       include "GLBLCNTL.F77"
       integer :: rtnCode
 
@@ -384,6 +409,9 @@ C     if in an error state, close the files.
       end
 
       subroutine fvsGetRtnCode (rtnCode)
+      implicit none
+
+cf2py intent(out) rtncode
 
       include "GLBLCNTL.F77"
       integer :: rtnCode
@@ -399,6 +427,9 @@ C     if in an error state, close the files.
 
       subroutine fvsStopPoint (LOCODE,ISTOPDONE)
       implicit none
+
+cf2py intent(in) locode
+cf2py intent(out) istopdone
 
 c     note that this routine is called during the simulation
 

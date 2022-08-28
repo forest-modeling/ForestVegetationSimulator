@@ -1,4 +1,4 @@
-      BLOCK DATA CUBRDS
+      SUBROUTINE CUBRDS
       IMPLICIT NONE
 C----------
 C EC $Id$
@@ -76,7 +76,7 @@ C      USE 28(WO) FOR 28(WO)
 C      USE 36(CH) FOR 29(PL)
 C      USE 37(WI) FOR 30(WI)
 C----------
-C  COEFFICIENTS FOR CUBIC FOOT VOLUME FOR TREES THAT ARE SMALLER THAN 
+C  COEFFICIENTS FOR CUBIC FOOT VOLUME FOR TREES THAT ARE SMALLER THAN
 C  THE TRANSITION SIZE
 C----------
       DATA CFVEQS/
@@ -96,7 +96,7 @@ C----------
      &      0.0,      0.0,     0.0,     0.0,     0.0,     0.0,    0.0,
      &    7*0.0/
 C----------
-C  COEFFICIENTS FOR CUBIC FOOT VOLUME FOR TREES THAT ARE LARGER THAN 
+C  COEFFICIENTS FOR CUBIC FOOT VOLUME FOR TREES THAT ARE LARGER THAN
 C  THE TRANSITION SIZE
 C----------
       DATA CFVEQL/
@@ -126,9 +126,9 @@ C----------
      & 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
      & 0, 0/
 C----------
-C  TRANSITION SIZE.  TREES OF LARGER SIZE (D OR D2H) WILL COEFFICIENTS 
+C  TRANSITION SIZE.  TREES OF LARGER SIZE (D OR D2H) WILL COEFFICIENTS
 C  FOR LARGER SIZE TREES.
-C---------- 
+C----------
       DATA CTRAN/
      &      0.0,      0.0,     0.0,     0.0,     0.0,
      &      0.0,      0.0,     0.0,     0.0,  6000.0,
@@ -138,7 +138,7 @@ C----------
      &      0.0,      0.0,     0.0,     0.0,     0.0,
      &      0.0,      0.0/
 C----------
-C  COEFFICIENTS FOR BOARD FOOT VOLUME FOR TREES THAT ARE SMALLER THAN 
+C  COEFFICIENTS FOR BOARD FOOT VOLUME FOR TREES THAT ARE SMALLER THAN
 C  THE TRANSITION SIZE
 C----------
       DATA BFVEQS/
@@ -160,7 +160,7 @@ C----------
      &  -37.314,      0.0,     0.0, 0.01203,     0.0,     0.0,    0.0,
      &    7*0.0/
 C----------
-C  COEFFICIENTS FOR BOARD FOOT VOLUME FOR TREES THAT ARE LARGER THAN 
+C  COEFFICIENTS FOR BOARD FOOT VOLUME FOR TREES THAT ARE LARGER THAN
 C  THE TRANSITION SIZE
 C----------
       DATA BFVEQL/
@@ -190,9 +190,9 @@ C----------
      & 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
      & 0, 0/
 C----------
-C  TRANSITION SIZE.  TREES OF LARGER SIZE (D OR D2H) WILL USE COEFFICIENTS 
+C  TRANSITION SIZE.  TREES OF LARGER SIZE (D OR D2H) WILL USE COEFFICIENTS
 C  FOR LARGER SIZE TREES.
-C---------- 
+C----------
       DATA BTRAN/
      &     20.5,     20.5,    20.5,    20.5,    20.5,
      &     20.5,     20.5,    20.5,    20.5,    20.5,
@@ -201,4 +201,4 @@ C----------
      &      0.0,      0.0,     0.0,     0.0,     0.0,
      &      0.0,      0.0,     0.0,     0.0,     0.0,
      &     20.5,      0.0/
-      END
+      END SUBROUTINE

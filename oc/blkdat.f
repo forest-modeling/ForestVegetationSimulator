@@ -1,4 +1,4 @@
-      BLOCK DATA BLKDAT
+      SUBROUTINE BLKDAT
       IMPLICIT NONE
 C----------
 C OC $Id$
@@ -257,4 +257,4 @@ C
 
       DATA KOLIST,FSTOPEN /27,.FALSE./
 
-      END
+      END SUBROUTINE

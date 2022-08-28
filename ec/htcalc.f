@@ -1,5 +1,10 @@
       SUBROUTINE HTCALC (SINDX,ISPC,AG,HGUESS,JOSTND,DEBUG)
       IMPLICIT NONE
+
+!f2py intent(in) :: sindx,ispc,ag
+!f2py intent(hide) :: jostnd,debug
+!f2py intent(out) :: hguess
+
 C----------
 C EC $Id$
 C----------
@@ -91,10 +96,10 @@ C WESTERN LARCH USE COCHRAN, PNW 424
 C SPECIES: WL, LL
 C----------
       CASE(2,17)
-        HGUESS=4.5 + 1.46897*AG + 0.0092466*AG*AG - 0.00023957*AG**3  
+        HGUESS=4.5 + 1.46897*AG + 0.0092466*AG*AG - 0.00023957*AG**3
      &         + 1.1122E-6*AG**4 + (SINDX -4.5)*(-0.12528 + 0.039636*AG
-     &         - 0.0004278*AG*AG + 1.7039E-6*AG**3) 
-     &         - 73.57*(-0.12528 + 0.039636*AG - 0.0004278*AG*AG 
+     &         - 0.0004278*AG*AG + 1.7039E-6*AG**3)
+     &         - 73.57*(-0.12528 + 0.039636*AG - 0.0004278*AG*AG
      &         + 1.7039E-6*AG**3)
         IF(DEBUG)WRITE(JOSTND,*)' HTCALC WL/LL HGUESS = ',HGUESS
 C----------
@@ -103,7 +108,7 @@ C SPECIES: DF
 C----------
       CASE(3)
         HGUESS=4.5 + EXP(-0.37496 + 1.36164*ALOG(AG) - 0.00243434*
-     &         (ALOG(AG))**4) - 79.97*(-0.2828 + 1.87947*(1.0 - 
+     &         (ALOG(AG))**4) - 79.97*(-0.2828 + 1.87947*(1.0 -
      &         EXP(-0.022399*AG))**0.966998) + (SINDX - 4.5)*
      &         (-0.2828 + 1.87947*(1.0 - EXP(-0.022399*AG)**0.966998))
         IF(DEBUG)WRITE(JOSTND,*)' HTCALC DF HGUESS = ',HGUESS
@@ -193,9 +198,9 @@ C BIGLEAF MAPLE, VINE MAPLE, PAPER BIRCH, GIANT CHINQUAPIN,
 C PACIFIC DOGWOOD, QUAKING ASPEN, BLACK COTTONWOOD,
 C CHERRY AND PLUM SPECIES, WILLOW SPECIES, OTHER HARDWOODS
 C
-C USE CURTIS, FOR. SCI. 20:307-316.  
+C USE CURTIS, FOR. SCI. 20:307-316.
 C CURTIS CURVES ARE PRESENTED IN METRIC (3.2808 ?)
-C BECAUSE OF EXCESSIVE HT GROWTH -- APPROX 30-40 FT/CYCLE, TOOK OUT 
+C BECAUSE OF EXCESSIVE HT GROWTH -- APPROX 30-40 FT/CYCLE, TOOK OUT
 C THE METRIC MULTIPLIER DIXON 11-05-92
 C SPECIES: PY, WB, YC, WJ, BM, VN, PB, GC, DG, AS, CW, PL, WI, OH
 C----------
@@ -210,7 +215,7 @@ C SPECIES: NF
 C----------
       CASE(15)
         X1 = -564.38 + 22.25*(SINDX - 4.5) - 0.04995*(SINDX - 4.5)**2
-        X2 = 6.80 + 2843.21*(SINDX - 4.5)**(-1) 
+        X2 = 6.80 + 2843.21*(SINDX - 4.5)**(-1)
      &       + 34735.54*(SINDX - 4.5)**(-2)
         HGUESS = 4.5 + (SINDX - 4.5)/(X1*(1.0/AG)**2 +
      &   X2*(1.0/AG) + 1.0 - 0.0001*X1 - 0.01*X2)
@@ -221,7 +226,7 @@ C SPECIES: RA
 C----------
       CASE(22)
         HGUESS = SINDX
-     &           + (59.5864 + 0.7953*SINDX)*(1.0-EXP((0.00194 
+     &           + (59.5864 + 0.7953*SINDX)*(1.0-EXP((0.00194
      &           - 0.00074*SINDX)*AG))**0.9198
      &           - (59.5864 + 0.7953*SINDX)*(1.0-EXP((0.00194
      &           - 0.00074*SINDX)*20.0))**0.9198
@@ -232,7 +237,7 @@ C SPECIES: WO
 C----------
       CASE(28)
         Z = 2500./(SINDX-4.5)
-        HGUESS = (AG*AG/(-0.954038 + 0.109757*Z + (5.58178E-2 + 
+        HGUESS = (AG*AG/(-0.954038 + 0.109757*Z + (5.58178E-2 +
      &           7.92236E-3*Z)*AG + (-7.33819E-4 + 1.97693E-4*Z)*
      &           (AG*AG))) + 4.5
         IF(DEBUG)WRITE(JOSTND,*)' HTCALC WO HGUESS = ',HGUESS
