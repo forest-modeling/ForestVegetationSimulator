@@ -18,11 +18,17 @@ C
       USE VOLINPUT_MOD
 C     SETS MERCHANDIZING STANDARDS AND SOME ERROR CHECKNING
 C
+      ! Merch rule parameters can be set externally for conifer and hardwood
+      use globals, only : use_api_mrules, mrule_cor, mrule_evod
+     &  , mrule_maxlen, mrule_minlen, mrule_minlent, mrule_opt
+     &  , mrule_stump, mrule_mtopp
+     &  , mrule_mtops, mrule_trim, mrule_merchl, mrule_minbfd
+
       CHARACTER*1 COR 
       CHARACTER*2 FORST, PROD                 
       CHARACTER*3 MDL                 
       character*10 VOLEQ
-      INTEGER EVOD,OPT,REGN,spp
+      INTEGER EVOD,OPT,REGN,spp,i
       REAL MAXLEN,MINLEN,MERCHL,MTOPP,MTOPS,STUMP,TRIM
       REAL MINLENT,MINBFD,BTR,DBTBH,DBHOB
       REAL TREESTUMP,TREEMTOPP,TREEMTOPS,TREEBTR,TREEDBTBH
@@ -36,6 +42,32 @@ C
                   
       IF(BTR.GT.0.0 .AND. DBTBH.LE.0) DBTBH = DBHOB-(DBHOB*BTR/100.0)
       
+      if (use_api_mrules) then
+        ! Extract FIA species code from the profile equation number
+        read(voleq(8:10),'(i3)') spp
+
+        ! FIXME: There are no profile equations for hardwood
+        ! Select the merch rules
+        i = 1 ! conifer
+        if (spp>=300) then i = 2 ! hardwood
+
+        COR = mrule_cor(i)
+        EVOD = mrule_evod(i)
+        MAXLEN = mrule_maxlen(i)
+        MINLEN = mrule_minlen(i)
+        minlent = mrule_minlent(i)
+        OPT = mrule_opt(i)
+        STUMP = mrule_stump(i)
+        MTOPP = mrule_mtopp(i)
+        MTOPS = mrule_mtops(i)
+        TRIM = mrule_trim(i)
+        MERCHL = mrule_merchl(i)
+        MINBFD = mrule_minbfd(i)
+
+        return
+
+      endif
+
       MDL = VOLEQ(4:6)
       IF(REGN.EQ.1) THEN
          IF(MDL.EQ.'FW2' .OR. MDL.EQ.'fw2' .OR.
@@ -234,7 +266,7 @@ c        MINBFD = 7.0
 !          OPT = 22
 !          MINBFD = 5.0
 !        ENDIF  
-        
+
 !        minlent = MINLEN
       ELSEIF(REGN.EQ.4) THEN
 
@@ -326,21 +358,21 @@ C         Confirmed with Adam Moore for this default
            IF(PROD.EQ.'08')THEN
              MTOPP = 0.1
            ELSE
-             IF(spp.LT.300) THEN
-               MTOPP = 7.0
-             ELSE
-               MTOPP = 9.0
-             ENDIF
+         IF(spp.LT.300) THEN
+           MTOPP = 7.0
+         ELSE
+           MTOPP = 9.0
+         ENDIF
            ENDIF
          ENDIF
          IF(MTOPS.LE.0.0) MTOPS = 4.0
          TRIM = 0.5
          IF(STUMP.LE.0.0)THEN
-           IF(PROD.EQ.'01') THEN
-             STUMP = 1.0
-           ELSE
-             STUMP = 0.5
-           ENDIF
+         IF(PROD.EQ.'01') THEN
+           STUMP = 1.0
+         ELSE
+           STUMP = 0.5
+         ENDIF
          ENDIF
       ELSEIF(REGN.EQ.9.AND.MDL.EQ.'CLK') THEN
          COR='Y'
@@ -351,20 +383,20 @@ C         Confirmed with Adam Moore for this default
          OPT = 22
          read(volEq(8:10),'(i3)') spp
          IF(MTOPP .LE. 0.0)THEN
-           IF(spp.LT.300) THEN
-             MTOPP = 7.6
-           ELSE
-             MTOPP = 9.6
-           ENDIF
+         IF(spp.LT.300) THEN
+           MTOPP = 7.6
+         ELSE
+           MTOPP = 9.6
+         ENDIF
          ENDIF
          IF(MTOPS .LE. 0.0) MTOPS = 4.0
          TRIM = 0.3
          IF(STUMP.LE.0.0)THEN
-           IF(PROD.EQ.'01') THEN
-             STUMP = 1.0
-           ELSE
-             STUMP = 0.5
-           ENDIF
+         IF(PROD.EQ.'01') THEN
+           STUMP = 1.0
+         ELSE
+           STUMP = 0.5
+         ENDIF
          ENDIF
       ELSEIF(REGN.EQ.10) THEN
 
@@ -382,7 +414,7 @@ C  MIN SAWTIMBER LENGTH
          MERCHL = 8
 c min dbh tree for sawtimber
 c         MINBFD = 6.0
-        MINBFD = 1.0      
+        MINBFD = 1.0
 c default merch rules
       ELSE
          COR='Y'
