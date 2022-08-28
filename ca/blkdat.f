@@ -1,4 +1,5 @@
-      BLOCK DATA BLKDAT
+      SUBROUTINE BLKDAT
+cf2py
       IMPLICIT NONE
 C----------
 C CA $Id$
@@ -261,5 +262,5 @@ C
       DATA JOSUME/13/
 
       DATA KOLIST,FSTOPEN /27,.FALSE./
-
-      END
+C
+      END SUBROUTINE
