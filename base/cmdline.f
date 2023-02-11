@@ -11,31 +11,10 @@ c     Note that not all of the routines are designed to be part of the API
 c     Created in 2011 and 2012 by Nick Crookston, RMRS-Moscow
 c     In 2019 additional interface routines were added to allow for C functions
 c     that are part of the API to call fortran functions with character strings.
-c     The fortran routines that can be called by C have an upper case C added to 
-c     the routine name. See apisubs.c for the C functions that are used to call 
+c     The fortran routines that can be called by C have an upper case C added to
+c     the routine name. See apisubs.c for the C functions that are used to call
 c     the fortran routines. Only routines with character data have both languages.
 
-      
-#ifdef CMPgcc
-      subroutine fvsSetCmdLineC(theCmdLine,lenCL,IRTNCD)
-     -           bind(c, name="fvsSetCmdLineC") 
-      use iso_c_binding      
-      implicit none
-
-      integer(c_int), bind(c) :: lenCL,IRTNCD
-      character(c_char), dimension(255), bind(c) :: theCmdLine      
-
-      integer i
-      character passCmdLine*255
-      
-      do i=1,lenCL
-        passCmdLine(i:i)=theCmdLine(i)
-      enddo
-      call fvsSetCmdLine(passCmdLine,lenCL,IRTNCD)
-      return
-      end
-#endif
-      
       subroutine fvsSetCmdLine(theCmdLine,lenCL,IRTNCD)
       implicit none
 
@@ -63,7 +42,7 @@ c     (this is only done if a none-zero return or restart code is set)
 c     initialize the multiple report routine (this does not open a file)
 
       call genrpt
-      
+
       keywordfile = " "
       maxStoppts = 7
       stopptfile = " "
@@ -351,7 +330,7 @@ cf2py intent(out) restrtcd
         seekReadPos = readFilePos ! start reading form here.
         call getstd
         ! signal return to caller, will be reset when fvsRestart is called.
-        restartcode = -1 
+        restartcode = -1
         stopstatcd = 4
       endif
       restrtcd = fvsRtnCode
@@ -382,7 +361,7 @@ C     nch of 251 is key to save, not load, filename
       endif
 
       if (mxch < 1) return
-      
+
       nch = min(mxch,len_trim(keywordfile))
       if (nch > 0) fn = keywordfile(:nch)
       return
@@ -516,5 +495,3 @@ C     the stop point was found and "returning" is in progress.
       endif
       return
       end
-
-
