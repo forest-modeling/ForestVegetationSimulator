@@ -19,29 +19,29 @@ C
 C     SETS MERCHANDIZING STANDARDS AND SOME ERROR CHECKNING
 C
       ! Merch rule parameters can be set externally for conifer and hardwood
-      use globals, only : use_api_mrules, mrule_cor, mrule_evod
+      use fvs_api, only : use_api_mrules, mrule_cor, mrule_evod
      &  , mrule_maxlen, mrule_minlen, mrule_minlent, mrule_opt
      &  , mrule_stump, mrule_mtopp
      &  , mrule_mtops, mrule_trim, mrule_merchl, mrule_minbfd
 
-      CHARACTER*1 COR 
-      CHARACTER*2 FORST, PROD                 
-      CHARACTER*3 MDL                 
+      CHARACTER*1 COR
+      CHARACTER*2 FORST, PROD
+      CHARACTER*3 MDL
       character*10 VOLEQ
       INTEGER EVOD,OPT,REGN,spp,i
       REAL MAXLEN,MINLEN,MERCHL,MTOPP,MTOPS,STUMP,TRIM
       REAL MINLENT,MINBFD,BTR,DBTBH,DBHOB
       REAL TREESTUMP,TREEMTOPP,TREEMTOPS,TREEBTR,TREEDBTBH
-      
+
 !     First save the input from tree variable
       TREESTUMP = STUMP
       TREEMTOPP = MTOPP
       TREEMTOPS = MTOPS
       TREEBTR = BTR
-      TREEDBTBH = DBTBH      
-                  
+      TREEDBTBH = DBTBH
+
       IF(BTR.GT.0.0 .AND. DBTBH.LE.0) DBTBH = DBHOB-(DBHOB*BTR/100.0)
-      
+
       if (use_api_mrules) then
         ! Extract FIA species code from the profile equation number
         read(voleq(8:10),'(i3)') spp
@@ -104,7 +104,7 @@ c min dbh tree for sawtimber
             MINBFD = 1.0
          ENDIF
       ELSEIF(REGN.EQ.2) THEN
-        
+
         COR='Y'
         EVOD = 2
         MAXLEN = 16.0
@@ -122,13 +122,13 @@ c        MINBFD = 7.0
         MINBFD = 1.0
 
       ELSEIF(REGN.EQ.3) THEN
-        
+
         COR='Y'
         EVOD = 2
         MAXLEN = 16.0
         MINLEN = 2.0
         minlent = 2.0
-        OPT = 22 
+        OPT = 22
         MINBFD = 1.0
         TRIM = 0.5
         MERCHL = 8
@@ -205,7 +205,7 @@ c        MINBFD = 7.0
 !          MTOPS = 2.0
 !          OPT = 23
 !          MINBFD = 5.0
-!        ENDIF  
+!        ENDIF
 ! Proposal 3
 !        IF(PROD.EQ.'01')THEN
 !          MINLEN = 8.0
@@ -225,7 +225,7 @@ c        MINBFD = 7.0
 !          MTOPS = 2.0
 !          OPT = 23
 !          MINBFD = 5.0
-!        ENDIF  
+!        ENDIF
 ! Proposal 4
 !        IF(PROD.EQ.'01')THEN
 !          MINLEN = 10.0
@@ -245,7 +245,7 @@ c        MINBFD = 7.0
 !          MTOPS = 4.0
 !          OPT = 23
 !          MINBFD = 5.0
-!        ENDIF  
+!        ENDIF
 ! Proposal 5
 !        IF(PROD.EQ.'01')THEN
 !          MINLEN = 10.0
@@ -265,7 +265,7 @@ c        MINBFD = 7.0
 !          MTOPS = 4.0
 !          OPT = 22
 !          MINBFD = 5.0
-!        ENDIF  
+!        ENDIF
 
 !        minlent = MINLEN
       ELSEIF(REGN.EQ.4) THEN
@@ -293,7 +293,7 @@ c         MINBFD = 7.0
          MAXLEN = 16.0
          MINLEN = 2.0
          minlent = 2.0
-         
+
          OPT = 22
          IF(STUMP.LE.0.0) STUMP = 1.0
          IF(MTOPP .LE. 0.0) MTOPP = 6.0
@@ -306,8 +306,8 @@ c         MERCHL = 4
 c min dbh tree for sawtimber
 c         MINBFD = 7.0
          MINBFD = 1.0
-         
-C Added Region 11 for DOD, using same as R6 (03/26/2014)                     
+
+C Added Region 11 for DOD, using same as R6 (03/26/2014)
       ELSEIF(REGN.EQ.6.OR.REGN.EQ.11) THEN
            COR='N'
            EVOD = 2
@@ -346,7 +346,7 @@ c         MINBFD = 6.0
          COR='Y'
          EVOD = 2
          MAXLEN = 8.0
-c         MINLEN = 8.0 
+c         MINLEN = 8.0
          MINLEN = 2.0
          MERCHL = 8.0
          IF(PROD.EQ.'08') MERCHL = 12.0
@@ -453,12 +453,12 @@ c        IF(NEWCOR.NE.COR) COR = NEWCOR
         IF(NEWBTR.GT.0.01 .AND. NEWDBTBH.LE.0) THEN
           DBTBH = DBHOB-(DBHOB*NEWBTR/100.0)
         ENDIF
-        MRULEMOD='N'          
+        MRULEMOD='N'
       ENDIF
 
-      
+
       RETURN
-      END                      
+      END
 c--  MERCHANDIZING VARIABLES
 C***************************
 c--  REGION - INTEGER - Region number used to set Regional Merchandizing Rules

@@ -66,7 +66,7 @@ C
      &        ' DATA SET REFERENCE NUMBER =',I2,/
      &        ' TREE DATA FORMAT:',/30X,A80/30X,A80,/,
      &        ' MORDAT: ',L2,'; IRDPLV=',I3)
-    8 CONTINUE      
+    8 CONTINUE
 C---------
 C     SET INITIAL VALUES FOR SPECIES TRANSLATION.
 C---------
@@ -172,7 +172,7 @@ C----------
             THT = total_height(row_idx)
             HTG(I) = height_growth(row_idx)
             ICR(I) = crown_ratio(row_idx)
-            ! IMC1 = IMC1(row_idx)
+            IMC1 = tree_val(row_idx)
             ! KUTKOD(I) = plot_id(row_idx)
 
             IDAMCD(1) = damage_codes(1,row_idx)
@@ -360,7 +360,7 @@ C        EXCEPTION. IN ORDER TO ACCOMMODATE CIRCUMSTANCE WHERE TREE
 C        RECORDS WERE ACCUMULATED FROM MULTIPLE PLOTS AND HAVE MORE
 C        THAN ONE PLOT ID EXISTING ON THE TREE RECORDS BUT THE STAND HAS
 C        BEEN DEFINED AS A SINGLE PLOT, THE PLOT ID USED WILL BE 1.
-C        LRD 02/04/2022 
+C        LRD 02/04/2022
 C
 C    *** NEXT 2 SCENERIOS ARE EVELUATED IN CALLING SUBROUTINE INITRE.F ***
 C    2 - IF NUM_PLOTS IS >1 AND COUNTED TREE RECORD PLOT IDS IS LESS THAN
@@ -378,7 +378,7 @@ C         TREE RECORD IS ON EXISTING PLOT
           IF (IPTINV .EQ. 1) THEN      ! ALL TREES ON 1 PLOT (1 ABOVE)
 C           A SINGLE PLOT HAS BEEN SPECIFIED BUT NEW PLOT ID HAS BEEN
 C           READ. PLOT ID WILL BE SET TO 1 SINCE MULTIPLE PLOT IDS
-C           EXIST IN THE INPUT TREE RECORDS. 
+C           EXIST IN THE INPUT TREE RECORDS.
             ITREI = 1
             IPVEC(IPP) = 1
             GO TO 60
