@@ -19,6 +19,10 @@ c     the fortran routines.
       include "CONTRL.F77"
       include "PLOT.F77"
 
+!Python F2PY Interface Directives
+!f2py intent(out) :: ntrees,ncycles,nplots
+!f2py intent(out) :: maxtrees,maxspecies,maxplots,maxcycles
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSDIMSIZES'::FVSDIMSIZES
 !DEC$ ATTRIBUTES REFERENCE :: NTREES, NCYCLES, NPLOTS, MAXTREES
 !DEC$ ATTRIBUTES REFERENCE :: MAXSPECIES, MAXPLOTS, MAXCYCLES
@@ -46,6 +50,14 @@ c     the fortran routines.
       include "PRGPRM.F77"
       include "CONTRL.F77"
       include "OUTCOM.F77"
+
+!Python F2PY Interface Directives
+!f2py intent(out) :: summary
+!f2py intent(in) :: icycle
+!f2py intent(hide) :: ncycles
+!f2py intent(hide) :: maxrow
+!f2py intent(hide) :: maxcol
+!f2py intent(hide) :: rtnCode
 
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSSUMMARY'::FVSSUMMARY
 !DEC$ ATTRIBUTES REFERENCE :: SUMMARY, ICYCLE, NCYCLES, MAXROW
@@ -115,6 +127,14 @@ c
       include "ARRAYS.F77"
       include "CONTRL.F77"
       include "VARCOM.F77"
+
+!Python F2PY Interface Directives
+!f2py intent(in) :: name
+!f2py intent(in) :: nch
+!f2py intent(in) :: action
+!f2py intent(in) :: ntrees
+!f2py intent(inout) :: attr
+!f2py intent(out) :: rtnCode
 
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSTREEATTR'::FVSTREEATTR
 !DEC$ ATTRIBUTES REFERENCE :: NAME, NCH, ACTION, NTREES, ATTR, RTNCODE
@@ -294,6 +314,13 @@ c
       include 'CONTRL.F77'
       include 'MULTCM.F77'
 
+!Python F2PY Interface Directives
+!f2py intent(in) :: name
+!f2py intent(in) :: nch
+!f2py intent(in) :: action
+!f2py intent(inout) :: attr
+!f2py intent(out) :: rtnCode
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE:: FVSSPECIESATTR
 !DEC$ ATTRIBUTES ALIAS:'FVSSPECIESATTR'::FVSSPECIESATTR
 !DEC$ ATTRIBUTES REFERENCE :: NAME, NCH, ACTION, ATTR, RTNCODE
@@ -444,6 +471,13 @@ c
 
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSEVMONATTR'::FVSEVMONATTR
 !DEC$ ATTRIBUTES REFERENCE :: NAME, NCH, ACTION, ATTR, RTNCODE
+
+!Python F2PY Interface Directives
+!f2py intent(in) :: name
+!f2py intent(in) :: nch
+!f2py intent(in) :: action
+!f2py intent(inout) :: attr
+!f2py intent(out) :: rtncode
 
       integer :: nch,rtncode,iv,i
       real(kind=8)      :: attr
@@ -827,6 +861,11 @@ c                 or when ntrees is zero
       include "ESTREE.F77"
       include "STDSTK.F77"
 
+!Python F2PY Interface Directives
+!f2py intent(in) :: in_dbh, in_species, in_ht, in_cratio, in_plot
+!f2py intent(in) :: in_tpa, ntrees
+!f2py intent(out) :: rtnCode
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSADDTREES'::FVSADDTREES
 !DEC$ ATTRIBUTES REFERENCE :: IN_DBH, IN_SPECIES, IN_HT, IN_CRATIO
 !DEC$ ATTRIBUTES REFERENCE :: IN_PLOT, IN_TPA, NTREES, RTNCODE
@@ -929,6 +968,16 @@ c     indx    = species index
       include "PRGPRM.F77"
       include "PLOT.F77"
 
+!Python F2PY Interface Directives
+!f2py intent(out) :: fvs_code
+!f2py intent(out) :: fia_code
+!f2py intent(out) :: plant_code
+!f2py intent(in) :: indx
+!f2py intent(hide) :: nchfvs
+!f2py intent(hide) :: nchfia
+!f2py intent(hide) :: nchplant
+!f2py intent(hide) :: rtnCode
+
 !DEC$ ATTRIBUTES DLLEXPORT,ALIAS:'FVSSPECIESCODE'::FVSSPECIESCODE
 !DEC$ ATTRIBUTES C,DECORATE :: FVSSPECIESCODE
 !DEC$ ATTRIBUTES REFERENCE :: FVS_CODE, FIA_CODE, PLANT_CODE, INDX
@@ -1005,6 +1054,11 @@ c     indx    = species index
       include "ARRAYS.F77"
       include "CONTRL.F77"
 
+!Python F2PY Interface Directives
+!f2py double intent(in) :: pToCut
+!f2py integer intent(hide),depend(pToCut) :: ntrees=len(pToCut)
+!f2py integer intent(out) :: rtnCode
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSCUTTREES'::FVSCUTTREES
 !DEC$ ATTRIBUTES REFERENCE :: PTOCUT, NTREES, RTNCODE
 
@@ -1066,6 +1120,14 @@ c     indx    = species index
       include "PRGPRM.F77"
       include "PLOT.F77"
 
+!Python F2PY Interface Directives
+!f2py intent(out) :: sID
+!f2py intent(out) :: sCN
+!f2py intent(out) :: mID
+!f2py intent(out) :: ncsID
+!f2py intent(out) :: ncCN
+!f2py intent(out) :: ncmID
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSSTANDID'::FVSSTANDID
 !DEC$ ATTRIBUTES REFERENCE :: SID, SCN, MID, NCSID, NCCN, NCMID
 
@@ -1105,7 +1167,11 @@ c     indx    = species index
 
       subroutine fvsCloseFile(filename,nch)
       implicit none
-      
+
+!Python F2PY Interface Directives
+!f2py intent(in) :: filename
+!f2py intent(in) :: nch
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSCLOSEFILE'::FVSCLOSEFILE
 !DEC$ ATTRIBUTES REFERENCE :: FILENAME, NCH
 
@@ -1132,6 +1198,13 @@ C     add an activity to the schedule.
 
       include "PRGPRM.F77"
       include "CONTRL.F77"
+
+!Python F2PY Interface Directives
+!f2py intent(in) :: idt
+!f2py intent(in) :: iactk
+!f2py intent(in) :: inprms
+!f2py intent(in) :: inprms
+!f2py intent(out) :: rtnCode
 
 !DEC$ ATTRIBUTES DLLEXPORT,ALIAS:'FVSADDACTIVITY'::FVSADDACTIVITY
 !DEC$ ATTRIBUTES C,DECORATE :: FVSADDACTIVITY
@@ -1163,6 +1236,10 @@ C     add an activity to the schedule.
       include "PRGPRM.F77"
       include "SVDATA.F77"
       include "SVDEAD.F77"
+
+!Python F2PY Interface Directives
+!f2py intent(out) :: nsvsobjs,ndeadobjs,ncwdobjs
+!f2py intent(out) :: mxsvsobjs,mxdeadobjs,mxcwdobjs
 
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE :: FVSSVSDIMSIZES
 !DEC$ ATTRIBUTES ALIAS:'FVSSVSDIMSIZES':: FVSSVSDIMSIZES
@@ -1230,7 +1307,15 @@ c               4= the length of the "name" string was too big or small
       include "PLOT.F77"
       include "SVDATA.F77"
       include "SVDEAD.F77"
-      
+
+!Python F2PY Interface Directives
+!f2py intent(in) :: name
+!f2py intent(in) :: nch
+!f2py intent(in) :: action
+!f2py intent(in) :: nobjs
+!f2py intent(inout) :: attr
+!f2py intent(out) :: rtnCode
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE :: FVSSVSOBJDATA
 !DEC$ ATTRIBUTES ALIAS:'FVSSVSOBJDATA':: FVSSVSOBJDATA
 !DEC$ ATTRIBUTES REFERENCE :: NAME, NCH, ACTION, NOBJS, ATTR, RTNCODE
@@ -1581,6 +1666,14 @@ c               4= the length of the "name" string was too big or small
       include 'FMPARM.F77'
       include 'FMCOM.F77'
 
+!Python F2PY Interface Directives
+!f2py intent(in) :: name
+!f2py intent(in) :: nch
+!f2py intent(in) :: action
+!f2py intent(in) :: nobjs
+!f2py intent(inout) :: attr
+!f2py intent(out) :: rtnCode
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE :: FVSFFEATTRS
 !DEC$ ATTRIBUTES ALIAS:'FVSFFEATTRS':: FVSFFEATTRS
 !DEC$ ATTRIBUTES REFERENCE :: NAME, NCH, ACTION, NOBJS, ATTR, RTNCODE
@@ -1705,7 +1798,13 @@ c               1= "name" not found,
 !DEC$ ATTRIBUTES REFERENCE :: NAME, NCH, VALUE, RTNCODE
 
       include "METRIC.F77"
-      
+
+!Python F2PY Interface Directives
+!f2py intent(in) :: name
+!f2py intent(in) :: nch
+!f2py intent(inout) :: value
+!f2py intent(out) :: rtnCode
+
       integer :: nch,rtnCode
       real(kind=8)       :: value
       character(len=15)  :: name

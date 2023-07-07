@@ -173,7 +173,7 @@ C----------
             HTG(I) = height_growth(row_idx)
             ICR(I) = crown_ratio(row_idx)
             IMC1 = tree_val(row_idx)
-            ! KUTKOD(I) = plot_id(row_idx)
+            KUTKOD(I) = tree_rx_code(row_idx)
 
             IDAMCD(1) = damage_codes(1,row_idx)
             IDAMCD(2) = damage_codes(2,row_idx)
@@ -183,6 +183,7 @@ C----------
             IDAMCD(6) = damage_codes(6,row_idx)
 
             ! IPVARS
+            ! IPRSC - Short-run prescription code
 
             ABIRTH(I) = tree_age(row_idx)
 

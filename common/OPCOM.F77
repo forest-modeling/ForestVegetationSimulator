@@ -26,7 +26,7 @@ C
      >                 WKSTR3
 C
       LOGICAL LBSETS,LEVUSE,LOPEVN
-     >        
+     >
 C
       LOGICAL LREG(MXLREG),LTSTV4(MXTST4),LTSTV5(MXTST5)
 C
