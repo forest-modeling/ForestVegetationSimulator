@@ -1,16 +1,16 @@
 C----------
 C BASE $Id$
 C----------
-c     This is a collection of routines that provide an interface to 
+c     This is a collection of routines that provide an interface to
 c     the shared library version of FVS. Other routines that exist
 c     inside FVS may also be called.
 
 c     Created in late 2011 by Nick Crookston, RMRS-Moscow
 c     In 2019 additional interface routines were added to allow for C functions
 c     that are part of the API to call fortran functions with character strings.
-c     The fortran routines that can be called by C have an upper case C added to 
-c     the routine name. See apisubs.c for the C functions that are used to call 
-c     the fortran routines. 
+c     The fortran routines that can be called by C have an upper case C added to
+c     the routine name. See apisubs.c for the C functions that are used to call
+c     the fortran routines.
 
       subroutine fvsDimSizes(ntrees,ncycles,nplots,maxtrees,maxspecies,
      -                       maxplots,maxcycles)
@@ -18,6 +18,10 @@ c     the fortran routines.
       include "PRGPRM.F77"
       include "CONTRL.F77"
       include "PLOT.F77"
+
+!Python F2PY Interface Directives
+!f2py intent(out) :: ntrees,ncycles,nplots
+!f2py intent(out) :: maxtrees,maxspecies,maxplots,maxcycles
 
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSDIMSIZES'::FVSDIMSIZES
 !DEC$ ATTRIBUTES REFERENCE :: NTREES, NCYCLES, NPLOTS, MAXTREES
@@ -33,7 +37,7 @@ c     the fortran routines.
       ncycles   = NCYC
       nplots    = IPTINV
       maxtrees  = MAXTRE
-      maxspecies= MAXSP 
+      maxspecies= MAXSP
       maxplots  = MAXPLT
       maxcycles = MAXCYC
       return
@@ -47,12 +51,20 @@ c     the fortran routines.
       include "CONTRL.F77"
       include "OUTCOM.F77"
 
+!Python F2PY Interface Directives
+!f2py intent(out) :: summary
+!f2py intent(in) :: icycle
+!f2py intent(hide) :: ncycles
+!f2py intent(hide) :: maxrow
+!f2py intent(hide) :: maxcol
+!f2py intent(hide) :: rtnCode
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSSUMMARY'::FVSSUMMARY
 !DEC$ ATTRIBUTES REFERENCE :: SUMMARY, ICYCLE, NCYCLES, MAXROW
 !DEC$ ATTRIBUTES REFERENCE :: MAXCOL, RTNCODE
-      
+
       integer :: summary(20),icycle,ncycles,maxrow,maxcol,rtnCode
-      
+
       maxrow = maxcy1
       maxcol = 20
       ncycles = ncyc
@@ -63,15 +75,15 @@ c     the fortran routines.
         rtnCode = 0
       endif
       return
-      end    
+      end
 
 #ifdef CMPgcc
       subroutine fvsTreeAttrC(namei,nch,actioni,ntrees,attr,rtnCode)
-     -           bind(c, name="fvsTreeAttrC") 
+     -           bind(c, name="fvsTreeAttrC")
       use iso_c_binding
       implicit none
 
-c     C-callable version of fvsTreeAttr where namei and actioni are 
+c     C-callable version of fvsTreeAttr where namei and actioni are
 c     C-bindings of their correspoinding arguments.
 
       integer(c_int), bind(c) :: nch,rtnCode,ntrees
@@ -79,7 +91,7 @@ c     C-bindings of their correspoinding arguments.
       character(c_char), dimension(10), bind(c) :: namei,actioni
       character name*10,action*4
       integer i
-      
+
       if (nch == 0 .or. nch > 10) then
         rtnCode = 4
         return
@@ -100,7 +112,7 @@ c     C-bindings of their correspoinding arguments.
 
 c     set and/or gets the named tree attributes
 c     name    = char string of the variable name, (case sensitive)
-c     nch     = the number of characters in "name" 
+c     nch     = the number of characters in "name"
 c     action  = char string that is one of "set" or "get" (case sensitive)
 c     ntrees  = the number of trees, length of attr
 c     attr    = a vector of length ntrees, always "double"
@@ -115,6 +127,14 @@ c
       include "ARRAYS.F77"
       include "CONTRL.F77"
       include "VARCOM.F77"
+
+!Python F2PY Interface Directives
+!f2py intent(in) :: name
+!f2py intent(in) :: nch
+!f2py intent(in) :: action
+!f2py intent(in) :: ntrees
+!f2py intent(inout) :: attr
+!f2py intent(out) :: rtnCode
 
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSTREEATTR'::FVSTREEATTR
 !DEC$ ATTRIBUTES REFERENCE :: NAME, NCH, ACTION, NTREES, ATTR, RTNCODE
@@ -133,19 +153,19 @@ c
         rtnCode = 2
         return
       endif
-      
+
       if (LSTART) then
         ntest = IREC1
       else
         ntest = ITRN
       endif
-      
+
       if (ntrees /= ntest) then
         attr = 0
         rtnCode = 3
         return
       endif
-      
+
       select case(name)
       case ("tpa")
         if (action=="get") attr = prob(:ntrees)
@@ -227,13 +247,13 @@ c
         if (action=="set") idtree(:ntrees) = int(attr,4)
       case ("special")
         if (action=="get") attr = ispecl(:ntrees)
-        if (action=="set") ispecl(:ntrees) = int(attr,4)     
+        if (action=="set") ispecl(:ntrees) = int(attr,4)
       case ("kutkod")
         if (action=="get") attr = kutkod(:ntrees)
-        if (action=="set") kutkod(:ntrees) = int(attr,4)     
+        if (action=="set") kutkod(:ntrees) = int(attr,4)
       case ("wk6")
         if (action=="get") attr = wk6(:ntrees)
-        if (action=="set") wk6(:ntrees) = real(attr,4)   
+        if (action=="set") wk6(:ntrees) = real(attr,4)
       case default
         rtnCode = 1
         attr = 0
@@ -244,11 +264,11 @@ c
 
 #ifdef CMPgcc
       subroutine fvsSpeciesAttrC(namei,nch,actioni,attr,rtnCode)
-     -           bind(c, name="fvsSpeciesAttrC") 
+     -           bind(c, name="fvsSpeciesAttrC")
       use iso_c_binding
       implicit none
 
-c     C-callable version of fvsSpeciesAttr where namei and actioni are 
+c     C-callable version of fvsSpeciesAttr where namei and actioni are
 c     C-bindings of their correspoinding arguments.
 
       include "PRGPRM.F77"
@@ -258,7 +278,7 @@ c     C-bindings of their correspoinding arguments.
       character(c_char), dimension(10), bind(c) :: namei,actioni
       character name*10,action*4
       integer i
-      
+
       if (nch == 0 .or. nch > 10) then
         rtnCode = 4
         return
@@ -279,7 +299,7 @@ c     C-bindings of their correspoinding arguments.
 
 c     set and/or gets the named species attributes
 c     name    = char string of the variable name, (case sensitive)
-c     nch     = the number of characters in "name" 
+c     nch     = the number of characters in "name"
 c     action  = char string that is one of "set" or "get" (case sensitive)
 c     attr    = a vector of length data, always "double"
 c     rtnCode = 0 is OK, 1= "name" not found,
@@ -290,6 +310,13 @@ c
       include 'VOLSTD.F77'
       include 'CONTRL.F77'
       include 'MULTCM.F77'
+
+!Python F2PY Interface Directives
+!f2py intent(in) :: name
+!f2py intent(in) :: nch
+!f2py intent(in) :: action
+!f2py intent(inout) :: attr
+!f2py intent(out) :: rtnCode
 
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE:: FVSSPECIESATTR
 !DEC$ ATTRIBUTES ALIAS:'FVSSPECIESATTR'::FVSSPECIESATTR
@@ -369,7 +396,7 @@ c     volume calculation-related vectors
         if (action=="set") xrdmlt = real(attr,4)
       case ("reghmult")
         if (action=="get") attr = xrhmlt
-        if (action=="set") xrhmlt = real(attr,4)     
+        if (action=="set") xrhmlt = real(attr,4)
 
       case default
         rtnCode = 1
@@ -381,11 +408,11 @@ c     volume calculation-related vectors
 
 #ifdef CMPgcc
       subroutine fvsEvmonAttrC(namei,nch,actioni,attr,rtnCode)
-     -           bind(c, name="fvsEvmonAttrC") 
+     -           bind(c, name="fvsEvmonAttrC")
       use iso_c_binding
       implicit none
 
-c     C-callable version of fvsSpeciesAttr where namei and actioni are 
+c     C-callable version of fvsSpeciesAttr where namei and actioni are
 c     C-bindings of their correspoinding arguments.
 
       integer(c_int), bind(c) :: nch,rtnCode
@@ -393,7 +420,7 @@ c     C-bindings of their correspoinding arguments.
       character(c_char), dimension(9), bind(c) :: namei,actioni
       character name*9,action*4
       integer i
-      
+
       if (nch == 0 .or. nch > 9) then
         rtnCode = 4
         return
@@ -414,11 +441,11 @@ c     C-bindings of their correspoinding arguments.
 
 c     set and/or gets the named tree attributes
 c     name    = char string of the variable name, (case sensitive)
-c     nch     = the number of characters in "name" 
+c     nch     = the number of characters in "name"
 c     action  = char string that is one of "set" or "get" (case sensitive)
 c     attr    = a vector of length data, always "double"
 c     rtnCode = 0 is OK, 1=action is "get" and variable
-c               is known to be undefined. 2= "name" not found, 
+c               is known to be undefined. 2= "name" not found,
 c
       include "PRGPRM.F77"
       include "FMPARM.F77"
@@ -429,15 +456,22 @@ c
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSEVMONATTR'::FVSEVMONATTR
 !DEC$ ATTRIBUTES REFERENCE :: NAME, NCH, ACTION, ATTR, RTNCODE
 
+!Python F2PY Interface Directives
+!f2py intent(in) :: name
+!f2py intent(in) :: nch
+!f2py intent(in) :: action
+!f2py intent(inout) :: attr
+!f2py intent(out) :: rtncode
+
       integer :: nch,rtncode,iv,i
       real(kind=8)      :: attr
       character(len=9)  :: name
       character(len=4)  :: action
       character(len=8)  :: upname
-     
+
       upname = ' '
       upname = name(1:nch)
-      
+
       action=action(1:3)
       if (action=="get") attr = 0
 
@@ -666,15 +700,15 @@ c
       case ("shrubwt")
         if (action=="get") attr = flive(1)
         if (action=="set") flive(1) = real(attr,4)
-        return        
+        return
       case ("herbwt")
         if (action=="get") attr = flive(2)
-        if (action=="set") flive(2) = real(attr,4)                
+        if (action=="set") flive(2) = real(attr,4)
         return
       case default
         iv=0
       end select
-      
+
       if (iv == 0) then
         do i=1,nch
           call upcase(upname(i:i))
@@ -687,7 +721,7 @@ c
               else
                 rtncode = 1
               endif
-            elseif (action=="set") then 
+            elseif (action=="set") then
               tstv5(i) = real(attr,4)
               LTSTV5(i) = .TRUE.
             else
@@ -706,7 +740,7 @@ c
         endif
         return
       endif
-      
+
       i = mod(iv,100)
       iv = iv/100
 
@@ -735,7 +769,7 @@ c
       end select
       return
       end
-      
+
       subroutine fvsAddTrees(in_dbh,in_species,in_ht,in_cratio,
      -                       in_plot,in_tpa,ntrees,rtnCode)
       implicit none
@@ -743,7 +777,7 @@ c
 c     rtnCode = 0 when all is OK
 c               1 when there is no room for the ntrees
 c                 or when ntrees is zero
-      
+
       include "PRGPRM.F77"
       include "ARRAYS.F77"
       include "CONTRL.F77"
@@ -753,16 +787,21 @@ c                 or when ntrees is zero
       include "ESTREE.F77"
       include "STDSTK.F77"
 
+!Python F2PY Interface Directives
+!f2py intent(in) :: in_dbh, in_species, in_ht, in_cratio, in_plot
+!f2py intent(in) :: in_tpa, ntrees
+!f2py intent(out) :: rtnCode
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSADDTREES'::FVSADDTREES
 !DEC$ ATTRIBUTES REFERENCE :: IN_DBH, IN_SPECIES, IN_HT, IN_CRATIO
 !DEC$ ATTRIBUTES REFERENCE :: IN_PLOT, IN_TPA, NTREES, RTNCODE
-      
+
       real(kind=8) :: in_dbh(ntrees),in_species(ntrees),
      -    in_ht(ntrees),in_cratio(ntrees),in_plot(ntrees),
      -    in_tpa(ntrees)
       real :: cw,crdum
       integer :: ntrees,rtnCode,i
-      
+
       rtnCode = 0
       if (ntrees == 0 .or. ntrees+itrn > MAXTRE) then
         rtnCode = 1
@@ -785,7 +824,7 @@ c                 or when ntrees is zero
         call cwcalc(isp(itrn),prob(itrn),dbh(itrn),ht(itrn),crdum,
      &              icr(itrn),cw,0,jostnd)
         crwdth(itrn)=cw
-c       
+c
         dg(itrn)=0.0
         htg(itrn)=0.0
         pct(itrn)=0.0
@@ -798,7 +837,7 @@ c
         ptbalt(itrn)=0.
         idtree(itrn)=10000000+icyc*10000+itrn
         call misputz(itrn,0)
-c       
+c
         abirth(itrn)=5
         defect(itrn)=0
         ispecl(itrn)=0
@@ -829,7 +868,7 @@ c     next time dist is called.
       ifst=1
       return
       end
-      
+
       subroutine fvsSpeciesCode(fvs_code,fia_code,plant_code,
      -                          indx,nchfvs,nchfia,nchplant,rtnCode)
       implicit none
@@ -837,9 +876,19 @@ c     next time dist is called.
 c     rtnCode = 0 when all is OK
 c               1 when index is out of bounds
 c     indx    = species index
-     
+
       include "PRGPRM.F77"
       include "PLOT.F77"
+
+!Python F2PY Interface Directives
+!f2py intent(out) :: fvs_code
+!f2py intent(out) :: fia_code
+!f2py intent(out) :: plant_code
+!f2py intent(in) :: indx
+!f2py intent(hide) :: nchfvs
+!f2py intent(hide) :: nchfia
+!f2py intent(hide) :: nchplant
+!f2py intent(hide) :: rtnCode
 
 !DEC$ ATTRIBUTES DLLEXPORT,ALIAS:'FVSSPECIESCODE'::FVSSPECIESCODE
 !DEC$ ATTRIBUTES C,DECORATE :: FVSSPECIESCODE
@@ -850,7 +899,7 @@ c     indx    = species index
       character(len=4) :: fvs_code
       character(len=4) :: fia_code
       character(len=6) :: plant_code
-      
+
       if (indx == 0 .or. indx > MAXSP) then
         nchfvs  = 0
         nchfia  = 0
@@ -869,18 +918,18 @@ c     indx    = species index
       end
 
 #ifdef CMPgcc
-      subroutine fvsSpeciesCodeC(fvs_code,fia_code,plant_code,indx) 
-     -           bind(c, name="fvsSpeciesCodeC") 
+      subroutine fvsSpeciesCodeC(fvs_code,fia_code,plant_code,indx)
+     -           bind(c, name="fvsSpeciesCodeC")
       use iso_c_binding
       implicit none
-                  
-c     rtnCode = 0 when all is OK                                                            
+
+c     rtnCode = 0 when all is OK
 c               1 when index is out of bounds
 c     indx    = species index
-     
+
       include "PRGPRM.F77"
       include "PLOT.F77"
-                                                                                          
+
       integer(c_int), bind(c) :: indx
       integer i,nch
       character(c_char), dimension(5), bind(c) :: fvs_code
@@ -888,7 +937,7 @@ c     indx    = species index
       character(c_char), dimension(7), bind(c) :: plant_code
       if (indx == 0 .or. indx > MAXSP) then
         fvs_code(1)  =char(0)
-        fia_code(1)  =char(0)                             
+        fia_code(1)  =char(0)
         plant_code(1)=char(0)
       else
         nch=len_trim(JSP(indx))
@@ -896,11 +945,11 @@ c     indx    = species index
           fvs_code(i) = JSP(indx)(i:i)
         enddo
         fvs_code(nch+1) = char(0)
-        nch=len_trim(FIAJSP(indx))                     
+        nch=len_trim(FIAJSP(indx))
         do i=1,nch
           fia_code(i) = FIAJSP(indx)(i:i)
         enddo
-        fia_code(nch+1) = char(0)                             
+        fia_code(nch+1) = char(0)
         nch=len_trim(PLNJSP(indx))
         do i=1,nch
           plant_code(i) = PLNJSP(indx)(i:i)
@@ -917,6 +966,11 @@ c     indx    = species index
       include "ARRAYS.F77"
       include "CONTRL.F77"
 
+!Python F2PY Interface Directives
+!f2py double intent(in) :: pToCut
+!f2py integer intent(hide),depend(pToCut) :: ntrees=len(pToCut)
+!f2py integer intent(out) :: rtnCode
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSCUTTREES'::FVSCUTTREES
 !DEC$ ATTRIBUTES REFERENCE :: PTOCUT, NTREES, RTNCODE
 
@@ -927,7 +981,7 @@ c     indx    = species index
         rtnCode = 1
         return
       endif
-      
+
       print *,"Not yet implemented"
       rtnCode = 1
       return
@@ -935,14 +989,14 @@ c     indx    = species index
 
 #ifdef CMPgcc
       subroutine fvsStandIDC(sID,sCN,mID,mCase)
-     -           bind(c, name="fvsStandIDC") 
+     -           bind(c, name="fvsStandIDC")
       use iso_c_binding
       implicit none
-                       
+
       include "PRGPRM.F77"
       include "PLOT.F77"
       include "DBSCOM.F77"
-                                                                                          
+
       integer i,ncsID,ncCN,ncmID,ncCase
       character(c_char), dimension(len(NPLT  )+1), bind(c) :: sID
       character(c_char), dimension(len(DBCN  )+1), bind(c) :: sCN
@@ -978,11 +1032,19 @@ c     indx    = species index
       include "PRGPRM.F77"
       include "PLOT.F77"
 
+!Python F2PY Interface Directives
+!f2py intent(out) :: sID
+!f2py intent(out) :: sCN
+!f2py intent(out) :: mID
+!f2py intent(out) :: ncsID
+!f2py intent(out) :: ncCN
+!f2py intent(out) :: ncmID
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSSTANDID'::FVSSTANDID
 !DEC$ ATTRIBUTES REFERENCE :: SID, SCN, MID, NCSID, NCCN, NCMID
 
       integer :: ncsID,ncCN,ncmID
-      
+
       character(len=len(NPLT))  sID
       character(len=len(DBCN))  sCN
       character(len=len(MGMID)) mID
@@ -998,10 +1060,10 @@ c     indx    = species index
 
 #ifdef CMPgcc
       subroutine fvsCloseFileC(filenamei,nch)
-     -           bind(c, name="fvsCloseFileC") 
+     -           bind(c, name="fvsCloseFileC")
       use iso_c_binding
       implicit none
-                       
+
       integer(c_int), bind(c) :: nch
       integer i
       character(c_char), dimension(nch), bind(c) :: filenamei
@@ -1009,7 +1071,7 @@ c     indx    = species index
 
       do i=1,nch
         filename(i:i) = filenamei(i)
-      enddo 
+      enddo
       call fvsCloseFile(filename,nch)
       return
       end
@@ -1017,7 +1079,11 @@ c     indx    = species index
 
       subroutine fvsCloseFile(filename,nch)
       implicit none
-      
+
+!Python F2PY Interface Directives
+!f2py intent(in) :: filename
+!f2py intent(in) :: nch
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE,ALIAS:'FVSCLOSEFILE'::FVSCLOSEFILE
 !DEC$ ATTRIBUTES REFERENCE :: FILENAME, NCH
 
@@ -1035,8 +1101,8 @@ C     from within FVS. nch is the length of filename.
       endif
       return
       end
-      
-      
+
+
       subroutine fvsAddActivity(idt,iactk,inprms,nprms,rtnCode)
       implicit none
 
@@ -1045,16 +1111,23 @@ C     add an activity to the schedule.
       include "PRGPRM.F77"
       include "CONTRL.F77"
 
+!Python F2PY Interface Directives
+!f2py intent(in) :: idt
+!f2py intent(in) :: iactk
+!f2py intent(in) :: inprms
+!f2py intent(in) :: inprms
+!f2py intent(out) :: rtnCode
+
 !DEC$ ATTRIBUTES DLLEXPORT,ALIAS:'FVSADDACTIVITY'::FVSADDACTIVITY
 !DEC$ ATTRIBUTES C,DECORATE :: FVSADDACTIVITY
 !DEC$ ATTRIBUTES REFERENCE :: IDT, IACTK, INPRMS, NPRMS, RTNCODE
-      
+
       integer :: i,idt,iactk,nprms,rtnCode,kode
       integer, parameter :: mxtopass=20
       real(kind=8) inprms(nprms)
       real(kind=4) prms(mxtopass)
 
-      if (nprms > 0) then 
+      if (nprms > 0) then
         do i=1,min(nprms,mxtopass)
           prms(i) = real(inprms(i),kind=4)
         enddo
@@ -1066,9 +1139,9 @@ C     add an activity to the schedule.
         call opincr (IY,ICYC,NCYC)
         rtnCode = 0
       endif
-      return 
+      return
       end
-      
+
       subroutine fvsSVSDimSizes(nsvsobjs,ndeadobjs,ncwdobjs,
      -                          mxsvsobjs,mxdeadobjs,mxcwdobjs)
       implicit none
@@ -1076,14 +1149,18 @@ C     add an activity to the schedule.
       include "SVDATA.F77"
       include "SVDEAD.F77"
 
+!Python F2PY Interface Directives
+!f2py intent(out) :: nsvsobjs,ndeadobjs,ncwdobjs
+!f2py intent(out) :: mxsvsobjs,mxdeadobjs,mxcwdobjs
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE :: FVSSVSDIMSIZES
 !DEC$ ATTRIBUTES ALIAS:'FVSSVSDIMSIZES':: FVSSVSDIMSIZES
 !DEC$ ATTRIBUTES REFERENCE :: NSVSOBJS,NDEADOBJS,NCWDOBJS
 !DEC$ ATTRIBUTES REFERENCE :: MXSVSOBJS,MXDEADOBJS,MXCWDOBJS
 
-      integer :: nsvsobjs,  ndeadobjs,  ncwdobjs,  
-     -           mxsvsobjs, mxdeadobjs, mxcwdobjs 
-      
+      integer :: nsvsobjs,  ndeadobjs,  ncwdobjs,
+     -           mxsvsobjs, mxdeadobjs, mxcwdobjs
+
       nsvsobjs   =  NSVOBJ
       ndeadobjs  =  NDEAD
       ncwdobjs   =  NCWD
@@ -1095,18 +1172,18 @@ C     add an activity to the schedule.
 
 #ifdef CMPgcc
       subroutine fvsSVSObjDataC(namei,nch,actioni,nobjs,attr,rtnCode)
-     -           bind(c, name="fvsSVSObjDataC") 
+     -           bind(c, name="fvsSVSObjDataC")
       use iso_c_binding
       implicit none
 
-c     C-callable version of fvsSVSObjData 
+c     C-callable version of fvsSVSObjData
 
       integer(c_int), bind(c) :: nch,rtnCode,nobjs
       real(c_double), dimension(nobjs), bind(c) :: attr
       character(c_char), dimension(10), bind(c) :: namei,actioni
       character name*10,action*4
       integer i
-      
+
       if (nch == 0 .or. nch > 10) then
         rtnCode = 4
         return
@@ -1127,11 +1204,11 @@ c     C-callable version of fvsSVSObjData
 
 c     set and/or gets the named SVS object attributes
 c     name    = char string of the variable name, (case sensitive)
-c     nch     = the number of characters in "name" 
+c     nch     = the number of characters in "name"
 c     action  = char string that is one of "set" or "get" (case sensitive)
 c     nobjs   = the number of objects, length of data
 c     attr    = a vector of length data, always "double"
-c     rtnCode = 0 is OK, 
+c     rtnCode = 0 is OK,
 c               1= "name" not found,
 c               2= nobjs is greater than the corresponding max, no data transfered.
 c               3= there were more/fewer than nobjs.
@@ -1142,7 +1219,15 @@ c               4= the length of the "name" string was too big or small
       include "PLOT.F77"
       include "SVDATA.F77"
       include "SVDEAD.F77"
-      
+
+!Python F2PY Interface Directives
+!f2py intent(in) :: name
+!f2py intent(in) :: nch
+!f2py intent(in) :: action
+!f2py intent(in) :: nobjs
+!f2py intent(inout) :: attr
+!f2py intent(out) :: rtnCode
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE :: FVSSVSOBJDATA
 !DEC$ ATTRIBUTES ALIAS:'FVSSVSOBJDATA':: FVSSVSOBJDATA
 !DEC$ ATTRIBUTES REFERENCE :: NAME, NCH, ACTION, NOBJS, ATTR, RTNCODE
@@ -1151,21 +1236,21 @@ c               4= the length of the "name" string was too big or small
       real(kind=8)      :: attr(nobjs)
       character(len=10) :: name
       character(len=4)  :: action
-      
+
       if (nch == 0 .or. nch > 10) then
         rtnCode = 4
         return
       endif
-        
+
       name=name(1:nch)
       action=action(1:3)
 
       rtnCode = 0
       select case(name)
-      
+
 C     ALL object section (the locations, etc):
-        
-      case ("objtype")  
+
+      case ("objtype")
         if (nobjs > MXSVOB) then
           attr = 0
           rtnCode = 2
@@ -1177,9 +1262,9 @@ C     ALL object section (the locations, etc):
           return
         endif
         if (action=="get") attr = IOBJTP(:nsvobj)
-        if (action=="set") IOBJTP(:nsvobj) = int(attr,4) 
+        if (action=="set") IOBJTP(:nsvobj) = int(attr,4)
 
-      case ("objindex")  
+      case ("objindex")
         if (nobjs > MXSVOB) then
           attr = 0
           rtnCode = 2
@@ -1191,9 +1276,9 @@ C     ALL object section (the locations, etc):
           return
         endif
         if (action=="get") attr = IS2F(:nsvobj)
-        if (action=="set") IS2F(:nsvobj) = int(attr,4) 
+        if (action=="set") IS2F(:nsvobj) = int(attr,4)
 
-      case ("xloc")  
+      case ("xloc")
         if (nobjs > MXSVOB) then
           attr = 0
           rtnCode = 2
@@ -1205,9 +1290,9 @@ C     ALL object section (the locations, etc):
           return
         endif
         if (action=="get") attr = XSLOC(:nsvobj)
-        if (action=="set") XSLOC(:nsvobj) = real(attr,4) 
+        if (action=="set") XSLOC(:nsvobj) = real(attr,4)
 
-      case ("yloc")  
+      case ("yloc")
         if (nobjs > MXSVOB) then
           attr = 0
           rtnCode = 2
@@ -1219,10 +1304,10 @@ C     ALL object section (the locations, etc):
           return
         endif
         if (action=="get") attr = YSLOC(:nsvobj)
-        if (action=="set") YSLOC(:nsvobj) = real(attr,4) 
-        
+        if (action=="set") YSLOC(:nsvobj) = real(attr,4)
+
 C     SNAG section:
-        
+
       case ("snagdbh")
         if (nobjs > MXDEAD) then
           attr = 0
@@ -1236,7 +1321,7 @@ C     SNAG section:
         endif
         if (action=="get") attr = SNGDIA(:ndead)
         if (action=="set") SNGDIA(:ndead) = real(attr,4)
-        
+
       case ("snaglen")
         if (nobjs > MXDEAD) then
           attr = 0
@@ -1264,8 +1349,8 @@ C     SNAG section:
         endif
         if (action=="get") attr = IYRCOD(:ndead)
         if (action=="set") IYRCOD(:ndead) = int(attr,4)
-        
-        
+
+
       case ("snagspp")
         if (nobjs > MXDEAD) then
           attr = 0
@@ -1279,7 +1364,7 @@ C     SNAG section:
         endif
         if (action=="get") attr = ISNSP(:ndead)
         if (action=="set") ISNSP(:ndead) = int(attr,4)
-                
+
       case ("snagfdir")
         if (nobjs > MXDEAD) then
           attr = 0
@@ -1293,7 +1378,7 @@ C     SNAG section:
         endif
         if (action=="get") attr = FALLDIR(:ndead)
         if (action=="set") FALLDIR(:ndead) = real(attr,4)
-        
+
       case ("snagstat")
         if (nobjs > MXDEAD) then
           attr = 0
@@ -1306,7 +1391,7 @@ C     SNAG section:
           return
         endif
         if (action=="get") attr = ISTATUS(:ndead)
-        if (action=="set") ISTATUS(:ndead) = int(attr,4) 
+        if (action=="set") ISTATUS(:ndead) = int(attr,4)
 
       case ("snagwt0")
         if (nobjs > MXDEAD) then
@@ -1320,7 +1405,7 @@ C     SNAG section:
           return
         endif
         if (action=="get") attr = SNGCNWT(:ndead,0)
-        if (action=="set") SNGCNWT(:ndead,0) = real(attr,4) 
+        if (action=="set") SNGCNWT(:ndead,0) = real(attr,4)
 
       case ("snagwt1")
         if (nobjs > MXDEAD) then
@@ -1334,7 +1419,7 @@ C     SNAG section:
           return
         endif
         if (action=="get") attr = SNGCNWT(:ndead,1)
-        if (action=="set") SNGCNWT(:ndead,1) = real(attr,4) 
+        if (action=="set") SNGCNWT(:ndead,1) = real(attr,4)
 
       case ("snagwt2")
         if (nobjs > MXDEAD) then
@@ -1348,7 +1433,7 @@ C     SNAG section:
           return
         endif
         if (action=="get") attr = SNGCNWT(:ndead,2)
-        if (action=="set") SNGCNWT(:ndead,2) = real(attr,4) 
+        if (action=="set") SNGCNWT(:ndead,2) = real(attr,4)
 
       case ("snagwt3")
         if (nobjs > MXDEAD) then
@@ -1362,11 +1447,11 @@ C     SNAG section:
           return
         endif
         if (action=="get") attr = SNGCNWT(:ndead,3)
-        if (action=="set") SNGCNWT(:ndead,3) = real(attr,4) 
+        if (action=="set") SNGCNWT(:ndead,3) = real(attr,4)
 
 C     CWD section:
 
-      case ("cwddia") 
+      case ("cwddia")
         if (nobjs > MXCWD) then
           attr = 0
           rtnCode = 2
@@ -1378,9 +1463,9 @@ C     CWD section:
           return
         endif
         if (action=="get") attr = cwddia(:ncwd)
-        if (action=="set") cwddia(:ncwd) = real(attr,4) 
-        
-      case ("cwdlen") 
+        if (action=="set") cwddia(:ncwd) = real(attr,4)
+
+      case ("cwdlen")
         if (nobjs > MXCWD) then
           attr = 0
           rtnCode = 2
@@ -1392,9 +1477,9 @@ C     CWD section:
           return
         endif
         if (action=="get") attr = cwdlen(:ncwd)
-        if (action=="set") cwdlen(:ncwd) = real(attr,4) 
-        
-      case ("cwdpil") 
+        if (action=="set") cwdlen(:ncwd) = real(attr,4)
+
+      case ("cwdpil")
         if (nobjs > MXCWD) then
           attr = 0
           rtnCode = 2
@@ -1406,8 +1491,8 @@ C     CWD section:
           return
         endif
         if (action=="get") attr = cwdpil(:ncwd)
-        if (action=="set") cwdpil(:ncwd) = real(attr,4) 
-        
+        if (action=="set") cwdpil(:ncwd) = real(attr,4)
+
       case ("cwddir")
         if (nobjs > MXCWD) then
           attr = 0
@@ -1420,9 +1505,9 @@ C     CWD section:
           return
         endif
         if (action=="get") attr = cwddir(:ncwd)
-        if (action=="set") cwddir(:ncwd) = real(attr,4) 
-        
-      case ("cwdwt")  
+        if (action=="set") cwddir(:ncwd) = real(attr,4)
+
+      case ("cwdwt")
         if (nobjs > MXCWD) then
           attr = 0
           rtnCode = 2
@@ -1434,23 +1519,23 @@ C     CWD section:
           return
         endif
         if (action=="get") attr = cwdwt(:ncwd)
-        if (action=="set") cwdwt(:ncwd) = real(attr,4) 
-        
+        if (action=="set") cwdwt(:ncwd) = real(attr,4)
+
       case default
         rtnCode = 1
         attr = 0
       end select
-      
+
       return
       end
 
 #ifdef CMPgcc
       subroutine fvsFFEAttrsC(namei,nch,actioni,nobjs,attr,rtnCode)
-     -           bind(c, name="fvsFFEAttrsC") 
+     -           bind(c, name="fvsFFEAttrsC")
       use iso_c_binding
       implicit none
 
-c     C-callable version of fvsTreeAttr where namei and actioni are 
+c     C-callable version of fvsTreeAttr where namei and actioni are
 c     C-bindings of their correspoinding arguments.
 
       integer(c_int), bind(c) :: nch,rtnCode,nobjs
@@ -1458,7 +1543,7 @@ c     C-bindings of their correspoinding arguments.
       character(c_char), dimension(10), bind(c) :: namei,actioni
       character name*10,action*4
       integer i
-      
+
       if (nch == 0 .or. nch > 10) then
         rtnCode = 4
         return
@@ -1471,7 +1556,7 @@ c     C-bindings of their correspoinding arguments.
       if (actioni(1) == "s") action="set"
       call fvsFFEAttrs(name,nch,action,nobjs,attr,rtnCode)
       return
-      end     
+      end
 #endif
 
       subroutine fvsFFEAttrs(name,nch,action,nobjs,attr,rtnCode)
@@ -1479,11 +1564,11 @@ c     C-bindings of their correspoinding arguments.
 
 c     set and/or gets the named FFE variables
 c     name    = char string of the variable name, (case sensitive)
-c     nch     = the number of characters in "name" 
+c     nch     = the number of characters in "name"
 c     action  = char string that is one of "set" or "get" (case sensitive)
 c     nobjs   = the number of objects, length of data
 c     attr    = a vector of length data, always "double"
-c     rtnCode = 0 is OK, 
+c     rtnCode = 0 is OK,
 c               1= "name" not found,
 c               2= nobjs is greater than the corresponding max, no data transfered.
 c               3= there were more/fewer than nobjs.
@@ -1493,6 +1578,14 @@ c               4= the length of the "name" string was too big or small
       include 'FMPARM.F77'
       include 'FMCOM.F77'
 
+!Python F2PY Interface Directives
+!f2py intent(in) :: name
+!f2py intent(in) :: nch
+!f2py intent(in) :: action
+!f2py intent(in) :: nobjs
+!f2py intent(inout) :: attr
+!f2py intent(out) :: rtnCode
+
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE :: FVSFFEATTRS
 !DEC$ ATTRIBUTES ALIAS:'FVSFFEATTRS':: FVSFFEATTRS
 !DEC$ ATTRIBUTES REFERENCE :: NAME, NCH, ACTION, NOBJS, ATTR, RTNCODE
@@ -1501,17 +1594,17 @@ c               4= the length of the "name" string was too big or small
       real(kind=8)      :: attr(nobjs)
       character(len=10) :: name
       character(len=4)  :: action
-      
+
       if (nch == 0 .or. nch > 10) then
         rtnCode = 4
         return
       endif
-        
+
       name=name(1:nch)
       action=action(1:3)
 
       rtnCode = 0
-      
+
       select case(name)
 
       case ("fallyrs0")
@@ -1521,7 +1614,7 @@ c               4= the length of the "name" string was too big or small
           return
         endif
         if (action=="get") attr = TFALL(1:MAXSP,0)
-        if (action=="set") TFALL(1:MAXSP,0) = real(attr,4) 
+        if (action=="set") TFALL(1:MAXSP,0) = real(attr,4)
 
       case ("fallyrs1")
         if (nobjs /= MAXSP) then
@@ -1530,7 +1623,7 @@ c               4= the length of the "name" string was too big or small
           return
         endif
         if (action=="get") attr = TFALL(1:MAXSP,1)
-        if (action=="set") TFALL(1:MAXSP,1) = real(attr,4) 
+        if (action=="set") TFALL(1:MAXSP,1) = real(attr,4)
 
       case ("fallyrs2")
         if (nobjs /= MAXSP) then
@@ -1539,7 +1632,7 @@ c               4= the length of the "name" string was too big or small
           return
         endif
         if (action=="get") attr = TFALL(1:MAXSP,2)
-        if (action=="set") TFALL(1:MAXSP,2) = real(attr,4) 
+        if (action=="set") TFALL(1:MAXSP,2) = real(attr,4)
 
       case ("fallyrs3")
         if (nobjs /= MAXSP) then
@@ -1548,7 +1641,7 @@ c               4= the length of the "name" string was too big or small
           return
         endif
         if (action=="get") attr = TFALL(1:MAXSP,3)
-        if (action=="set") TFALL(1:MAXSP,3) = real(attr,4) 
+        if (action=="set") TFALL(1:MAXSP,3) = real(attr,4)
 
       case ("fallyrs4")
         if (nobjs /= MAXSP) then
@@ -1557,7 +1650,7 @@ c               4= the length of the "name" string was too big or small
           return
         endif
         if (action=="get") attr = TFALL(:MAXSP,4)
-        if (action=="set") TFALL(:MAXSP,4) = real(attr,4) 
+        if (action=="set") TFALL(:MAXSP,4) = real(attr,4)
 
       case ("fallyrs5")
         if (nobjs /= MAXSP) then
@@ -1566,19 +1659,19 @@ c               4= the length of the "name" string was too big or small
           return
         endif
         if (action=="get") attr = TFALL(:MAXSP,5)
-        if (action=="set") TFALL(:MAXSP,5) = real(attr,4) 
+        if (action=="set") TFALL(:MAXSP,5) = real(attr,4)
 
       case default
         rtnCode = 1
         attr = 0
       end select
-      
+
       return
       end
-      
+
 #ifdef CMPgcc
       subroutine fvsUnitConversionC(namei,nch,value,rtnCode)
-     -           bind(c, name="fvsUnitConversionC") 
+     -           bind(c, name="fvsUnitConversionC")
       use iso_c_binding
       implicit none
 
@@ -1590,7 +1683,7 @@ c     C-bindings of name
       character(c_char), dimension(15), bind(c) :: namei
       character name*15
       integer i
-      
+
       if (nch == 0 .or. nch > 15) then
         rtnCode = 1
         return
@@ -1606,10 +1699,10 @@ c     C-bindings of name
 
       subroutine fvsUnitConversion(name,nch,value,rtnCode)
       implicit none
-      
+
 c     get the named unit conversion
 c     name    = char string of the variable name (case sensitive)
-c     rtnCode = 0 is OK, 
+c     rtnCode = 0 is OK,
 c               1= "name" not found,
 
 !DEC$ ATTRIBUTES DLLEXPORT,C,DECORATE :: FVSUNITCONVERSION
@@ -1617,17 +1710,23 @@ c               1= "name" not found,
 !DEC$ ATTRIBUTES REFERENCE :: NAME, NCH, VALUE, RTNCODE
 
       include "METRIC.F77"
-      
+
+!Python F2PY Interface Directives
+!f2py intent(in) :: name
+!f2py intent(in) :: nch
+!f2py intent(inout) :: value
+!f2py intent(out) :: rtnCode
+
       integer :: nch,rtnCode
       real(kind=8)       :: value
       character(len=15)  :: name
 
-      rtnCode = 0      
+      rtnCode = 0
       if (nch == 0 .or. nch > 15) then
         rtnCode = 1
         return
       endif
-        
+
       select case(name(1:nch))
 
       case ("CMtoIN")
@@ -1637,9 +1736,9 @@ c               1= "name" not found,
       case ("MtoIN")
         value = MtoIN
       case ("MtoFT")
-        value = MtoFT  
+        value = MtoFT
       case ("KMtoMI")
-        value = KMtoMI 
+        value = KMtoMI
       case ("M2toFT2")
         value = M2toFT2
       case ("HAtoACR")
@@ -1647,39 +1746,39 @@ c               1= "name" not found,
       case ("M3toFT3")
         value = M3toFT3
       case ("KGtoLB")
-        value = KGtoLB 
+        value = KGtoLB
       case ("TMtoTI")
-        value = TMtoTI 
+        value = TMtoTI
       case ("CtoF1")
-        value = CtoF1  
+        value = CtoF1
       case ("CtoF2")
-        value = CtoF2  
+        value = CtoF2
       case ("INtoCM")
-        value = INtoCM 
+        value = INtoCM
       case ("FTtoCM")
-        value = FTtoCM 
+        value = FTtoCM
       case ("INtoM")
-        value = INtoM  
+        value = INtoM
       case ("FTtoM")
-        value = FTtoM  
+        value = FTtoM
       case ("MItoKM")
-        value = MItoKM 
+        value = MItoKM
       case ("FT2toM2")
-        value = FT2toM2 
+        value = FT2toM2
       case ("ACRtoHA")
-        value = ACRtoHA 
+        value = ACRtoHA
       case ("FT3toM3")
-        value = FT3toM3 
+        value = FT3toM3
       case ("LBtoKG")
-        value = LBtoKG 
+        value = LBtoKG
       case ("TItoTM")
-        value = TItoTM 
+        value = TItoTM
       case ("FtoC1")
-        value = FtoC1 
+        value = FtoC1
       case ("FtoC2")
-        value = FtoC2  
+        value = FtoC2
       case ("BTUtoKJ")
-        value = BTUtoKJ       
+        value = BTUtoKJ
       case ("M2pHAtoFT2pACR")
         value = M2pHAtoFT2pACR
       case ("M3pHAtoFT3pACR")
@@ -1687,7 +1786,7 @@ c               1= "name" not found,
       case ("FT2pACRtoM2pHA")
         value = FT2pACRtoM2pHA
       case ("FT3pACRtoM3pHA")
-        value = FT3pACRtoM3pHA 
+        value = FT3pACRtoM3pHA
       case default
         rtnCode = 1
       end select
