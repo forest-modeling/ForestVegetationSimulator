@@ -1,6 +1,18 @@
       SUBROUTINE GRINCR (DEBUG,IPMODI,LTMGO,LMPBGO,LDFBGO,
-     1                   LBWEGO,LCVATV)
+     1                   LBWEGO,LCVATV,grow_callback)
       IMPLICIT NONE
+
+C     Define the growth cycle callback interface
+      abstract interface
+        function func (z)
+          integer :: func
+          integer, intent (in) :: z
+        end function func
+      end interface
+
+      procedure(func) :: grow_callback
+      integer cb_rtn
+
 C----------
 C BASE $Id$
 C----------
@@ -524,6 +536,10 @@ CCCC     IF (PRM(2) .GT. 1.0) PRM(2)=1.0
          ENDIF
   302    CONTINUE
       ENDIF
+
+C     Callback after diameter and height growth estimates
+      cb_rtn = grow_callback(25)
+      if (cb_rtn.ne.0) return
 C
 C     CALL **MORTS** TO COMPUTE TREE MORTALITY.
 C
