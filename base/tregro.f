@@ -1,10 +1,22 @@
-      SUBROUTINE TREGRO
+      SUBROUTINE TREGRO(grow_callback)
 
 C#ifdef FVS_DATA_API
       use snag_data, only: copy_snag_data
 C#endif /* FVS_DATA_API */
 
       IMPLICIT NONE
+
+C     Define the growth cycle callback interface
+      abstract interface
+        function func (z)
+          integer :: func
+          integer, intent (in) :: z
+        end function func
+      end interface
+
+      procedure(func) :: grow_callback
+      integer cb_rtn
+
 C----------
 C BASE $Id$
 C----------
@@ -45,7 +57,13 @@ C-----------
 C-----------
 C  CALL GRINCR TO COMPUTE INCREMENTS AND SEE IF BUG MODELS ARE ACTIVE.
 C-----------
-      CALL GRINCR (DEBUG,1,LTMGO,LMPBGO,LDFBGO,LBWEGO,LCVATV)
+      CALL GRINCR (DEBUG,1,LTMGO,LMPBGO,LDFBGO,LBWEGO,LCVATV,
+     1             grow_callback)
+
+C     Callback after increment estimates, but before it is applied
+      cb_rtn = grow_callback(20)
+      if (cb_rtn.ne.0) return
+
 C#ifdef FVS_DATA_API
       call copy_snag_data()
 C#endif /* FVS_DATA_API */
