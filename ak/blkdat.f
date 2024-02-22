@@ -68,16 +68,16 @@ C  10     RC   western redcedar    242  THPL   Thuja plicata
 C  11     WH   western hemlock     263  TSHE   Tsuga heterophylla
 C  12     MH   mountain hemlock    264  TSME   Tsuga mertensiana
 C  13     OS   other softwood      299  2TN
-C  14     AD   alder               350  ALNUS  Alnus 
+C  14     AD   alder               350  ALNUS  Alnus
 C  15     RA   red alder           351  ALRU2  Alnus rubra
 C  16     PB   paper birch         375  BEPA   Betula papyrifera
 C  17     AB   Alaska birch        376  BENE4  Betula neoalaskana
 C  18     BA   balsam poplar       741  POBA2  Populus balsamifera
 C  19     AS   quaking aspen       746  POTR5  Populus tremuloides
-C  20     CW   black cottonwood    747  POBAT  Populus balsamifera 
+C  20     CW   black cottonwood    747  POBAT  Populus balsamifera
 C                                              ssp. trichocarpa
 C  21     WI   willow              920  SALIX  Salix
-C  22     SU   Scouler’s willow    928  SASC   Salix scouleriana
+C  22     SU   Scouler's willow    928  SASC   Salix scouleriana
 C  23     OH   other hardwood      998  2TB
 C
 C----------
@@ -126,9 +126,9 @@ C  SPROUTING SPECIES INDEX LIST
       DATA ISPSPE/ 14,15,16,17,18,19,20,21,22 /
 C
 C  FULL ESTABLISHMENT MODEL VARIABLES
-C     
-      DATA IFORCD/ 20*0 /  ! NOT USED IN AK 
-      DATA IFORST/ 20*0 /  ! NOT USED IN AK 
+C
+      DATA IFORCD/ 20*0 /  ! NOT USED IN AK
+      DATA IFORST/ 20*0 /  ! NOT USED IN AK
 
 C    OCURHT SETS SPECIES OCCURANCE BY HABITAT TYPE GROUP (0-NO, 1-YES)
 C    OCURHT DIMENSIONED (16,MAXSP)
@@ -187,9 +187,9 @@ C
 C
      & 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ! OTHER F.T.
      & 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 /
-     
+
 C    DATA STATEMENTS FOR COMMON PDEN VARIABLES
-C    REGNBK IS THE BREAKPOINT DIAMETER FOR TREES GOING INTO PDEN 
+C    REGNBK IS THE BREAKPOINT DIAMETER FOR TREES GOING INTO PDEN
 C    VECTORS. SET TO 1.0 BASED ON FIA DATA.
       DATA REGNBK/1.000/
 
@@ -235,15 +235,15 @@ C      INTERCEPT COEFFICIENTS FOR WYKOFF HT-DBH FORM
 C
       DATA HT1/
      & 5.047089, 5.047089, 4.683932, 4.350320,  4.633182,
-     & 4.633182, 4.350320, 5.047089, 4.513771, 4.716522, 
+     & 4.633182, 4.350320, 5.047089, 4.513771, 4.716522,
      & 5.007972, 4.701229, 4.633182, 4.622461, 4.542755,
      & 4.393426, 4.393426, 4.622461, 4.479633, 4.622461,
      & 4.622461, 4.622461, 4.622461/
 
-C      SLOPE COEFFICIENTS FOR WYKOFF HT-DBH FORM     
+C      SLOPE COEFFICIENTS FOR WYKOFF HT-DBH FORM
 C
       DATA HT2/
-     & -12.629014, -12.629014, -10.690737, -5.776563,  -6.81926, 
+     & -12.629014, -12.629014, -10.690737, -5.776563,  -6.81926,
      & -6.81926,   -5.776563,  -12.629014, -10.853785, -11.426736,
      & -12.085418, -12.133655, -6.81926,   -6.696442,  -6.654068,
      & -3.968868,  -3.968868, -6.696442,   -5.03023,   -6.696442,
@@ -274,9 +274,9 @@ C
 C      ASYMPTOTE PARAMETER COEFFICIENTS FOR CHAPMAN RICHARDS HT-DBH FORM
       DATA HTT11/
      & 173.578068, 173.578068, 118.005962,  68.53457,  115.991446,
-     & 115.991446,  68.534570, 173.578068,  71.730424, 105.741099, 
+     & 115.991446,  68.534570, 173.578068,  71.730424, 105.741099,
      & 141.210402, 108.158839, 115.991446, 115.115222, 131.581959,
-     &  59.019982,  59.019982, 115.115222,  69.442183, 115.115222, 
+     &  59.019982,  59.019982, 115.115222,  69.442183, 115.115222,
      & 115.115222, 115.115222, 115.115222/
 
 C      RATE PARAMTER COEFFICIENTS FOR CHAPMAN RICHARDS HT-DBH FORM
@@ -284,7 +284,7 @@ C      RATE PARAMTER COEFFICIENTS FOR CHAPMAN RICHARDS HT-DBH FORM
      & -0.034704, -0.034704, -0.04487,  -0.149647, -0.068079,
      & -0.068079, -0.149647, -0.034704, -0.096667, -0.051922,
      & -0.054102, -0.054874, -0.068079, -0.04711,  -0.03474,
-     & -0.330044, -0.330044, -0.04711,  -0.181461, -0.04711, 
+     & -0.330044, -0.330044, -0.04711,  -0.181461, -0.04711,
      & -0.04711,  -0.04711,  -0.04711/
 
 C      SHAPE PARAMTER COEFFICIENTS FOR CHAPMAN RICHARDS HT-DBH FORM
