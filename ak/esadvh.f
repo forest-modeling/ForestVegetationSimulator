@@ -3,10 +3,10 @@
 C----------
 C AK $Id$
 C----------
-C     CALCULATES HEIGHTS OF ADVANCE TREES CREATED BY THE 
-C     ESTABLISHMENT MODEL. 
+C     CALCULATES HEIGHTS OF ADVANCE TREES CREATED BY THE
+C     ESTABLISHMENT MODEL.
 C     ALL SPECIES EXCEPT OTHER SOFTWOODS AND OTHER HARDWOODS USE
-C     ORIGINAL EQUATION TO ESTIMATE HEIGHT BASED ON TIME AND A 
+C     ORIGINAL EQUATION TO ESTIMATE HEIGHT BASED ON TIME AND A
 C     RANDOM NUMBER.
 C     OTHER SOFTWOODS AND OTHER HARDWOODS SET TO MINIMUM HEIGHT.
 C----------
@@ -36,7 +36,7 @@ C   2     AF   subalpine fir       019  ABLA   Abies lasiocarpa
 C   3     YC   Alaska cedar        042  CANO9  Callitropsis nootkatensis
 C   4     TA   tamarack            071  LALA   Larix laricina
 C   5     WS   white spruce        094  PIGL   Picea glauca
-C   6     LS   Lutz’s spruce            PILU   Picea lutzii
+C   6     LS   Lutz's spruce            PILU   Picea lutzii
 C   7     BE   black spruce        095  PIMA   Picea mariana
 C   8     SS   Sitka spruce        098  PISI   Picea sitchensis
 C   9     LP   lodgepole pine      108  PICO   Pinus contorta
@@ -52,13 +52,13 @@ C  18     BA   balsam poplar       741  POBA2  Populus balsamifera
 C  19     AS   quaking aspen       746  POTR5  Populus tremuloides
 C  20     CW   black cottonwood    747  POBAT  Populus trichocarpa
 C  21     WI   willow species      920  SALIX  Salix species
-C  22     SU   Scouler’s willow    928  SASC   Salix scouleriana
+C  22     SU   Scouler's willow    928  SASC   Salix scouleriana
 C  23     OH   other hardwoods     998  2TD
 C
 C  AGE      -- AGE OF BEST TREE
 C    I      -- SPECIES NUMBER
 C   BB      -- INTERMEDIATE VARIABLE
-C    X      -- RANDOM NUMBER DRAW   
+C    X      -- RANDOM NUMBER DRAW
 C  HHT      -- HEIGHT OF BEST TREE
 C----------
 C  VARIABLE DECLARATIONS:

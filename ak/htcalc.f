@@ -20,7 +20,7 @@ C   2        AF   subalpine fir       019  ABLA   Abies lasiocarpa
 C   3        YC   Alaska cedar        042  CANO9  Callitropsis nootkatensis
 C   4        TA   tamarack            071  LALA   Larix laricina
 C   5     P  WS   white spruce        094  PIGL   Picea glauca
-C   6     P  LS   Lutz’s spruce            PILU   Picea lutzii
+C   6     P  LS   Lutz's spruce            PILU   Picea lutzii
 C   7     P  BE   black spruce        095  PIMA   Picea mariana
 C   8        SS   Sitka spruce        098  PISI   Picea sitchensis
 C   9        LP   lodgepole pine      108  PICO   Pinus contorta
@@ -36,7 +36,7 @@ C  18     P  BA   balsam poplar       741  POBA2  Populus balsamifera
 C  19     P  AS   quaking aspen       746  POTR5  Populus tremuloides
 C  20     P  CW   black cottonwood    747  POBAT  Populus trichocarpa
 C  21     P  WI   willow species      920  SALIX  Salix species
-C  22     P  SU   Scouler’s willow    928  SASC   Salix scouleriana
+C  22     P  SU   Scouler's willow    928  SASC   Salix scouleriana
 C  23     P  OH   other hardwoods     998  2TD
 C----------
 

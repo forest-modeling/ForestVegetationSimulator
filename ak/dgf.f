@@ -59,11 +59,11 @@ C             RATIO) TERM IN THE DIAMETER GROWTH EQUATION
 C   DGLNSI -- ARRAY, COEFFICIENTS FOR THE LOG(SITE
 C             INDEX) TERM IN THE DIAMETER GROWTH EQUATION
 C   DGRD   -- ARRAY, COEFFICIENTS FOR POINT RELATIVE DENSITY
-C             (PLOT ZEIDE SDI / PLOT MAX SDI – DECIMAL)
+C             (PLOT ZEIDE SDI / PLOT MAX SDI ï¿½ DECIMAL)
 C   DGSASP -- ARRAY, COEFFICIENT FOR SLOPE*COS(ASPECT) TERM
 C   DGSLOP -- ARRAY, COEFFICIENT FOR SLOPE PERCENT TERM
 C   OBSERV -- CONTAINS THE NUMBER OF OBSERVATIONS BY SPECIES FOR THE
-C             GROWTH MODEL (THIS DATA IS ACTUALLY USED BY **DGDRIV** 
+C             GROWTH MODEL (THIS DATA IS ACTUALLY USED BY **DGDRIV**
 C             FOR CALIBRATION).
 C   PFCON  -- ARRAY, PERMAFROST INTERCEPT COEFFICIENT (b1)
 C   PFDBAL -- ARRAY, PERMAFROST POINT BASAL AREA LARGER COEFFIENT (b4)
@@ -81,14 +81,14 @@ C SPECIES LIST FOR ALASKA VARIANT.
 C
 C     PERMAFROST
 C      AFFECTED
-C         | 
+C         |
 C Number  V  Code  Common Name         FIA  PLANTS Scientific Name
 C   1        SF   Pacific silver fir  011  ABAM   Abies amabilis
 C   2        AF   subalpine fir       019  ABLA   Abies lasiocarpa
 C   3        YC   Alaska cedar        042  CANO9  Callitropsis nootkatensis
 C   4     P  TA   tamarack            071  LALA   Larix laricina
 C   5     P  WS   white spruce        094  PIGL   Picea glauca
-C   6     P  LS   Lutz’s spruce            PILU   Picea lutzii
+C   6     P  LS   Lutz's spruce            PILU   Picea lutzii
 C   7     P  BE   black spruce        095  PIMA   Picea mariana
 C   8        SS   Sitka spruce        098  PISI   Picea sitchensis
 C   9        LP   lodgepole pine      108  PICO   Pinus contorta
@@ -104,7 +104,7 @@ C  18     P  BA   balsam poplar       741  POBA2  Populus balsamifera
 C  19     P  AS   quaking aspen       746  POTR5  Populus tremuloides
 C  20     P  CW   black cottonwood    747  POBAT  Populus trichocarpa
 C  21     P  WI   willow species      920  SALIX  Salix species
-C  22     P  SU   Scouler’s willow    928  SASC   Salix scouleriana
+C  22     P  SU   Scouler's willow    928  SASC   Salix scouleriana
 C  23     P  OH   other hardwoods     998  2TD
 C----------
 C  VARIABLE DECLARATIONS:
@@ -122,15 +122,15 @@ C----------
       REAL A, B, D2, DGCOMP1, DGCOMP2, DGPRED, DHI, DLO, PRD,
      &     SDICS, SDICZ, TEMSLP, TEMSASP, ZRD(MAXPLT), DDS
 
-      REAL PFPRES, PFCON(MAXSP), PFDBAL(MAXSP), PFDSQ, PFEL, 
+      REAL PFPRES, PFCON(MAXSP), PFDBAL(MAXSP), PFDSQ, PFEL,
      &     PFLD(MAXSP), PFLNCR, PFRD(MAXSP), PFSASP, PFSLOP
       REAL PFCOMP1, PFCOMP2, PFMOD, BASEDG
 
       REAL DUP, TEMPD1, TEMPD2
-      
+
       REAL DIAM(MAXTRE), OBSERV(MAXSP)
 C     , DGRAT(MAXSP)
-      
+
 C----------
 C  DATA STATEMENTS:
 C----------
@@ -139,90 +139,90 @@ C DESCRIBED IN DOCUMENTATION AS
 C INTERCEPT -- b1
       DATA DGCONB1 /
      & -8.580747, -8.580747, -9.485113, -6.585228, -6.315766,
-     & -6.315766, -6.585228, -8.580747, -9.297786, -9.357119, 
-     & -9.458059, -9.155381, -6.315766, -5.646338, -5.195889, 
-     & -6.015696, -6.015696, -5.646338, -6.704925, -5.646338, 
+     & -6.315766, -6.585228, -8.580747, -9.297786, -9.357119,
+     & -9.458059, -9.155381, -6.315766, -5.646338, -5.195889,
+     & -6.015696, -6.015696, -5.646338, -6.704925, -5.646338,
      & -5.646338, -5.646338, -5.646338 /
 
 C DESCRIBED IN DOCUMENTATION AS COEFFIENT FOR
 C DBH^2 -- b2
       DATA DGDISQ /
-     & -0.000439, -0.000439, -0.000439, -0.002279, -0.002279, 
-     & -0.002279, -0.002279, -0.000439, -0.000439, -0.000439, 
-     & -0.000439, -0.000439, -0.002279, -0.002279, -0.002279, 
-     & -0.002279, -0.002279, -0.002279, -0.002279, -0.002279, 
+     & -0.000439, -0.000439, -0.000439, -0.002279, -0.002279,
+     & -0.002279, -0.002279, -0.000439, -0.000439, -0.000439,
+     & -0.000439, -0.000439, -0.002279, -0.002279, -0.002279,
+     & -0.002279, -0.002279, -0.002279, -0.002279, -0.002279,
      & -0.002279, -0.002279, -0.002279 /
 
 C DESCRIBED IN DOCUMENTATION AS COEFFIENT FOR
 C ln(DBH) -- b3
       DATA DGLD /
-     &  0.033655,  0.033655,  0.081005,  0.152853,  0.480982, 
-     &  0.480982,  0.152853,  0.033655, -0.000862,  0.243224, 
-     &  0.175997,  0.044554,  0.480982,  0.212906,  0.425682, 
-     &  0.353350,  0.353350,  0.212906,  0.669461,  0.212906, 
+     &  0.033655,  0.033655,  0.081005,  0.152853,  0.480982,
+     &  0.480982,  0.152853,  0.033655, -0.000862,  0.243224,
+     &  0.175997,  0.044554,  0.480982,  0.212906,  0.425682,
+     &  0.353350,  0.353350,  0.212906,  0.669461,  0.212906,
      &  0.212906,  0.212906,  0.212906 /
 
 C DESCRIBED IN DOCUMENTATION AS COEFFIENT FOR
 C PBAL -- b4
       DATA DGDBAL /
-     & -0.002283, -0.002283, -0.000598, -0.001513, -0.000057, 
-     & -0.000057, -0.001513, -0.002283, -0.000598, -0.000598, 
-     & -0.000595, -0.000580, -0.000057, -0.000722, -0.001166, 
-     & -0.007165, -0.007165, -0.000722, -0.000557, -0.000722, 
+     & -0.002283, -0.002283, -0.000598, -0.001513, -0.000057,
+     & -0.000057, -0.001513, -0.002283, -0.000598, -0.000598,
+     & -0.000595, -0.000580, -0.000057, -0.000722, -0.001166,
+     & -0.007165, -0.007165, -0.000722, -0.000557, -0.000722,
      & -0.000722, -0.000722, -0.000722 /
 
 C DESCRIBED IN DOCUMENTATION AS COEFFIENT FOR
 C PRD -- b5
       DATA DGRD /
      &  0.0,       0.0,       0.0,      -0.353197, -0.455502,
-     & -0.455502, -0.353197,  0.0,       0.0,       0.0, 
-     &  0.0,       0.0,      -0.455502, -0.763633, -0.623822, 
-     & -0.353197, -0.353197, -0.763633, -0.480135, -0.763633, 
+     & -0.455502, -0.353197,  0.0,       0.0,       0.0,
+     &  0.0,       0.0,      -0.455502, -0.763633, -0.623822,
+     & -0.353197, -0.353197, -0.763633, -0.480135, -0.763633,
      & -0.763633, -0.763633, -0.763633 /
 
 C DESCRIBED IN DOCUMENTATION AS COEFFIENT FOR
 C ln(CR) -- b6
       DATA DGLNCR /
-     & 0.819909, 0.819909, 0.819909, 0.727631, 0.727631, 
-     & 0.727631, 0.727631, 0.819909, 0.819909, 0.819909, 
-     & 0.819909, 0.819909, 0.727631, 0.727631, 0.727631, 
-     & 0.727631, 0.727631, 0.727631, 0.727631, 0.727631, 
+     & 0.819909, 0.819909, 0.819909, 0.727631, 0.727631,
+     & 0.727631, 0.727631, 0.819909, 0.819909, 0.819909,
+     & 0.819909, 0.819909, 0.727631, 0.727631, 0.727631,
+     & 0.727631, 0.727631, 0.727631, 0.727631, 0.727631,
      & 0.727631, 0.727631, 0.727631 /
 
 C DESCRIBED IN DOCUMENTATION AS COEFFIENT FOR
 C ELEV-- b7
       DATA DGEL /
-     &  0.0,       0.0,       0.0,      -0.000175, -0.000175, 
-     & -0.000175, -0.000175,  0.0,       0.0,       0.0,      
-     &  0.0,       0.0,      -0.000175, -0.000175, -0.000175, 
-     & -0.000175, -0.000175, -0.000175, -0.000175, -0.000175, 
+     &  0.0,       0.0,       0.0,      -0.000175, -0.000175,
+     & -0.000175, -0.000175,  0.0,       0.0,       0.0,
+     &  0.0,       0.0,      -0.000175, -0.000175, -0.000175,
+     & -0.000175, -0.000175, -0.000175, -0.000175, -0.000175,
      & -0.000175, -0.000175, -0.000175 /
 
 C DESCRIBED IN DOCUMENTATION AS COEFFIENT FOR
 C SLOPE -- b8
       DATA DGSLOP /
-     & 0.001604, 0.001604, 0.001604, 0.001225, 0.001225, 
-     & 0.001225, 0.001225, 0.001604, 0.001604, 0.001604, 
-     & 0.001604, 0.001604, 0.001225, 0.001225, 0.001225, 
-     & 0.001225, 0.001225, 0.001225, 0.001225, 0.001225, 
+     & 0.001604, 0.001604, 0.001604, 0.001225, 0.001225,
+     & 0.001225, 0.001225, 0.001604, 0.001604, 0.001604,
+     & 0.001604, 0.001604, 0.001225, 0.001225, 0.001225,
+     & 0.001225, 0.001225, 0.001225, 0.001225, 0.001225,
      & 0.001225, 0.001225, 0.001225 /
 
 C DESCRIBED IN DOCUMENTATION AS COEFFIENT FOR
 C SLOPE*cos(ASPECT) -- b9
       DATA DGSASP /
-     &  0.000020,  0.000020,  0.000020, -0.002424, -0.002424, 
-     & -0.002424, -0.002424,  0.000020,  0.000020,  0.000020, 
-     &  0.000020,  0.000020, -0.002424, -0.002424, -0.002424, 
-     & -0.002424, -0.002424, -0.002424, -0.002424, -0.002424, 
+     &  0.000020,  0.000020,  0.000020, -0.002424, -0.002424,
+     & -0.002424, -0.002424,  0.000020,  0.000020,  0.000020,
+     &  0.000020,  0.000020, -0.002424, -0.002424, -0.002424,
+     & -0.002424, -0.002424, -0.002424, -0.002424, -0.002424,
      & -0.002424, -0.002424, -0.002424 /
 
 C DESCRIBED IN DOCUMENTATION AS COEFFIENT FOR
 C ln(SI) -- b10
       DATA DGLNSI /
-     & 0.712498, 0.712498, 0.712498, 0.0,      0.0,      
-     & 0.0,      0.0,      0.712498, 0.712498, 0.712498, 
-     & 0.712498, 0.712498, 0.0,      0.0,      0.0,      
-     & 0.0,      0.0,      0.0,      0.0,      0.0,      
+     & 0.712498, 0.712498, 0.712498, 0.0,      0.0,
+     & 0.0,      0.0,      0.712498, 0.712498, 0.712498,
+     & 0.712498, 0.712498, 0.0,      0.0,      0.0,
+     & 0.0,      0.0,      0.0,      0.0,      0.0,
      & 0.0,      0.0,      0.0 /
 
 CC *** END DIAMETER GROWTH EQUATION COEFFICIENTS ***
@@ -299,7 +299,7 @@ C
      & 10395.0,  5872.0, 70550.0,  4727.0,   202.0,
      & 32332.0, 32332.0,  4727.0, 21380.0,  4727.0,
      &  4727.0,  4727.0,  4727.0/
-     
+
 C  DATAFRAME OF DG MODIFIERS USED TO CORRECT FOR ANNUALIZED DG
 C      DATA DGRAT/
 C     &  0.99, 0.99, 1.00, 0.99, 1.01, 1.01, 0.99, 0.99, 1.00, 1.00,
@@ -342,7 +342,7 @@ C  WHERE:
 C  ADI = Annual diameter increment (in year-1)
 C  DBH = Diameter at breast height (in)
 C  PBAL = Plot level basal area in larger trees (ft2 * acre-1)
-C  PRD = Plot Relative density (plot Zeide SDI / plot Max SDI – decimal)
+C  PRD = Plot Relative density (plot Zeide SDI / plot Max SDI ï¿½ decimal)
 C  CR = Crown ratio (%)
 C  ELEV = Elevation of plot (ft)
 C  SLOPE = Slope of plot (%)
@@ -366,14 +366,14 @@ C
       ISPC = 0
       IWHO = 1
       I2 = INT(PI)
-      
+
       IF(DEBUG)WRITE(JOSTND,*) 'IN DGF, CALL SDICLS - POINT COUNT ',I2
       DO I1 = 1, I2
          CALL SDICLS (ISPC,DLO,DHI,IWHO,SDICS,SDICZ,A,B,I1)
          IF(DEBUG)WRITE(JOSTND,*) ' POINT ',I1,' SDICZ= ',SDICZ
          ZRD(I1) = SDICZ
       END DO
-      
+
 C     SET ELEVATION, SLOPE, AND ASPECT VALUES
       TEMEL = ELEV * 100.0
       TEMSLP = SLOPE * 100.0
@@ -399,9 +399,9 @@ C
      &          + DGSLOP(ISPC) * TEMSLP
      &          + DGSASP(ISPC) * TEMSASP
      &          + DGLNSI(ISPC) * LOG(SSITE)
-        
+
 C       IF PRESENCE OF PERMAFROST IS TRUE, SET UP FIRST COMPONENTS
-c       OF MODIFIER VARIABLES FOR PERMAFROST AFFECTED SPECIES. 
+c       OF MODIFIER VARIABLES FOR PERMAFROST AFFECTED SPECIES.
 C       THESE ARE NOT POINT OR TREE SPECIFIC: ELEVATION, SLOPE, ASPECT
 C
         SELECT CASE (ISPC)
@@ -425,7 +425,7 @@ C----------
           I = IND1(I3)
           D = DIAM(I)
           IF(DEBUG)WRITE(JOSTND,*)
-     &    ' TOP OF TREE LOOP, I= ',I,' D= ',D          
+     &    ' TOP OF TREE LOOP, I= ',I,' D= ',D
           IF (D.LE.0.0) GOTO 10
           D2 = D*D
           CR = REAL(ICR(I))
@@ -459,7 +459,7 @@ C             + b6 * ln(CR) + b7 * ELEV + b8 * SLOPE
 C             + b9 * SLOPE * cos(ASPECT) + b10*ln(SI)
 C
 C         DGCOMP2 INCLUDES: b2, b3, b4, b5, b6
-C         DGCOMP1 INCLUDES: b7, b8, b9, b10 
+C         DGCOMP1 INCLUDES: b7, b8, b9, b10
           BASEDG = (EXP(DGCONB1(ISPC) + DGCOMP2 + DGCOMP1))
 
           IF(DEBUG)WRITE(JOSTND,*)
@@ -467,16 +467,16 @@ C         DGCOMP1 INCLUDES: b7, b8, b9, b10
      &    ' DGCOMP2=', DGCOMP2,' BASEDG=',BASEDG
 C
 C         IF PRESENCE OF PERMAFROST IS TRUE, SET UP SECOND COMPONENTS
-C         OF MODIFIER VARIABLES FOR PERMAFROST AFFECTED SPECIES. 
+C         OF MODIFIER VARIABLES FOR PERMAFROST AFFECTED SPECIES.
 C         THESE ARE POINT AND TREE SPECIFIC:
 C         DIAMETER, POINT BAL, POINT RELATIVE DENSITY (ZEIDI) AND
 C         CROWN RATIO
 C
-C         COMPUTE PERMAFROST MODIFIER BY COMPUTING THE NUMERATOR WITH 
-C         THE EQUATION BELOW. NUMERATOR INCLUDES PERM FACTOR WHEN 
+C         COMPUTE PERMAFROST MODIFIER BY COMPUTING THE NUMERATOR WITH
+C         THE EQUATION BELOW. NUMERATOR INCLUDES PERM FACTOR WHEN
 C         PERMAFROST IS TURNED ON FOR AFFECTED SPECIES. NUMERATOR
-C         DOES NOT INCLUDE PERM FACTOR WHEN TURNED OFF FOR AFFECTED 
-C         SPECIES. 
+C         DOES NOT INCLUDE PERM FACTOR WHEN TURNED OFF FOR AFFECTED
+C         SPECIES.
 C
 C         ADI = exp(X)
 C
@@ -501,11 +501,11 @@ C         ASPECT = Aspect of plot (radians)
      &                  + PFRD(ISPC) * PRD
      &                  + PFLNCR * LOG(CR)
               IF (LPERM) THEN
-                PFMOD = EXP(PFCON(ISPC) + PFPRES + PFCOMP2 + 
+                PFMOD = EXP(PFCON(ISPC) + PFPRES + PFCOMP2 +
      &          PFCOMP1)/BASEDG
                 IF (PFMOD.GT.1.0)PFMOD=1.0
               ELSE
-                PFMOD = EXP(PFCON(ISPC) + PFCOMP2 + 
+                PFMOD = EXP(PFCON(ISPC) + PFCOMP2 +
      &          PFCOMP1)/BASEDG
                 IF (PFMOD.LT.1.0)PFMOD=1.0
               ENDIF
@@ -513,13 +513,13 @@ C         ASPECT = Aspect of plot (radians)
               PFMOD = 1.0
           END SELECT
           IF(DEBUG)WRITE(JOSTND,*)
-     &    '  PF MODIFIER, PFCON=',PFCON(ISPC),' PFPRES=',PFPRES,  
+     &    '  PF MODIFIER, PFCON=',PFCON(ISPC),' PFPRES=',PFPRES,
      &    ' PFCOMP1',PFCOMP1,' PFCOMP2',PFCOMP2,' PFMOD= ', PFMOD
 C
 C         ANNUAL DIAMETER GROWTH WITH PERMAFROST MODIFIER
 C         EXPANDED TO PERIOD.
           DGPRED = YR * BASEDG * PFMOD
-     
+
 C         ADJUST DIAMETER GROWTH BASED ON SPECIES
 C         AD, WI, OH: ASSUME MULTIPLIER OF 0.45
 C         SU: ASSUME MULTIPLIER OF 0.65
@@ -532,7 +532,7 @@ C         ALL OTHER SPECIES: ASSUME A MULTIPLIER OF 1.00
             CASE DEFAULT
               DGPRED = DGPRED * 1.00
           END SELECT
-          
+
           IF(DEBUG)WRITE(JOSTND,*)
      &    '  YR=',YR,' DGPRED=',DGPRED
 

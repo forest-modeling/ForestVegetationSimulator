@@ -61,7 +61,7 @@ C   2     AF   subalpine fir       019  ABLA   Abies lasiocarpa
 C   3     YC   Alaska cedar        042  CANO9  Callitropsis nootkatensis
 C   4     TA   tamarack            071  LALA   Larix laricina
 C   5     WS   white spruce        094  PIGL   Picea glauca
-C   6     LS   Lutz’s spruce            PILU   Picea lutzii
+C   6     LS   Lutz's spruce            PILU   Picea lutzii
 C   7     BE   black spruce        095  PIMA   Picea mariana
 C   8     SS   Sitka spruce        098  PISI   Picea sitchensis
 C   9     LP   lodgepole pine      108  PICO   Pinus contorta
@@ -77,7 +77,7 @@ C  18     BA   balsam poplar       741  POBA2  Populus balsamifera
 C  19     AS   quaking aspen       746  POTR5  Populus tremuloides
 C  20     CW   black cottonwood    747  POBAT  Populus trichocarpa
 C  21     WI   willow species      920  SALIX  Salix species
-C  22     SU   Scouler’s willow    928  SASC   Salix scouleriana
+C  22     SU   Scouler's willow    928  SASC   Salix scouleriana
 C  23     OH   other hardwoods     998  2TD
 C
 C----------
@@ -86,7 +86,7 @@ C----------
       DATA VARADJ / 0.300, 0.100, 0.300, 0.500, 0.500,
      &              0.500, 0.500, 0.300, 0.700, 0.100,
      &              0.100, 0.300, 0.700, 0.500, 0.500,
-     &              0.500, 0.500, 0.900, 0.900, 0.900, 
+     &              0.500, 0.500, 0.900, 0.900, 0.900,
      &              0.500, 0.500, 0.500 /
 
 C----------
@@ -94,7 +94,7 @@ C  VARIABLE DEFINITIONS:
 C   ADJUST = FINAL SCALAR ADJUSTMENT NEEDED TO SCALE MORTALITY VALUES
 C            TO ACHIEVE THE DESIRED MORTALITY LEVEL
 C    SHORT = TPA SHORT OF REACHING THE DESIRED MORTALITY LEVEL (DUE TO
-C            ALL THE TREE'S PROB BEING ATTRIBUTED TO MORTALITY BEFORE THE 
+C            ALL THE TREE'S PROB BEING ATTRIBUTED TO MORTALITY BEFORE THE
 C            DESIRED STAND LEVEL MORTALITY LEVEL IS REACHED)
 C   TOKILL = NUMBER OF TREES TO KILL THIS CYCLE
 C   SUMKIL = RUNNING TOTAL OF NUMBER OF TREES KILLED SO FAR
@@ -143,7 +143,7 @@ C----------
         IF(PEFF .LT. 0.01) PEFF = 0.01
         EFFTR(I) = PEFF * ((100.-CRI)/100.) * VARADJ(JSPC) * 0.01
         PASS1 = PASS1 + PROB(I)*EFFTR(I)
-      ENDDO    
+      ENDDO
       IF(DEBUG)WRITE(JOSTND,30)ITRN,(EFFTR(IG),IG=1,ITRN)
    30 FORMAT(' MORTALITY EFFICIENCY VALUES, ITRN = ',I7,
      &(/10F10.5))
@@ -198,7 +198,7 @@ C----------
       IF(ADJUST .LT. 0.8)THEN
         IF(ISWTCH .EQ. 2) GO TO 110
         IF(DEBUG)WRITE(JOSTND,*)' TEMKIL,TEMSUM,PASS1,NPASS= ',
-     &  TEMKIL,TEMSUM,PASS1,NPASS 
+     &  TEMKIL,TEMSUM,PASS1,NPASS
         NPASS=NPASS-MAX(MINSTP,INT((TEMSUM-TEMKIL)/PASS1))
         IF(DEBUG)WRITE(JOSTND,*)' ADJUST= ',ADJUST,'  IS TO SMALL,',
      &  ' MIN STEP= ',MINSTP,' NEW NPASS= ',NPASS
@@ -216,7 +216,7 @@ C----------
   110 CONTINUE
       SHORT=0.
       IF(DEBUG)WRITE(JOSTND,*)' TEMKIL= ',TEMKIL,'  TEMSUM= ',
-     &TEMSUM,'  ADJUSTMENT= ',ADJUST   
+     &TEMSUM,'  ADJUSTMENT= ',ADJUST
       DO 150 I=1,ITRN
         TPALFT = PROB(I)-WK2(I)
         IF(TPALFT .LT. 0.00001)GO TO 150
@@ -224,7 +224,7 @@ C----------
         IF((PROB(I)-WK2(I)-XKILL) .LE. 0.00001) THEN
           TEMWK2(I)=PROB(I)-WK2(I)
           IF(DEBUG)WRITE(JOSTND,*)' SHORT,I,XKILL,PROB,WK2= ',
-     &    SHORT,I,XKILL,PROB(I),WK2(I) 
+     &    SHORT,I,XKILL,PROB(I),WK2(I)
           SHORT=SHORT+(XKILL-PROB(I)+WK2(I))
           IF(DEBUG)WRITE(JOSTND,*)' SHORT= ',SHORT
           PASS1=PASS1-EFFTR(I)

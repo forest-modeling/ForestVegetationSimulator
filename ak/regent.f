@@ -4,9 +4,9 @@ C----------
 C AK $Id$
 C----------
 C  THIS SUBROUTINE COMPUTES HEIGHT AND DIAMETER INCREMENTS FOR
-C  SMALL TREES. THE HEIGHT INCREMENT MODELS ARE APPLIED 
+C  SMALL TREES. THE HEIGHT INCREMENT MODELS ARE APPLIED
 C  TO TREES THAT ARE LESS THAN 3 INCH DBH AND THE DIAMETER INCREMENT
-C  MODELS ARE APPLIED TO TREES LESS THAN 1 INCH DBH. FOR TREES THAT ARE 
+C  MODELS ARE APPLIED TO TREES LESS THAN 1 INCH DBH. FOR TREES THAT ARE
 C  GREATER THAN 1 INCH DBH, HEIGHT INCREMENT PREDICTIONS ARE AVERAGED WITH
 C  THE PREDICTIONS FROM THE LARGE TREE MODEL.
 C  THIS ROUTINE IS CALLED FROM **CRATET** DURING CALIBRATION AND
@@ -100,7 +100,7 @@ C   2     AF   subalpine fir       019  ABLA   Abies lasiocarpa
 C   3     YC   Alaska cedar        042  CANO9  Callitropsis nootkatensis
 C   4     TA   tamarack            071  LALA   Larix laricina
 C   5     WS   white spruce        094  PIGL   Picea glauca
-C   6     LS   Lutz’s spruce            PILU   Picea lutzii
+C   6     LS   Lutz's spruce            PILU   Picea lutzii
 C   7     BE   black spruce        095  PIMA   Picea mariana
 C   8     SS   Sitka spruce        098  PISI   Picea sitchensis
 C   9     LP   lodgepole pine      108  PICO   Pinus contorta
@@ -116,7 +116,7 @@ C  18     BA   balsam poplar       741  POBA2  Populus balsamifera
 C  19     AS   quaking aspen       746  POTR5  Populus tremuloides
 C  20     CW   black cottonwood    747  POBAT  Populus trichocarpa
 C  21     WI   willow species      920  SALIX  Salix species
-C  22     SU   Scouler’s willow    928  SASC   Salix scouleriana
+C  22     SU   Scouler's willow    928  SASC   Salix scouleriana
 C  23     OH   other hardwoods     998  2TD
 C
 C----------
@@ -195,10 +195,10 @@ C----------
           FNT=FNT-5.0
         ENDIF
       ENDIF
-      
+
       SCALE1=FNT/REGYR
       SCALE2=YR/FNT
-      IF(DEBUG)WRITE(JOSTND,*)'SCALE DEBUG',' FNT=',FNT, 'REGYR ', 
+      IF(DEBUG)WRITE(JOSTND,*)'SCALE DEBUG',' FNT=',FNT, 'REGYR ',
      & REGYR, 'SCALE1 ', SCALE1, 'SCALE2 ', SCALE2
 C----------
 C  ENTER GROWTH PREDICTION LOOP.  PROCESS EACH SPECIES AS A GROUP;
@@ -310,13 +310,13 @@ C----------
 
 C     IF TREE IS COMING OUT OF ESTAB THEN DO NOT AVERAGE HTGR WITH LTHG
 c     SINCE THERE IS NO LARGE TREE GROWTH ESTIMATE IN THIS SCENARIO.
-      IF(LESTB) THEN 
+      IF(LESTB) THEN
         HTGR= HTGR
       ELSE
         HTGR= (HTGR + LTHG)/2.0
       ENDIF
 
-C     CALCULATE SMALL TREE GROWTH WHICH IS WEIGHTED AVERAGE OF HTGR 
+C     CALCULATE SMALL TREE GROWTH WHICH IS WEIGHTED AVERAGE OF HTGR
 C     AND LTHG.
       HTG(K)= HTGR*(1.0-XWT) + XWT*LTHG
       IF(DEBUG)WRITE(JOSTND,9985)LESTB,ISPC,D,XWT,HTGR,LTHG,HTG(K),I,K
@@ -347,17 +347,17 @@ C IF HEIGHT IS LESS THAN 4.5' DG IS 0 AND DBH IS ADJUSTED
       IF(HK .LE. 4.5) THEN
         DG(K)=0.0
         DBH(K)=D+0.001*HK
-      ELSE           
+      ELSE
 C----------
 C  USE INVENTORY EQUATIONS IF CALIBRATION OF THE HT-DBH FUNCTION IS TURNED
 C  OFF, OR IF WYKOFF CALIBRATION DID NOT OCCUR.
-C  
+C
 C  NOTE: THIS SIMPLIFIES TO IF(IABFLB(ISPC).EQ.1) BUT IS SHOWN IN IT'S
 C  ENTIRITY FOR CLARITY.
 C----------
 
 C  TEST WHICH HT-DBH RELATIONSHIP SHOULD BE USED FOR DBH IMPUTATION
-        IF(.NOT.LHTDRG(ISPC) .OR. 
+        IF(.NOT.LHTDRG(ISPC) .OR.
      &     (LHTDRG(ISPC) .AND. IABFLG(ISPC).EQ.1))THEN
 
 C----------
@@ -387,7 +387,7 @@ C----------
             AX=HT1(ISPC)
           ELSE
             AX=AA(ISPC)
-          ENDIF          
+          ENDIF
           DK=BX/(ALOG(HK-4.5)-AX)-1.0
           IF(H .LE. 4.5) THEN
             DKK=D
@@ -584,9 +584,9 @@ C----------
       IF(CORNEW.LE.0.0) CORNEW=1.0E-4
       HCOR(ISPC)=ALOG(CORNEW)
 C----------
-C  TRAP CALIBRATION VALUES OUTSIDE 2.5 STANDARD DEVIATIONS FROM THE 
+C  TRAP CALIBRATION VALUES OUTSIDE 2.5 STANDARD DEVIATIONS FROM THE
 C  MEAN. IF C IS THE CALIBRATION TERM, WITH A DEFAULT OF 1.0, THEN
-C  LN(C) HAS A MEAN OF 0.  -2.5 < LN(C) < 2.5 IMPLIES 
+C  LN(C) HAS A MEAN OF 0.  -2.5 < LN(C) < 2.5 IMPLIES
 C  0.0821 < C < 12.1825
 C----------
       IF(CORNEW.LT.0.0821 .OR. CORNEW.GT.12.1825) THEN

@@ -8,7 +8,7 @@ C  RECORD AND THEN REDUCES THE NUMBER OF TREES/ACRE REPRESENTED BY THE
 C  TREE RECORD.  MORTALITY RATE FOR TREES IS PREDICTED FROM DBH
 C  AND BASAL AREA IN TREES LARGER (BAL). IF STAND GETS ABOVE MAXSDI OR BAMAX,
 C  MORTALITY IS REPEATEDLY APPLIED UNTIL STAND IS BELOW MAX. IF THIS ROUTINE
-C  IS CALLED FROM **TREGRO** WHEN CYCLING FOR GROWTH PREDICTION. ENTRY 
+C  IS CALLED FROM **TREGRO** WHEN CYCLING FOR GROWTH PREDICTION. ENTRY
 C  **MORCON** IS ACCESSED TO LOAD SITE DEPENDENT CONSTANTS.
 C----------
 C SPECIES LIST FOR ALASKA VARIANT.
@@ -19,7 +19,7 @@ C   2     AF   subalpine fir       019  ABLA   Abies lasiocarpa
 C   3     YC   Alaska cedar        042  CANO9  Callitropsis nootkatensis
 C   4     TA   tamarack            071  LALA   Larix laricina
 C   5     WS   white spruce        094  PIGL   Picea glauca
-C   6     LS   Lutz’s spruce            PILU   Picea lutzii
+C   6     LS   Lutz's spruce            PILU   Picea lutzii
 C   7     BE   black spruce        095  PIMA   Picea mariana
 C   8     SS   Sitka spruce        098  PISI   Picea sitchensis
 C   9     LP   lodgepole pine      108  PICO   Pinus contorta
@@ -35,7 +35,7 @@ C  18     BA   balsam poplar       741  POBA2  Populus balsamifera
 C  19     AS   quaking aspen       746  POTR5  Populus tremuloides
 C  20     CW   black cottonwood    747  POBAT  Populus trichocarpa
 C  21     WI   willow species      920  SALIX  Salix species
-C  22     SU   Scouler’s willow    928  SASC   Salix scouleriana
+C  22     SU   Scouler's willow    928  SASC   Salix scouleriana
 C  23     OH   other hardwoods     998  2TD
 C----------
 COMMONS
@@ -114,7 +114,7 @@ C     SURVIVAL INTERCEPT COEFFICIENTS
      & 5.120483, 5.440943, 4.585373, 2.651991, 2.987803,
      & 3.255821, 3.255821, 2.651991, 2.833541, 2.651991,
      & 2.651991, 2.651991, 2.651991/
-C      
+C
 C     SURVIVAL DBH COEFFICIENTS
       DATA BM2/
      & 0.036136, 0.036136, 0.036136, 0.402707, 0.402707,
@@ -230,14 +230,14 @@ C----------
       SD2SQ=SD2SQ+P*(D*D+CIOBDS)
       IF (LZEIDE) THEN
         SUMDR10=SUMDR10+P*(D+G)**1.605
-      ENDIF 
+      ENDIF
       T=T+P
    20 CONTINUE
       IF (T. EQ. 0.0) T= 0.0001
       DQ10=SQRT(SD2SQ/T)
       IF (LZEIDE) THEN
         DQ10=(SUMDR10/T)**(1/1.605)
-      ENDIF 
+      ENDIF
       IF (DEBUG)WRITE(JOSTND,*)'SD2SQ,SUMDR10,DQ10= ',
      &  SD2SQ,SUMDR10,DQ10
 C----------
@@ -282,7 +282,7 @@ C
 C  PR(SURV) = EXP(X)/(1 + EXP(X))
 C  X = B1 + B2*DBH + B3*DBH^2 + B4*BAL + B5*BAL/DBH
 C
-C  WHERE 
+C  WHERE
 C  PR(SURV): IS ANNUAL PROBABILITY OF SURVIVAL
 C  DBH: DIAMETER AT BREAST HEIGHT
 C  BAL: POINT BASAL AREA IN TREES LARGER THAN SUBJECT TREE
@@ -335,7 +335,7 @@ C DETERMINE IF DEBUG IS NEEDED
      &  WRITE(JOSTND,*)'IN MORTS EQ I,X,P,RIP,FINT,WKI= ',
      &  I,X,P,RIP,FINT,WKI
 C
-C DETERMINE IF PREDICTED MORTALITY IS GREATER THAN SIZE CAP IMPOSED 
+C DETERMINE IF PREDICTED MORTALITY IS GREATER THAN SIZE CAP IMPOSED
 C MORTALITY RATE
       BARK=BRATIO(IS,D,HT(I))
       G = (DG(I)/BARK) * (FINT/10.0)
@@ -356,12 +356,12 @@ C----------
       ENDIF
 C----------
 C  RECALCULATE VALUES AFTER MORTALITY HAS BEEN APPLIED
-C---------- 
+C----------
       TA=TA+(PROB(I)-WKI)
       WK2(I)=WKI
       IF (DEBUG)WRITE(JOSTND,*)'IN MORTS INITIAL PASS: IXX WKI WK2=',
      &  I,WKI,WK2(I)
-   40 CONTINUE 
+   40 CONTINUE
    50 CONTINUE
       GOTO 59
 C----------
@@ -387,7 +387,7 @@ C----------
       IF(((SDIA.LT.SDIUPR).AND.(BAA.LT.BAMAX)).OR.(PASS.GT.100)) GOTO 70
       PASS=PASS+1
       SD2SQA=0
-      SUMDR10A=0   
+      SUMDR10A=0
       TA=0
   59  CONTINUE
       WKIT2=0.0
@@ -401,7 +401,7 @@ C----------
       SD2SQA=SD2SQA+(PROB(I)-WKI)*(DBH(I)*DBH(I)+CIOBDS1(I))
       IF (LZEIDE) THEN
         SUMDR10A=SUMDR10A+(PROB(I)-WKI)*(DBH(I)+G1(I))**1.605
-      ENDIF 
+      ENDIF
       TA=TA+(PROB(I)-WKI)
       IF (DEBUG) WRITE(JOSTND,*)'IN MORT PASS,I,DBH,WKI,WKIT2,SD2SQA,
      &  SUMDR10A,TA=',PASS,I,DBH(I),WKI,WKIT2,SD2SQA,SUMDR10A,TA
@@ -411,7 +411,7 @@ C----------
 C  END OF TREE LOOPING.  PRINT DEBUG INFO IF DESIRED.
 C----------
    70 CONTINUE
-      DO I=1,ITRN 
+      DO I=1,ITRN
         IF (PASS.GT.1) WK2(I)=WKII(I)
         IF (WK2(I).GT.PROB(I)) WK2(I)=PROB(I)
         IF (DEBUG) THEN
@@ -456,7 +456,7 @@ C----------
             IF (PRM(5).LT.3.) THEN
               IF (PRM(2).GT. 1.0) PRM(2)=1.0
               IF (PRM(2).LT. 0.0) PRM(2)=0.0
-            ENDIF 
+            ENDIF
             IF (PRM(5).EQ.1.0) THEN
               IP=2
             ELSEIF (PRM(5).EQ.2.0) THEN
@@ -495,7 +495,7 @@ C----------
         ENDDO
       ENDIF
 C----------
-C END OF FIXMORT ACTIVITY PROCESS      
+C END OF FIXMORT ACTIVITY PROCESS
 C----------
       IF (ITRN.GT.0 .AND. (KBIG .NE.0 .OR. KPOINT.NE. 0)) THEN
 C----------
@@ -634,7 +634,7 @@ C
                     GOTO 295
                   ENDIF
                 ENDIF
-  204           CONTINUE 
+  204           CONTINUE
               ENDDO
             ENDDO
             GOTO 295

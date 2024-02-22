@@ -12,7 +12,7 @@ C MISTOE $Id$
 *  Forest Health Protection, Alaska Region, USDA Forest Service.
 *     April 2019. Pocket Guide for the Identification of Common Forest
 *     Diseases and Insects in Alaska Forest Service Alaska Region
-*       
+*
 *  Hennon, Paul E.; Beatty, Jerome S.; Hildebrand, Diane. January 2001.
 *      Forest Insect and Disease Leaflet. Hemlock Dwarf Mistletoe
 *
@@ -28,7 +28,7 @@ C MISTOE $Id$
 *   3        YC   Alaska cedar        042  CANO9  Callitropsis nootkatensis
 *   4        TA   tamarack            071  LALA   Larix laricina
 *   5        WS   white spruce        094  PIGL   Picea glauca
-*   6        LS   Lutz’s spruce            PILU   Picea lutzii
+*   6        LS   Lutz's spruce            PILU   Picea lutzii
 *   7        BE   black spruce        095  PIMA   Picea mariana
 *   8        SS   Sitka spruce        098  PISI   Picea sitchensis
 *   9    dm  LP   lodgepole pine      108  PICO   Pinus contorta
@@ -44,7 +44,7 @@ C MISTOE $Id$
 *  19        AS   quaking aspen       746  POTR5  Populus tremuloides
 *  20        CW   black cottonwood    747  POBAT  Populus trichocarpa
 *  21        WI   willow species      920  SALIX  Salix species
-*  22        SU   Scouler’s willow    928  SASC   Salix scouleriana
+*  22        SU   Scouler's willow    928  SASC   Salix scouleriana
 *  23        OH   other hardwoods     998  2TD
 *----------------------------------------------------------------------
 *
@@ -145,7 +145,7 @@ C.... Marshall, Katy 2007. Permanent plots for measuring spread and
 C.... impact of Douglas-fir dwarf mistletoe in the Southern Oregon
 C.... Cascades, Pacific Northwest Region: Results of the ten year
 C.... remeasurement. USDA Forest Service, Pacific Northwest Region,
-C.... Southwest Oregon Forest Insect and Disease Service Center, 
+C.... Southwest Oregon Forest Insect and Disease Service Center,
 C.... Central Point, Oregon. SWOFIDSC-07-04. 34 pp.
 C....
 C.... Default values for DF in this table would be:
