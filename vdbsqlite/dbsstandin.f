@@ -179,7 +179,7 @@ COMMONS
       FotoCode_LI    = NullInt
       Fuel20_LI      = NullInt
       Fuel35_LI      = NullInt
-      Fuel50_LI      = NullInt                             
+      Fuel50_LI      = NullInt
       FuelS025_LI    = NullInt
       FuelS251_LI    = NullInt
       FuelS1_LI      = NullInt
@@ -209,11 +209,15 @@ C     Get the first record...do not step through all records.
 
       iRet = fsql3_step(IinDBref)
       if (iRet.ne.1) RETURN
-      
+
+C     Stand data is ready for processing. Create Cases record so that any
+C     warnings or errors can be written to error table.
+      CALL DBSCASE(1)
+
 C     GET NUMBER OF COLUMNS RETURNED
 
       ColumnCount = fsql3_colcnt(IinDBref)
-           
+
       DO ColNumber = 0,ColumnCount-1
 
         iRet = fsql3_colname(IinDBref,ColNumber,ColName,MxCname)

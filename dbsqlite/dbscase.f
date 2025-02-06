@@ -8,7 +8,8 @@ C     PURPOSE: TO POPULATE A DATABASE WITH THE PROGNOSIS MODEL
 C              OUTPUT.
 C
 C     INPUT: IFORSURE - 1 NEED CONNECTION, 0 CHECK IF CONNECTION IS
-C                       NEEDED.
+C                         NEEDED.
+C                       2 UPDATE SAMPLINGWT AND GROUPS IN CASES TABLE
 C
 C---
 COMMONS
@@ -97,6 +98,39 @@ C---
       INTEGER IFORSURE, IFORSR, I, KODE, IRCODE
       CHARACTER(len=36) CID
 C-----
+C     If output DB is active, indicated by presence of a nonblank CASEID,
+C     update the SamplingWt and Groups in cases table that has been
+C     determined since creation of initial record.
+C     If IFORSURE is 2 and CASEID is still blank at this time, DB output
+C     is not active (no case record to update) and just return.
+C     The call is from INITRE in the PROCESS keyword section.
+C-----
+C      write(*,*) 'in DBSCASE TOP - IFORESURE, CASEID',IFORSURE,CASEID
+
+      IF(IFORSURE.EQ.2 .AND. CASEID.NE.' ') THEN
+        IF (LENSLS.EQ.-1) THEN
+          SLSET =""
+        ENDIF
+        WRITE(SQLStmtStr,*) "UPDATE FVS_Cases SET SamplingWt = ",SAMWT,
+     >   ", Groups = '", TRIM(ADJUSTL(SLSET)),"'",
+     >   " WHERE CaseID = '",CASEID,"';"
+
+C        write(*,*) 'in DBSCASE - ',SQLStmtStr
+
+        IRCODE = fsql3_exec(IoutDBref,trim(SQLStmtStr)//CHAR(0))
+
+        IF (IRCODE.ne.0) then
+          IRCODE = fsql3_errmsg(IoutDBref,SQLStmtStr,LEN(SQLStmtStr)-1)
+          PRINT *," IoutDBref=",IinDBref,
+     >            " ErrMsg =",SQLStmtStr(:IRCODE)
+        ENDIF
+
+        RETURN
+      ELSEIF(IFORSURE.EQ.2 .AND. CASEID.EQ.' ') THEN
+        RETURN
+      ENDIF
+
+C-----
 C     CHECK TO SEE IF WE ARE NEEDING TO CONTINUE
 C-----
       IFORSR=IFORSURE
@@ -175,7 +209,7 @@ C---------
         ISTATS2   = 0
         RETURN
       ENDIF
-      
+
       IRCODE = fsql3_tableexists(IoutDBref,"FVS_Cases"//CHAR(0))
       IF(IRCODE.EQ.0) THEN
         SQLStmtStr="CREATE TABLE FVS_Cases"//
@@ -212,7 +246,7 @@ C     STRIP 3-CHARACTER EXTENSION (IF PRESENT) FROM KEYFNAME
       I = INDEX(".KEY",KEYFNAME)
       IF (I.GT.0 .AND. I.EQ.LEN_TRIM(KEYFNAME)-3) THEN
         KEYFNAME = KEYFNAME(1:I-4)
-      ENDIF 
+      ENDIF
       IF (LENSLS.EQ.-1) THEN
         SLSET =""
       ELSE
@@ -222,13 +256,13 @@ C     STRIP 3-CHARACTER EXTENSION (IF PRESENT) FROM KEYFNAME
       CALL REMOVEQUOTES(NPLT)
       CALL REMOVEQUOTES(MGMID)
       CALL REMOVEQUOTES(ITITLE)
-      CALL REMOVEQUOTES(KEYFNAME)      
+      CALL REMOVEQUOTES(KEYFNAME)
       IF (KEYFNAME.EQ.' ') THEN
         KEYFNAME='Unknown'
       ELSE
-        CALL REMOVEQUOTES(KEYFNAME)      
-      ENDIF   
-      
+        CALL REMOVEQUOTES(KEYFNAME)
+      ENDIF
+
       WRITE(SQLStmtStr,*)"INSERT INTO FVS_Cases",
      - " (CaseID,Stand_CN,StandID,MgmtID,RunTitle,KeywordFile,",
      - "SamplingWt,Variant,Version,RV,Groups,RunDateTime) ",
@@ -243,6 +277,8 @@ C     STRIP 3-CHARACTER EXTENSION (IF PRESENT) FROM KEYFNAME
      - TRIM(ADJUSTL(REV)),"','",
      - TRIM(ADJUSTL(SLSET)),"','",
      - TRIM(ADJUSTL(TIMESTAMP)),"');"
+
+C      write(*,*) 'in DBSCASE - ',SQLStmtStr
 
       IRCODE = fsql3_exec(IoutDBref,trim(SQLStmtStr)//CHAR(0))
       IF (IRCODE.ne.0) then
@@ -285,4 +321,3 @@ C======================================================================
       ENDDO
       RETURN
       END
-      

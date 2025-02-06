@@ -21,9 +21,9 @@ C
 COMMONS
 
       INTEGER    KWCNT, STRLEN, IDT, ISDSP, iRet
-      PARAMETER (KWCNT = 39)              
+      PARAMETER (KWCNT = 39)
       INTEGER, PARAMETER :: MxMsg = 100
-      CHARACTER(LEN=MxMsg) Msg      
+      CHARACTER(LEN=MxMsg) Msg
       CHARACTER*8  TABLEME(KWCNT), PASKEY,CSPOUT
       CHARACTER*(*) KEYWRD
       CHARACTER*10 KARD(7)
@@ -37,7 +37,7 @@ COMMONS
       INTEGER      I1,I2,I3,I4
       INTEGER      KODE,IPRMPT,NUMBER
       REAL         ARRAY(*),SDLO,SDHI
-      
+
       integer  fsql3_prepare,fsql3_errmsg
 
       DATA TABLEME /
@@ -160,6 +160,11 @@ C     CHECK TO SEE IF A DATA BASE WAS SUCCESSFULLY OPENED
 
         WRITE(JOSTND,215)TRIM(DSNOUT)
   215   FORMAT(T12,'********  ERROR: OUTPUT OPEN FAILED FOR DSN:',A)
+      ELSE
+C
+C       OUTPUT DATABASE HAS BEEN OPENED. CREATE CASE
+C
+        CALL DBSCASE(1)
       ENDIF
       GOTO 10
   300 CONTINUE
@@ -175,7 +180,7 @@ C                        OPTION NUMBER 3 -- SQLOUT
       IDT=1
       IF (LNOTBK(1)) IDT=IFIX(ARRAY(1))
       IF (.NOT.LNOTBK(1)) THEN
-                                           
+
 C       QUERY IS FOR IMMEDIATE EXECUTION
         CALL DBSEXECSQL(SQLSTR,IoutDBref,.FALSE.,KODE)
       ELSE
@@ -276,7 +281,7 @@ C       CREATE QUERY STRING
 C                        OPTION NUMBER 8 -- CLIMREDB
       ICLIM = 1
       IF(LKECHO) WRITE(JOSTND,810) KEYWRD
-  810 FORMAT(/A8,'   OUTPUT THE CLIMATE-FVS TABLE TO SPECIFIED ', 
+  810 FORMAT(/A8,'   OUTPUT THE CLIMATE-FVS TABLE TO SPECIFIED ',
      & 'DATABASE.')
       GOTO 10
   900 CONTINUE
@@ -329,7 +334,7 @@ C                        OPTION NUMBER 12 -- TREESQL
       CALL DBSIN_GETCMD(IREAD,JOSTND,IRECNT,SQLSTR,KODE,LKECHO)
       CALL fvsGetRtnCode(IRTNCD)
       IF (IRTNCD.NE.0) RETURN
-      
+
 C     MAKE SURE WE HAVE AN OPEN DATA BASE
 
       IF(IinDBref.EQ.-1) CALL DBSOPEN(.FALSE.,.TRUE.,KODE)
@@ -466,7 +471,7 @@ C                        OPTION NUMBER 18 -- MISRPTS
         IDM3 = IDM1
         IDM5 = IDM1
         IDM6 = IDM1
-      ENDIF           
+      ENDIF
       I=IDM1
       IF(LKECHO)WRITE(JOSTND,1810) KEYWRD,YESNO(I)
  1810 FORMAT(/A8,'   MISTLETOE INFORMATION FROM OUTPUT SENT ',
@@ -526,7 +531,7 @@ C          WE ARE REDIRECTING OUTPUT AND DO NOT WANT TO PRINT TO FILE
            I=2
          ENDIF
          ISPOUT21=0
-         IF(ARRAY(2).GT.0) ISPOUT21 = int(ARRAY(2)) 
+         IF(ARRAY(2).GT.0) ISPOUT21 = int(ARRAY(2))
          IF(ISPOUT21.EQ.1)THEN
            CSPOUT='ALPHA'
          ELSEIF(ISPOUT21.EQ.2)THEN
@@ -840,11 +845,11 @@ C                        OPTION NUMBER 39 -- REGREPRTS
       IREG2 = 1
       IREG3 = 1
       IREG4 = 1
-      IREG5 = 1     
+      IREG5 = 1
       IF(LKECHO) WRITE(JOSTND,3910) KEYWRD
  3910 FORMAT(/A8,'   REGENERATION ',
      >           'TABLES SENT TO SPECIFIED DATABASE.')
-      GOTO 10      
+      GOTO 10
 C
 C.... Special entry to retrieve keywords.
 C
@@ -913,7 +918,7 @@ C     PRIVATE ROUTINE TO DBSIN, USED TO LOAD THE CMDBUF.
       ENDIF
       RETURN
   100 CONTINUE
-      CALL ERRGRO(.FALSE.,2) 
+      CALL ERRGRO(.FALSE.,2)
       CALL fvsGetRtnCode(IRTNCD)
       IF (IRTNCD.NE.0) RETURN
 

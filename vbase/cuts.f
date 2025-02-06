@@ -778,6 +778,8 @@ C
 C  IF CLASS RESIDUAL TARGET IS GREATER THAN ZERO, DETERMINE CURRENT
 C  STOCKING IN THE CLASS.
 C
+      IF(DEBUG)
+     &  WRITE (JOSTND,*) 'IN CUTS: ICFLAG=',ICFLAG,' CSDI=',CSDI
       IF(CSDI .GT. 0.) THEN
         IF(ICFLAG.EQ.10 .OR. (ICFLAG.EQ.15 .AND. ITHNPA.EQ.3)
      &     .OR.((ICFLAG.EQ.17).AND.(QFATAR.EQ.2)))THEN
@@ -787,7 +789,12 @@ C
         ELSEIF(ICFLAG.EQ.11 .OR. (ICFLAG.EQ.15 .AND. ITHNPA.EQ.4))THEN
           IF (CSDI.LT.100.)THEN
             CSDI=(43560.0*ALOG(1.0-(CSDI/100.))/0.785398)*(-1.0)
+            IF(DEBUG)
+     &        WRITE (JOSTND,*) 'IN CUTS: RECALCULATED CSDI=',CSDI
             CALL CCCLS(ISPCUT,VALMIN,VALMAX,2,SDIC,JPNUM)
+            IF(DEBUG) WRITE (JOSTND,*) 
+     &      'IN CUTS: CCCLS RETURN-ISPCUT,VALMIN,VALMAX,SDIC,JPNUM=',
+     &      ISPCUT,VALMIN,VALMAX,SDIC,JPNUM
           ELSE
             CALL OPDEL1(KUT)
             GOTO 1400
@@ -809,27 +816,33 @@ C
      &  ' JPNUM= ',ISPCUT,VALMIN,VALMAX,SDIC,CSDI,ICFLAG,JPNUM
         IF(DEBUG)WRITE(JOSTND,*)' CUTEFF, CUTEF1= ',CUTEFF, CUTEF1
 C
+C  IF CANOPY COVER ADJUSTMENT (KEYWORD CCADJ) IS IN USE, THE DIFFERENCE
+C  BETWEEN UNADJUSTED AND ADJUSTED COVER VALUES (CRADIF) NEEDS TO BE
+C  INCLUDED IN THE CURRENT STOCKING VALUE (SDIC) FOR COMPARISON TO
+C  TARGET VALUE (CSDI)
+C
+        CCC=1
+        IF(CCCOEF.NE.1)CCC=CCCOEF
+        IF(CCCOEF2.NE.1)CCC=CCCOEF2
+C Uncorrected PCC for the given target PCC
+        CCCLC1 = 100.0*CSDI*0.785398/43560.
+C Corrected PCC adjusted using target PCC and CCC
+        CCCLC21 = 100.0*(1.0-EXP(-(CCC/100)*CCCLC1))
+        IF(CCCLC21.GT.CCCLC1)CCCLC21=CCCLC1
+C Corrected PCC adjusted using target PCC and CCC assuming random
+        CCT=(100.0*(1.0-EXP(-0.01*(100.0*CSDI*0.785398/43560.))))
+C Uncorrected PCC required to reach target using CCC
+        CCCSDI = ((ALOG(1+(-CCT/100)))/(CCC/100)*(-1))
+C Crown area difference between the adjusted and unadjusted
+        CRADIF = ABS((((CCCSDI/100)/0.785398)*43560)-CSDI)
+        IF(DEBUG)WRITE(JOSTND,*) 'CCC,CCCLC21,CCT,CCCSDI,CRADIF=',
+     >         CCCOEF,CCCLC21,CCT,CCCSDI,CRADIF
+C
 C  IF CURRENT STOCKING EXCEEDS THE TARGET, SET TARGET RESIDUAL STOCKING,
 C  AMOUNT TO REMOVE, AND CUTTING EFFICIENCY.
 C
-        IF(SDIC .GT. CSDI) THEN
+        IF((SDIC + CRADIF) .GT. CSDI) THEN
           IF (ICFLAG.EQ.11) THEN
-          	CCC=1
-          	IF(CCCOEF.NE.1)CCC=CCCOEF
-          	IF(CCCOEF2.NE.1)CCC=CCCOEF2
-C Uncorrected PCC for the given target PCC
-            CCCLC1 = 100.0*CSDI*0.785398/43560.
-C Corrected PCC adjusted using target PCC and CCC
-            CCCLC21 = 100.0*(1.0-EXP(-(CCC/100)*CCCLC1))
-            IF(CCCLC21.GT.CCCLC1)CCCLC21=CCCLC1
-C Corrected PCC adjusted using target PCC and CCC assuming random
-            CCT=(100.0*(1.0-EXP(-0.01*(100.0*CSDI*0.785398/43560.))))
-C Uncorrected PCC required to reach target using CCC
-            CCCSDI = ((ALOG(1+(-CCT/100)))/(CCC/100)*(-1))
-C Crown area difference between the adjusted and unadjusted
-            CRADIF = ABS((((CCCSDI/100)/0.785398)*43560)-CSDI)
-            IF(DEBUG)WRITE(JOSTND,*) 'CCC,CCCLC21,CCT,CCCSDI=',
-     >         CCCOEF,CCCLC21,CCT,CCCSDI
             IF(CCC.LT.1)THEN
                 RSTOCK = CSDI+CRADIF
                 REMOVE = SDIC-RSTOCK
