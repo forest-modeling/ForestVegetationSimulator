@@ -113,6 +113,7 @@ C      write(*,*) 'in DBSCASE TOP - IFORESURE, CASEID',IFORSURE,CASEID
         ENDIF
         WRITE(SQLStmtStr,*) "UPDATE FVS_Cases SET SamplingWt = ",SAMWT,
      >   ", Groups = '", TRIM(ADJUSTL(SLSET)),"'",
+     >   ", StandID = '", TRIM(ADJUSTL(NPLT)),"'",
      >   " WHERE CaseID = '",CASEID,"';"
 
 C        write(*,*) 'in DBSCASE - ',SQLStmtStr
