@@ -331,16 +331,18 @@ C
       ENDIF
 C
   300 CONTINUE
-C      
+C
 C     IF CCADJ IS CONDITIONALLY SCHEDULED, CALL SSTAGE FROM HERE
 C
-      CCCT=0  
-      DO ACTF=1,MAXACT
-        IF((IACT(ACTF,1).EQ.444))THEN
-          CCCT=CCCT+1  
-        ENDIF
-      END DO                  
-      IF(CCCT.GE.1)CALL SSTAGE(1,ICYC,.TRUE.)         
-C           
+C     Commented out as this causes replicate records written to
+C     associated DB output table, FVS_StrClass table. LD - 2/21/2023 
+C      CCCT=0  
+C      DO ACTF=1,MAXACT
+C        IF((IACT(ACTF,1).EQ.444))THEN
+C          CCCT=CCCT+1  
+C        ENDIF
+C      END DO                  
+C      IF(CCCT.GE.1)CALL SSTAGE(1,ICYC,.TRUE.)         
+
       RETURN
       END

@@ -3,6 +3,6 @@ C----------
 C COMMON 
 C----------
 C
-      DATA SVN/"FS2025.1"/
+      DATA SVN/"FS2025.2"/
 C
 C-----END SEGMENT

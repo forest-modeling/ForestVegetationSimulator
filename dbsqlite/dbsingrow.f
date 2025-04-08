@@ -33,13 +33,13 @@ COMMONS END
       IF(IREG5.NE.1) RETURN
 C
       CALL DBSCASE(1)
-      
+
 C     DEFINE TAABLENAME
 
       iRet=fsql3_tableexists(IoutDBref,'FVS_Regen_Ingrow'//CHAR(0))
 C
 C     SITE PREP SUMMARY
-C                  
+C
       IF(iRet.EQ.0) THEN
           SQLStmtStr='CREATE TABLE FVS_Regen_Ingrow('//
      -              'CaseID           text not null,'//
@@ -50,14 +50,14 @@ C
      -              'SpeciesPLANTS    text null,'//
      -              'SpeciesFIA       text null,'//
      -              'IngrowthTpa      int  null);'//CHAR(0)
-     
+
         iRet = fsql3_exec(IoutDBref,SQLStmtStr)
         IF (iRet .NE. 0) THEN
           IREG5 = 0
           RETURN
         ENDIF
-      ENDIF                
-          
+      ENDIF
+
       WRITE(SQLStmtStr,*)'INSERT INTO FVS_Regen_Ingrow',
      -   ' (CaseID,StandID,Year,IngrowthTotalTpa,',
      -   'SpeciesFVS,SpeciesPLANTS,SpeciesFIA,IngrowthTpa)',
@@ -65,7 +65,7 @@ C
 
       iRet = fsql3_prepare(IoutDBref,trim(SQLStmtStr)//CHAR(0))
       IF (iRet .NE. 0) THEN
-         IREG5 = 0                                    
+         IREG5 = 0
          RETURN
       ENDIF
 
@@ -75,13 +75,13 @@ C
         IF (CSP .EQ. JSP(I)) THEN
           CSP1 = JSP(I)
           CSP2 = PLNJSP(I)
-          CSP3 = FIAJSP(2)
+          CSP3 = FIAJSP(I)
         ENDIF
       ENDDO
 
 C
 C     ASSIGN REAL VALUES TO DOUBLE PRECISION VARS
-C        
+C
 
       INGROW1=INGROW
       TPAIN1=TPAIN
@@ -90,7 +90,7 @@ C
       ColNumber=1
       iRet = fsql3_bind_int(IoutDBref,ColNumber,IYEAR1)
       ColNumber=ColNumber+1
-      iRet = fsql3_bind_double(IoutDBref,ColNumber,INGROW1) 
+      iRet = fsql3_bind_double(IoutDBref,ColNumber,INGROW1)
       ColNumber=ColNumber+1
       iRet = fsql3_bind_text(IoutDBref,ColNumber,CSP1,
      >                                  LEN_TRIM(CSP1))
@@ -105,7 +105,7 @@ C
       iRet = fsql3_step(IoutDBref)
       iRet = fsql3_finalize(IoutDBref)
       IF (iRet.ne.0) then
-        IREG5 = 0 
+        IREG5 = 0
       ENDIF
       RETURN
       END
