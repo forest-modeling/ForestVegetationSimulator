@@ -1,0 +1,62 @@
+name: Compile FVS with MSYS2 on Windows
+
+on:
+  push:
+    branches: [ "main", "debug-actions" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [windows-latest]
+        sys: [ucrt64] #,mingw64]
+      
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout FVS
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+    
+    - name: Install MSYS2
+      # https://github.com/msys2/setup-msys2
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: ${{matrix.sys}}
+        update: true
+        install: |
+          mingw-w64-ucrt-x86_64-gcc
+          mingw-w64-ucrt-x86_64-gcc-fortran
+        
+    - name: Compile
+      working-directory: ./bin
+      run: |
+        make -j4 all
+
+    - name: Test
+      working-directory: ./tests
+      run: make -j4 all
+
+    - name: Set Env Vars
+      id: vars
+      shell: bash
+      run: |
+        short_sha=$(git rev-parse --short "$GITHUB_SHA")
+        echo "SHORT_SHA=$short_sha" >> "$GITHUB_ENV"
+        branchName=$(echo "$GITHUB_REF" | sed 's/refs\/heads\///')
+        echo "BRANCH=$branchName" >> "$GITHUB_ENV"
+        osName=$(echo "${{ matrix.os }}" | sed 's/-latest//')
+        echo "OS_NAME=$osName" >> "$GITHUB_ENV"
+        
+    - name: Archive Binaries
+      uses: actions/upload-artifact@v4
+      with:
+        name: fvs-${{ env.OS_NAME }}-${{ matrix.sys }}-${{ env.BRANCH }}-${{ env.SHORT_SHA }}
+        path: |
+          bin/FVS*.exe
+          bin/FVS*.dll
