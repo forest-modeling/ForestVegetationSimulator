@@ -338,20 +338,20 @@ C     GET NUMBER OF COLUMNS RETURNED
            IF (ISTANDDATA(17) .ne. NullInt) DGT_LI = 1
 
          CASE('DG_MEASURE')
-           ISTANDDATA(18) = fsql3_colint(IinDBref,ColNumber,NullInt)
-           IF (ISTANDDATA(18) .ne. NullInt) DGM_LI = 1
+           RSTANDDATA(18) = fsql3_colreal(IinDBref,ColNumber,NullReal)
+           IF (RSTANDDATA(18) .ne. NullReal) DGM_LI = 1
 
          CASE('HTG_TRANS')
            ISTANDDATA(19) = fsql3_colint(IinDBref,ColNumber,NullInt)
            IF (ISTANDDATA(19) .ne. NullInt) HTT_LI = 1
 
          CASE('HTG_MEASURE')
-           ISTANDDATA(20) = fsql3_colint(IinDBref,ColNumber,NullInt)
-           IF (ISTANDDATA(20) .ne. NullInt) HTM_LI = 1
+           RSTANDDATA(20) = fsql3_colreal(IinDBref,ColNumber,NullReal)
+           IF (RSTANDDATA(20) .ne. NullReal) HTM_LI = 1
 
          CASE('MORT_MEASURE')
-           ISTANDDATA(21) = fsql3_colint(IinDBref,ColNumber,NullInt)
-           IF (ISTANDDATA(21) .ne. NullInt) Mort_LI = 1
+           RSTANDDATA(21) = fsql3_colreal(IinDBref,ColNumber,NullReal)
+           IF (RSTANDDATA(21) .ne. NullReal) Mort_LI = 1
 
          CASE('SITE_SPECIES')
           iRet = fsql3_coltext (IinDBref,ColNumber,CSITECODE,
@@ -691,24 +691,26 @@ C     SET DEFAULT LOCATION CODE IF NOT PRESENT IN INPUT DATA
          IF(LKECHO)WRITE(JOSTND,'(T12,''DG_TRANS: '',T34,I6)') IDG
       ENDIF
       IF(DGM_LI.NE.NullInt) THEN
-         IF(ISTANDDATA(18).GT.0.)IFINT = ISTANDDATA(18)
-         FINT = FLOAT(IFINT)
-         IF(LKECHO)WRITE(JOSTND,'(T12,''DG_MEASURE: '',T34,I6)') IFINT
+         IF(RSTANDDATA(18).GT.0.)FINT = RSTANDDATA(18)
+         IFINT = IFIX(FINT)
+         IF(LKECHO)WRITE(JOSTND,'(T12,''DG_MEASURE: '',T36,F4.1)') FINT
       ENDIF
       IF(HTT_LI.NE.NullInt) THEN
          IHTG = ISTANDDATA(19)
          IF(LKECHO)WRITE(JOSTND,'(T12,''HTG_TRANS: '',T34,I6)') IHTG
       ENDIF
       IF(HTM_LI.NE.NullInt) THEN
-         IF(ISTANDDATA(20).GT.0.)IFINTH = ISTANDDATA(20)
-         FINTH = FLOAT(IFINTH)
-         IF(LKECHO)WRITE(JOSTND,'(T12,''HTG_MEASURE: '',T34,I6)') IFINTH
+         IF(RSTANDDATA(20).GT.0.)FINTH = RSTANDDATA(20)
+         IFINTH = IFIX(FINTH)
+         IF(LKECHO)WRITE(JOSTND,'(T12,''HTG_MEASURE: '',T36,F4.1)')
+     >   FINTH
       ENDIF
       IF(Mort_LI.NE.NullInt) THEN
-         FINTM = FLOAT(ISTANDDATA(21))
+         FINTM = RSTANDDATA(21)
+
          IF(FINTM.LE.0.)FINTM=5.
-         IF(LKECHO)WRITE(JOSTND,'(T12,''MORT_MEASURE: '',T34,I6)')
-     >   IFIX(FINTM)
+         IF(LKECHO)WRITE(JOSTND,'(T12,''MORT_MEASURE: '',T36,F4.1)')
+     >   FINTM
       ENDIF
 
 C     SITE SPECIES CODE PROCESSING

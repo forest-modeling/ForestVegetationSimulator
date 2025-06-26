@@ -121,6 +121,7 @@ C
       IF (IMGL .LE. IEPT) GOTO 30
       KODE=1
       CALL ERRGRO (.TRUE.,10)
+      WRITE (16,*) 'ISSUED IN OPADD ENTRY OPCOPY'
       RETURN
    30 CONTINUE
       NCOPYS=NCOPYS+1
@@ -168,6 +169,7 @@ C
       IF (N+IMGL.LE.IEPT+1) GOTO 60
       KODE=2
       CALL ERRGRO (.TRUE.,10)
+      WRITE (16,*) 'ISSUED IN OPADD ENTRY OPSCHD 1'
       RETURN
    60 CONTINUE
 C
@@ -209,6 +211,7 @@ C
          IF (IMPL+I2-I1.GT.ITOPRM) THEN
             KODE=2
             CALL ERRGRO (.TRUE.,10)
+            WRITE (16,*) 'ISSUED IN OPADD ENTRY OPSCHD DATE ',IDT
             RETURN
          ENDIF
          IACT(IMGL,2)=IMPL
@@ -226,6 +229,7 @@ C
          IF (IMPL.GT.ITOPRM) THEN
             KODE=2
             CALL ERRGRO (.TRUE.,10)
+            WRITE (16,*) 'ISSUED IN OPADD ENTRY OPSCHD NO PARAMS'
             RETURN
          ENDIF
          PARMS(IMPL)=FLOAT(IDT)

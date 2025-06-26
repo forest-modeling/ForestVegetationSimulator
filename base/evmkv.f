@@ -27,6 +27,7 @@ C
       ELSE
          CALL ERRGRO (.TRUE.,10)
          CALL ERRGRO (.TRUE.,12)
+         WRITE (16,*) 'ISSUED IN EVMKV'
       ENDIF
       RETURN
       END
