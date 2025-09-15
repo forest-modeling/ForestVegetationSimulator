@@ -1,16 +1,11 @@
       SUBROUTINE GRINCR (DEBUG,IPMODI,LTMGO,LMPBGO,LDFBGO,
      1                   LBWEGO,LCVATV,grow_callback)
+      
+      use fvs_step, only : GCB_DIAM_HT, GCB_MORT
+
       IMPLICIT NONE
-
-C     Define the growth cycle callback interface
-      abstract interface
-        function func (z)
-          integer :: func
-          integer, intent (in) :: z
-        end function func
-      end interface
-
-      procedure(func) :: grow_callback
+      
+      integer, external, optional :: grow_callback
       integer cb_rtn
 
 C----------
@@ -538,8 +533,10 @@ CCCC     IF (PRM(2) .GT. 1.0) PRM(2)=1.0
       ENDIF
 
 C     Callback after diameter and height growth estimates
-      cb_rtn = grow_callback(25)
-      if (cb_rtn.ne.0) return
+      if (present(grow_callback)) then
+        cb_rtn = grow_callback(GCB_DIAM_HT)
+        if (cb_rtn.ne.0) return
+      end if
 C
 C     CALL **MORTS** TO COMPUTE TREE MORTALITY.
 C
@@ -553,6 +550,12 @@ C     mortality subroutines in the PN and WC variants
 #else
       CALL MORTS
 #endif /* FVS_MORTS_WRAP */
+
+C     Callback after mortality estimate, but before tripling
+      if (present(grow_callback)) then
+        cb_rtn = grow_callback(GCB_MORT)
+        if (cb_rtn.ne.0) return
+      end if
 
 C
 C     NOW TRIPLE RECORDS AND REALLIGN POINTERS IF TRIPLING OPTION IS

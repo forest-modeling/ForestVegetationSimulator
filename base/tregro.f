@@ -1,20 +1,13 @@
       SUBROUTINE TREGRO(grow_callback)
-
+      
+      use fvs_step, only: GCB_INCR
 C#ifdef FVS_DATA_API
       use snag_data, only: copy_snag_data
 C#endif /* FVS_DATA_API */
 
       IMPLICIT NONE
 
-C     Define the growth cycle callback interface
-      abstract interface
-        function func (z)
-          integer :: func
-          integer, intent (in) :: z
-        end function func
-      end interface
-
-      procedure(func) :: grow_callback
+      integer, external, optional :: grow_callback
       integer cb_rtn
 
 C----------
@@ -61,8 +54,11 @@ C-----------
      1             grow_callback)
 
 C     Callback after increment estimates, but before it is applied
-      cb_rtn = grow_callback(20)
-      if (cb_rtn.ne.0) return
+C     * Mortality and tripling have been applied at the end of grincr
+      if (present(grow_callback)) then
+        cb_rtn = grow_callback(GCB_INCR)
+        if (cb_rtn.ne.0) return
+      end if
 
 C#ifdef FVS_DATA_API
       call copy_snag_data()
