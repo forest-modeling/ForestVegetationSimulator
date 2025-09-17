@@ -2,9 +2,9 @@ name: Compile FVS with MSYS2 on Windows
 
 on:
   push:
-    branches: [ "main", "debug-actions" ]
+    branches: [ "build-fvs", "debug-actions" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "build-fvs" ]
 
 jobs:
   build:
