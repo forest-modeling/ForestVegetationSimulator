@@ -45,7 +45,7 @@ C MISTOE $Id$
 *  20        CW   black cottonwood    747  POBAT  Populus trichocarpa
 *  21        WI   willow species      920  SALIX  Salix species
 *  22        SU   Scouler's willow    928  SASC   Salix scouleriana
-*  23        OH   other hardwoods     998  2TD
+*  23        OH   other hardwoods     998  2TB
 *----------------------------------------------------------------------
 *
 *  Call list definitions:

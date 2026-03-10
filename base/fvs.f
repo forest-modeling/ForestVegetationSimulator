@@ -61,7 +61,7 @@ C The callback for tregro is a library feature, where fvs.f is part of the legac
         end subroutine tregro
       end interface
 
-      INTEGER I,IA,N,K
+      INTEGER I,IA,N,K,J
       REAL STAGEA,STAGEB
       LOGICAL DEBUG,LCVGO
       INTEGER IBA

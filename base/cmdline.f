@@ -15,6 +15,27 @@ c     The fortran routines that can be called by C have an upper case C added to
 c     the routine name. See apisubs.c for the C functions that are used to call
 c     the fortran routines. Only routines with character data have both languages.
 
+      
+#ifdef CMPgcc
+      subroutine fvsSetCmdLineC(theCmdLine,lenCL,IRTNCD)
+     -           bind(c, name="fvsSetCmdLineC") 
+      use iso_c_binding      
+      implicit none
+
+      integer(c_int), bind(c) :: lenCL,IRTNCD
+      character(c_char), dimension(255), bind(c) :: theCmdLine      
+
+      integer i
+      character passCmdLine*255
+      
+      do i=1,lenCL
+        passCmdLine(i:i)=theCmdLine(i)
+      enddo
+      call fvsSetCmdLine(passCmdLine,lenCL,IRTNCD)
+      return
+      end
+#endif
+      
       subroutine fvsSetCmdLine(theCmdLine,lenCL,IRTNCD)
       implicit none
 
@@ -84,9 +105,6 @@ c     there is no attached file.
         enddo
         lenCL = len_trim(cmdLcopy)
       endif
-
-c      write(*,*) '***cmdline.f', theCmdLine
-cmdLcopy(:lenCL)
 
       if (lenCL == 0) goto 100
 
