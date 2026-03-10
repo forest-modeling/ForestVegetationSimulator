@@ -24,15 +24,16 @@ c     the fortran routines. Only routines with character data have both language
 !DEC$ ATTRIBUTES ALIAS : 'FVSSETCMDLINE' :: FVSSETCMDLINE
 !DEC$ ATTRIBUTES REFERENCE :: theCmdLine,lenCL,IRTNCD
 
+cf2py character(len=1024), intent(in) thecmdline
+cf2py integer, intent(in) lencl
+cf2py intent(out) irtncd
+
       integer :: i,n,irtn,ieq,iend,lenCL,IRTNCD
       logical fstat
       character(len=256) arg
-      character(len=lenCL) theCmdLine
+      character(len=*) theCmdLine
       character(len=1024) cmdLcopy
 
-
-cf2py intent(in) thecmdline,lencl
-cf2py intent(out) irtncd
 
 c     make sure the files are closed if resetting with the cmdLine.
 c     (this is only done if a none-zero return or restart code is set)
@@ -83,6 +84,9 @@ c     there is no attached file.
         enddo
         lenCL = len_trim(cmdLcopy)
       endif
+
+c      write(*,*) '***cmdline.f', theCmdLine
+cmdLcopy(:lenCL)
 
       if (lenCL == 0) goto 100
 

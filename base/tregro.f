@@ -6,7 +6,7 @@ C#ifdef FVS_DATA_API
 C#endif /* FVS_DATA_API */
 
       IMPLICIT NONE
-
+      
       integer, external, optional :: grow_callback
       integer cb_rtn
 
@@ -50,14 +50,15 @@ C-----------
 C-----------
 C  CALL GRINCR TO COMPUTE INCREMENTS AND SEE IF BUG MODELS ARE ACTIVE.
 C-----------
+      if (present(grow_callback)) then
       CALL GRINCR (DEBUG,1,LTMGO,LMPBGO,LDFBGO,LBWEGO,LCVATV,
      1             grow_callback)
-
 C     Callback after increment estimates, but before it is applied
 C     * Mortality and tripling have been applied at the end of grincr
-      if (present(grow_callback)) then
-        cb_rtn = grow_callback(GCB_INCR)
-        if (cb_rtn.ne.0) return
+      cb_rtn = grow_callback(GCB_INCR)
+      if (cb_rtn.ne.0) return
+      else
+      CALL GRINCR (DEBUG,1,LTMGO,LMPBGO,LDFBGO,LBWEGO,LCVATV)
       end if
 
 C#ifdef FVS_DATA_API

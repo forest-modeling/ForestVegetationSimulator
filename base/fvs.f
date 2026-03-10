@@ -50,14 +50,22 @@ C
 !DEC$ ATTRIBUTES DLLEXPORT, C, DECORATE, ALIAS : "FVS" :: FVS
 !DEC$ ATTRIBUTES REFERENCE :: IRTNCD
 
-      INTEGER I,IA,N,K,J
+C-- F2PY signature hints
+Cf2py integer, intent(out) :: irtncd
+
+C Include an interface for tregro so the compiler recognizes the callback as optional
+C The callback for tregro is a library feature, where fvs.f is part of the legacy program loop.
+      interface
+        subroutine tregro(cb)
+          integer, intent(in), optional :: cb
+        end subroutine tregro
+      end interface
+
+      INTEGER I,IA,N,K
       REAL STAGEA,STAGEB
       LOGICAL DEBUG,LCVGO
       INTEGER IBA
       INTEGER IRSTRTCD,ISTOPDONE,IRTNCD,ISTOPRES,lenCl
-
-C-- F2PY signature hints
-Cf2py intent(out) irtncd
 
 C
 C     ******************     EXECUTION BEGINS     ******************

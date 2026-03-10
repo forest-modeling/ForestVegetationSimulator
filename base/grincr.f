@@ -1,7 +1,7 @@
       SUBROUTINE GRINCR (DEBUG,IPMODI,LTMGO,LMPBGO,LDFBGO,
      1                   LBWEGO,LCVATV,grow_callback)
       
-      use fvs_step, only : GCB_DIAM_HT, GCB_MORT
+      use fvs_step, only : GCB_POST_DG_HTG, GCB_POST_MORT
 
       IMPLICIT NONE
       
@@ -535,7 +535,7 @@ CCCC     IF (PRM(2) .GT. 1.0) PRM(2)=1.0
 
 C     Callback after diameter and height growth estimates
       if (present(grow_callback)) then
-        cb_rtn = grow_callback(GCB_DIAM_HT)
+        cb_rtn = grow_callback(GCB_POST_DG_HTG)
         if (cb_rtn.ne.0) return
       end if
 C
@@ -554,7 +554,7 @@ C     mortality subroutines in the PN and WC variants
 
 C     Callback after mortality estimate, but before tripling
       if (present(grow_callback)) then
-        cb_rtn = grow_callback(GCB_MORT)
+        cb_rtn = grow_callback(GCB_POST_MORT)
         if (cb_rtn.ne.0) return
       end if
 
