@@ -925,7 +925,7 @@ C
      >    '; AGE=',I5,'; ASPECT AZIMUTH IN DEGREES= ',F4.0,
      >    '; SLOPE= ',F4.0,'%'/
      >    T12,'ELEVATION(100''S FEET)=',F5.1,'; REFERENCE CODE= ',A4,
-     >    '; ECOREGION= ', A10'; STAND ORIGIN=', I2)
+     >    '; ECOREGION= ', A10, '; STAND ORIGIN=', I2)
 C
         CASE DEFAULT
           IF(LKECHO)WRITE (JOSTND,2410) KEYWRD,KODFOR,KODTYP,
@@ -936,7 +936,7 @@ C
      >    '; AGE=',I5,'; ASPECT AZIMUTH IN DEGREES= ',F4.0,
      >    '; SLOPE= ',F4.0,'%'/
      >    T12,'ELEVATION(100''S FEET)=',F5.1,'; REFERENCE CODE= ',A4,
-     >    '; ECOREGION= ', A10'; STAND ORIGIN=', I2)
+     >    '; ECOREGION= ', A10, '; STAND ORIGIN=', I2)
 C
       END SELECT
       GO TO 10
