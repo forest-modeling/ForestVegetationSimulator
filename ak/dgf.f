@@ -59,7 +59,7 @@ C             RATIO) TERM IN THE DIAMETER GROWTH EQUATION
 C   DGLNSI -- ARRAY, COEFFICIENTS FOR THE LOG(SITE
 C             INDEX) TERM IN THE DIAMETER GROWTH EQUATION
 C   DGRD   -- ARRAY, COEFFICIENTS FOR POINT RELATIVE DENSITY
-C             (PLOT ZEIDE SDI / PLOT MAX SDI � DECIMAL)
+C             (PLOT ZEIDE SDI / PLOT MAX SDI ? DECIMAL)
 C   DGSASP -- ARRAY, COEFFICIENT FOR SLOPE*COS(ASPECT) TERM
 C   DGSLOP -- ARRAY, COEFFICIENT FOR SLOPE PERCENT TERM
 C   OBSERV -- CONTAINS THE NUMBER OF OBSERVATIONS BY SPECIES FOR THE
@@ -342,7 +342,7 @@ C  WHERE:
 C  ADI = Annual diameter increment (in year-1)
 C  DBH = Diameter at breast height (in)
 C  PBAL = Plot level basal area in larger trees (ft2 * acre-1)
-C  PRD = Plot Relative density (plot Zeide SDI / plot Max SDI � decimal)
+C  PRD = Plot Relative density (plot Zeide SDI / plot Max SDI ? decimal)
 C  CR = Crown ratio (%)
 C  ELEV = Elevation of plot (ft)
 C  SLOPE = Slope of plot (%)
