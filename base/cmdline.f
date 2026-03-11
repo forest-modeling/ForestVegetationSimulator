@@ -15,26 +15,31 @@ c     The fortran routines that can be called by C have an upper case C added to
 c     the routine name. See apisubs.c for the C functions that are used to call
 c     the fortran routines. Only routines with character data have both languages.
 
-      
-#ifdef CMPgcc
-      subroutine fvsSetCmdLineC(theCmdLine,lenCL,IRTNCD)
-     -           bind(c, name="fvsSetCmdLineC") 
-      use iso_c_binding      
-      implicit none
+!! Defined c_char and c_int kind values
+!! Still results in undefined reference to `fvssetcmdlinec_'
+! #ifdef CMPgcc
+!       subroutine fvsSetCmdLineC(theCmdLine,lenCL,IRTNCD)
+!      -           bind(c, name="fvssetcmdlinec") 
+!       use iso_c_binding
+!       implicit none
 
-      integer(c_int), bind(c) :: lenCL,IRTNCD
-      character(c_char), dimension(255), bind(c) :: theCmdLine      
+! cf2py character(kind=c_char), intent(in) thecmdline
+! cf2py integer(kind=c_int), intent(in) lencl
+! cf2py intent(out) irtncd
 
-      integer i
-      character passCmdLine*255
+!       integer(c_int), bind(c) :: lenCL,IRTNCD
+!       character(kind=c_char), dimension(255), bind(c) :: theCmdLine      
+
+!       integer i
+!       character passCmdLine*255
       
-      do i=1,lenCL
-        passCmdLine(i:i)=theCmdLine(i)
-      enddo
-      call fvsSetCmdLine(passCmdLine,lenCL,IRTNCD)
-      return
-      end
-#endif
+!       do i=1,lenCL
+!         passCmdLine(i:i)=theCmdLine(i)
+!       enddo
+!       call fvsSetCmdLine(passCmdLine,lenCL,IRTNCD)
+!       return
+!       end
+! #endif
       
       subroutine fvsSetCmdLine(theCmdLine,lenCL,IRTNCD)
       implicit none
