@@ -17,6 +17,7 @@ C
       CHARACTER*2000 SQLStmtStr
       CHARACTER*20   TABLENAME
       CHARACTER*3    CRUISETYPE
+      CHARACTER*7    SDITYPE
 
       INTEGER fsql3_tableexists,fsql3_exec,fsql3_bind_int,fsql3_step,
      >        fsql3_prepare,fsql3_bind_double,fsql3_finalize
@@ -34,6 +35,7 @@ C
      -             'SpeciesFVS text, '//
      -             'SpeciesPlants text, '//
      -             'SpeciesFIA text, '//
+     -             'SDIType text,'//
      -             'SDIMax int, '//
      -             'SiteIndex int, '//
      -             'CFCruiseType text,'//
@@ -75,17 +77,23 @@ C
           CRUISETYPE = 'FVS'
         END IF
 
+        IF(LZEIDE) THEN
+          SDITYPE = '  ZEIDE'
+        ELSE
+          SDITYPE = 'REINEKE'
+        END IF
+
         SQLStmtStr='INSERT INTO '//TRIM(TABLENAME)//
      -             ' (CaseID,StandID,'//
      -             'SpeciesNum,SpeciesFVS,SpeciesPlants,SpeciesFIA,'//
-     -             'SDIMax,SiteIndex,'//
+     -             'SDIType,SDIMax,SiteIndex,'//
      -             'CFCruiseType,CFVolEq,CFMinDBH,CFTopDia,CFStump,'//
      -             'CFSawMinDBH,CFSawTopDia,CFSawStump,'//
      -             'BFVolEQ,BFMinDBH,BFTopDia,BFStump)'//
      -             " VALUES('"//CASEID//"','"//TRIM(NPLT)//"',?,'"//
      -             TRIM(JSP(I))//"','"//TRIM(PLNJSP(I))//"','"//
-     -             TRIM(FIAJSP(I))//"',"// 
-     -             '?,?,'//
+     -             TRIM(FIAJSP(I))//"','"// 
+     -             SDITYPE//"',"//'?,?,'//
      -             "'"//CRUISETYPE//"','"//TRIM(VEQNNC(I))//"',?,?,?,"//
      -             '?,?,?,'//
      -             "'"//TRIM(VEQNNB(I))//"',?,?,?);"//CHAR(0)

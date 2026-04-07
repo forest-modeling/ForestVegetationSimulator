@@ -407,6 +407,20 @@ C         subalpine fir
 C         aspen
           CASE (2)
 
+            SCFDUM=0
+            BFDUM=0
+            CRDUM=0
+            BRKDUM=0
+            VMDUM=0
+            BFVDUM=0
+            RCDUM=0
+            DCYDUM=0
+            WDSTDUM=0
+            BIODUM=0
+            LDDUM=0
+            CTKFDUM=0
+            BTKDUM=0
+
             CALL NATCRS (V,VM,SCFDUM,BFDUM,SPI,D,H,.FALSE.,
      &                   CRDUM,BRKDUM,ITRNC,VMDUM,BFVDUM,
      &                   RCDUM,DCYDUM,WDSTDUM,BIODUM,

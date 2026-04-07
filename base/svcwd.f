@@ -749,7 +749,7 @@ C----------
  1110   FORMAT(/,' ',T5,'TCWD3 ARRAY, UNPILED ONLY:',/,
      &           ' ',T5,' 1-3in   3-6in   6-12in  12+in ',/,
      &           ' ',T5,'------- ------- ------- -------',/,
-     &           ' ',T5,F7.3,1X,3(F7.2,1X)'AVERAGE PIECESIZE',/,
+     &           ' ',T5,F7.3,1X,3(F7.2,1X),'AVERAGE PIECESIZE',/,
      &           ' ',T5,4(F7.1,1X),'EXPECTED PIECECOUNT',/,
      &           ' ',T5,4(I7,1X),'EXISING SVS CWD OBJECTS',/,
      &           ' ',T5,4(I7,1X),'SVS OBJECT CHANGE',/,

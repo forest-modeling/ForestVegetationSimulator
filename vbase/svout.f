@@ -95,9 +95,9 @@ COMMONS
      &              ', IYEAR=',I4,', ILYEAR=',I4,':', / ,
      &          ' ',T5,'NDEAD=',I4,', NSVOBJ=',I6,//,
      &          ' ',T5,'SNAG LIST:',//,
-     &          ' ',T5,'  I   IDTREE  SPP ODIA OLEN IYRCOD STATUS '
+     &          ' ',T5,'  I   IDTREE  SPP ODIA OLEN IYRCOD STATUS ',
      &                 'FALLDIR OPROB STDNG',/,
-     &          ' ',T5,'---- -------- --- ---- ---- ------ ------ '
+     &          ' ',T5,'---- -------- --- ---- ---- ------ ------ ',
      &                 '------- ----- -----' )
 C                       XXXX XXXXXXXX XXX XX.X XXX. XXXXXX XXXXXX
 C                       XXXXXX. XXXX. XXXX.
@@ -781,9 +781,9 @@ C----------
      &              ', IYEAR=',I4,', ILYEAR=',I4,':', / ,
      &          ' ',T5,'NDEAD=',I4,', NSVOBJ=',I6,//,
      &          ' ',T5,'SNAG LIST:',//,
-     &          ' ',T5,'  I   IDTREE  SPP ODIA OLEN IYRCOD STATUS '
+     &          ' ',T5,'  I   IDTREE  SPP ODIA OLEN IYRCOD STATUS ',
      &                 'FALLDIR OPROB STDNG',/,
-     &          ' ',T5,'---- -------- --- ---- ---- ------ ------ '
+     &          ' ',T5,'---- -------- --- ---- ---- ------ ------ ',
      &                 '------- ----- -----' )
 C                       XXXX XXXXXXXX XXX XX.X XXX. XXXXXX XXXXXX
 C                       XXXXXX. XXXX. XXXX.

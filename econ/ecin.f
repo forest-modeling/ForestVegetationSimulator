@@ -830,7 +830,7 @@ C  Author Fred Martin, WA DNR,
      &           ", RECORD:", i4)')  warn, KEYWRD, NSP(i,1)(1:2),        !NSP(i,1)(1:2) is character species code not including tree value class
      &           trim(UNITS_LABEL(units)), realFields(3), IRECNT
          case (revDuplicate)
-            write(JOSTND,'(/a12, 1x, 1x, a8, "   KEYWORD IGNORED, "
+            write(JOSTND,'(/a12, 1x, 1x, a8, "   KEYWORD IGNORED, ",
      &            "VALUES PREVIOUSLY SET FOR THIS SPECIES: ", a,
      &            ", UNITS-OF-MEASURE: ", a, ", & DIAMETER CLASS:",
      &            f5.1, ", RECORD:", i4)') warn, KEYWRD, NSP(i,1)(1:2),  !NSP(i,1)(1:2) is character species code not including tree value class

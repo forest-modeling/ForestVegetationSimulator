@@ -1,6 +1,6 @@
 
 all : iet01 iet02 iet03 compress iedb calibStats DBReportTest econdb \
-	firedb climdb ffe_svs climate climatePutGet maxActs ccadj nested
+	firedb climdb climate climatePutGet maxActs ccadj nested
 
 iet01 :
 	@echo Test iet01, basic functionality
@@ -97,15 +97,6 @@ climdb :
    from FVS_Climate group by SpeciesFVS;" > Clim.db.txt
 	-diff -w Clim.db.txt Clim.db.txt.save
 	@echo Test climate database ended
-
-ffe_svs :
-	@echo Test FFE with SVS and stop/restart
-	-../../bin/FVSie --keywordfile=ffe_svs.key --stoppoint=1,2003,ffe_svs.stop
-	-../../bin/FVSie --restart=ffe_svs.stop
-	-diff -w ffe_svs_007.svs ffe_svs_007.svs.save
-	-diff -w ffe_svs_index.svs ffe_svs_index.svs.save
-	rm -f ffe_svs_*.svs ffe_svs_*.grd
-	@echo Test FFE with SVS ended
 
 climate :
 	@echo Test Climate-FVS

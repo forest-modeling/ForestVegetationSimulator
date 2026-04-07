@@ -243,10 +243,12 @@ C
 C
 COMMONS
 C
-      INTEGER IYEAR,ICCF,ITOPHT,IOSDI,IPRDLEN,IHRVC,IAGEOUT,IFRTP
+      INTEGER IYEAR,ICCF,ITOPHT,IOSDI,IPRDLEN,IHRVC,IAGEOUT,IFRTP,SDIX,
+     >        IZSDI, IRSDI
       DOUBLE PRECISION DPTPA,DPTPTPA,DPBA,DPQMD,DPTCUFT,DPTPTCUFT,
      > DPMCUFT,DPTPMCUFT,DPBDFT,DPTPBDFT,DPACC,DPMORT,DPMAI,DPRTPA,
-     > DPRTCUFT,DPRMCUFT,DPRBDFT,DPSCUFT,DPTPSCUFT,DPRSCUFT
+     > DPRTCUFT,DPRMCUFT,DPRBDFT,DPSCUFT,DPTPSCUFT,DPRSCUFT,DPRELDEN,
+     > DPDR016
       INTEGER ColNumber,iRet,I
       CHARACTER*2000 SQLStmtStr
       CHARACTER*20 TABLENAME
@@ -263,9 +265,12 @@ C
       ICCF     = IBTCCF(ICYC)
       ITOPHT   = IBTAVH(ICYC)
       IOSDI    = ISDI(ICYC)
+      IZSDI    = NINT(SDIBC2)
+      IRSDI    = NINT(SDIBC)
       DPTPA    = OLDTPA/GROSPC
       DPBA     = OLDBA/GROSPC
       DPQMD    = ORMSQD
+      DPDR016  = ODR016
       IHRVC    = 0
       IF (ICYC.GT.NCYC) THEN
         DPTCUFT  = OCVCUR(7)/GROSPC
@@ -292,6 +297,8 @@ C
       DPACC    = 0.
       DPMORT   = 0.
       IPRDLEN  = IOSUM(14,ICYC)
+      SDIX     = NINT(BTSDIX)
+      DPRELDEN = REAL(IOSDI)/BTSDIX
       IF (ICYC.LE.NCYC) THEN
 C       NO ACCCRETION OR MORTALITY ON LAST RECORD OF SUMMARY (END OF PROJECTION)
         DPACC    = OACC(7)/GROSPC
@@ -334,9 +341,14 @@ C     DEFINE TABLENAME
      -                 'TPrdTpa real,'//
      -                 'BA real,'//
      -                 'SDI int,'//
+     -                 'ZeideSDI int,'//
+     -                 'ReinekeSDI int,'//
+     -                 'SDIMax int,'//
+     -                 'RDSDI real,'//
      -                 'CCF int,'//
      -                 'TopHt int,'//
      -                 'QMD real,'//
+     -                 'GMD real,' //
      -                 'TCuFt real,'//
      -                 'TPrdTCuFt real,'//
      -                 'MCuFt real,'//
@@ -381,6 +393,21 @@ C--------
       iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
      >        "RSCuFt"//CHAR(0),"real"//CHAR(0))
 
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
+     >        "SDIMax"//CHAR(0),"int"//CHAR(0))
+
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
+     >        "RDSDI"//CHAR(0),"real"//CHAR(0))
+
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
+     >        "GMD"//CHAR(0),"real"//CHAR(0))
+
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
+     >        "ZeideSDI"//CHAR(0),"int"//CHAR(0))
+
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
+     >        "ReinekeSDI"//CHAR(0),"int"//CHAR(0))
+
       DO I=1,2
         IF (IHRVC.EQ.1) THEN
           DPTPTPA   = DPTPTPA   - DPRTPA
@@ -392,12 +419,13 @@ C--------
 
          SQLStmtStr='INSERT INTO '//TRIM(TABLENAME)//
      -    ' (CaseID,StandID,Year,RmvCode,Age,Tpa,TPrdTpa,BA,SDI,'//
-     -    'CCF,TopHt,QMD,TCuFt,TPrdTCuFt,MCuFt,TPrdMCuFt,'//
+     -    'ZeideSDI,ReinekeSDI,SDIMax,RDSDI,'//
+     -    'CCF,TopHt,QMD,GMD,TCuFt,TPrdTCuFt,MCuFt,TPrdMCuFt,'//
      -    'SCuFt,TPrdSCuFt,BdFt,'//
      -    'TPrdBdFt,RTpa,RTCuFt,RMCuFt,RSCuFt,RBdFt,'//
      -    'PrdLen,Acc,Mort,MAI,ForTyp,SizeCls,StkCls'//
-     -    ")VALUES('"//CASEID//"','"//TRIM(NPLT)//"',?,?,?,?,?,"//
-     -    '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);'
+     -    ")VALUES('"//CASEID//"','"//TRIM(NPLT)//"',?,?,?,?,?,?,?,"//
+     -    '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);'
      -    //CHAR(0)
 
         iRet = fsql3_prepare(IoutDBref,SQLStmtStr)
@@ -420,11 +448,21 @@ C--------
         ColNumber=ColNumber+1
         iRet = fsql3_bind_int(IoutDBref,ColNumber,IOSDI)
         ColNumber=ColNumber+1
+        iRet = fsql3_bind_int(IoutDBref,ColNumber,IZSDI)
+        ColNumber=ColNumber+1
+        iRet = fsql3_bind_int(IoutDBref,ColNumber,IRSDI)
+        ColNumber=ColNumber+1
+        iRet = fsql3_bind_int(IoutDBref,ColNumber,SDIX)
+        ColNumber=ColNumber+1
+        iRet = fsql3_bind_double(IoutDBref,ColNumber,DPRELDEN)
+        ColNumber=ColNumber+1
         iRet = fsql3_bind_int(IoutDBref,ColNumber,ICCF)
         ColNumber=ColNumber+1
         iRet = fsql3_bind_int(IoutDBref,ColNumber,ITOPHT)
         ColNumber=ColNumber+1
         iRet = fsql3_bind_double(IoutDBref,ColNumber,DPQMD)
+        ColNumber=ColNumber+1
+        iRet = fsql3_bind_double(IoutDBref,ColNumber,DPDR016)
         ColNumber=ColNumber+1
         iRet = fsql3_bind_double(IoutDBref,ColNumber,DPTCUFT)
         ColNumber=ColNumber+1
@@ -469,9 +507,12 @@ C--------
         IF (IHRVC.EQ.0) exit
         IHRVC    = 2
         IOSDI    = ISDIAT(ICYC)
+        IZSDI    = NINT(SDIAC2)
+        IRSDI    = NINT(SDIAC)
         ICCF     = NINT(ATCCF/GROSPC)
         ITOPHT   = NINT(ATAVH)
         DPQMD    = ATAVD
+        DPDR016  = ATDR016
         DPBA     = ATBA/GROSPC
         DPTPA    = ATTPA/GROSPC
         DPTCUFT  = MAX(0.,DPTCUFT-DPRTCUFT)
@@ -483,6 +524,8 @@ C--------
         DPRMCUFT = 0.
         DPRSCUFT = 0.
         DPRBDFT  = 0.
+        SDIX     = NINT(ATSDIX) 
+        DPRELDEN = REAL(IOSDI)/BTSDIX
       ENDDO
       iRet = fsql3_finalize(IoutDBref)
 

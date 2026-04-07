@@ -260,6 +260,8 @@ C----------
       DBHZEIDE=0.
       DBHSTAGE=0.
       DR016=0.
+      ODR016=0.
+      ATDR016=0.      
       DBHSDI=0.
       JSPINDEF=0
       CCCOEF  = 1.0 
