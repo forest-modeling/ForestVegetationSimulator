@@ -511,7 +511,7 @@ C----------
 C  SCALE BASAL AREA.
 C----------
       BA100 = BA/100.
-      ISI = INT(SITEAR(ISISP))
+      ISI = NINT(SITEAR(ISISP))
       IF(ISI.GT.59)ISI=60
       IF(ISI.LT.20)ISI=20
       ISC=INT(REAL(ISI)/10.)

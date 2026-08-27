@@ -1,3 +1,6 @@
+../fiavbc/nvbeqdef.f
+../fiavbc/nvb_region_check.f
+
 ../sn/common/ESPARM.F77
 ../sn/common/PRGPRM.F77
 
@@ -24,7 +27,6 @@
 ../common/GGCOM.F77
 ../common/GLBLCNTL.F77
 ../common/HTCAL.F77
-../common/INCLUDESVN.F77
 ../common/KEYCOM.F77
 ../common/METRIC.F77
 ../common/MULTCM.F77
@@ -82,7 +84,7 @@
 ../ls/cwcalc.f
 ../nc/logs.f
 ../vls/spctrn.f
-../vls/vols.f
+../ie/vols.f
 
 ../vbase/cuts.f
 ../vbase/disply.f
@@ -97,6 +99,9 @@
 ../vbase/ptbal.f
 ../vbase/revise.f
 ../vbase/sdical.f
+
+../vbase/setcubicdflts.f
+
 ../vbase/stkval.f
 ../vbase/sumhed.f
 ../vbase/sumout.f
@@ -204,6 +209,7 @@
 ../base/lbunin.f
 ../base/lnkchn.f
 ../base/lnkint.f
+../base/version.f
 ../base/main.f
 ../base/mbacal.f
 ../base/meansd.f
@@ -299,7 +305,12 @@
 ../vdbsqlite/dbsfmpfc.f
 ../vdbsqlite/dbsstandin.f
 ../vdbsqlite/dbssumry.f
+../vdbsqlite/dbscarbbiosumry.f
+../vdbsqlite/dbsreference.f
 
+../dbsqlite/dbs_fiavbc_atrtls.f
+../dbsqlite/dbs_fiavbc_cutlst.f
+../dbsqlite/dbs_fiavbc_trls.f
 ../dbsqlite/dbsatrtls.f
 ../dbsqlite/dbsblkd.f
 ../dbsqlite/dbscalib.f
@@ -495,7 +506,7 @@
 ../volume/NVEL/r8vol2.f
 ../volume/NVEL/r8vlist.f
 ../volume/NVEL/r8prep.f
-../volume/r9clark_fvsMod.f
+../volume/NVEL/r9clark.f
 ../volume/NVEL/r9clarkdib.f
 ../volume/NVEL/r9init.f
 ../volume/NVEL/r9logs.f

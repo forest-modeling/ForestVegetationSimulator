@@ -51,10 +51,10 @@ c     the fortran routines.
 !DEC$ ATTRIBUTES REFERENCE :: SUMMARY, ICYCLE, NCYCLES, MAXROW
 !DEC$ ATTRIBUTES REFERENCE :: MAXCOL, RTNCODE
       
-      integer :: summary(20),icycle,ncycles,maxrow,maxcol,rtnCode
+      integer :: summary(22),icycle,ncycles,maxrow,maxcol,rtnCode
       
       maxrow = maxcy1
-      maxcol = 20
+      maxcol = 22
       ncycles = ncyc
       if (icycle <= 0 .or. icycle > ncyc+1) then
         rtnCode = 1
@@ -184,8 +184,11 @@ c
         if (action=="get") attr = cfv(:ntrees)
         if (action=="set") cfv(:ntrees) = real(attr,4)
       case ("mcuft")
-        if (action=="get") attr = wk1(:ntrees)
-        if (action=="set") wk1(:ntrees) = real(attr,4)
+        if (action=="get") attr = mcfv(:ntrees)
+        if (action=="set") mcfv(:ntrees) = real(attr,4)
+      case ("scuft")
+        if (action=="get") attr = scfv(:ntrees)
+        if (action=="set") scfv(:ntrees) = real(attr,4)
       case ("bdft")
         if (action=="get") attr = bfv(:ntrees)
         if (action=="set") bfv(:ntrees) = real(attr,4)
@@ -492,6 +495,10 @@ c
         iv=117
       case ("brden2")
         iv=118
+      case ("bhtwtba")
+        iv=119
+      case ("bscuft")
+        iv=120
       case ("habtype")
         iv=126
       case ("slope")
@@ -542,6 +549,26 @@ c
         iv=149
       case ("bsdi2")
         iv=150
+      case ("babvbio")
+        iv=151
+      case ("bmerbio")
+        iv=152
+      case ("bsawbio")
+        iv=153
+      case ("bfolbio")
+        iv=154
+      case ("babvcrb")
+        iv=155
+      case ("bmercrb")
+        iv=156
+      case ("bsawcrb")
+        iv=157
+      case ("bfolcrb")
+        iv=158
+      case ("bgmd")
+        iv=159
+      case ("loccode")
+        iv=160
       case ("atpa")
         iv=201
       case ("atcuft")
@@ -578,6 +605,46 @@ c
         iv=217
       case ("asdi2")
         iv=218
+      case ("ahtwtba")
+        iv=219
+      case ("ascuft")
+        iv=220
+      case ("rscuft")
+        iv=221
+      case ("aabvbio")
+        iv=222
+      case ("rabvbio")
+        iv=223
+      case ("amerbio")
+        iv=224
+      case ("rmerbio")
+        iv=225
+      case ("asawbio")
+        iv=226
+      case ("rsawbio")
+        iv=227
+      case ("aabvcrb")
+        iv=228
+      case ("rabvcrb")
+        iv=229
+      case ("amercrb")
+        iv=230
+      case ("rmercrb")
+        iv=231
+      case ("asawcrb")
+        iv=232
+      case ("rsawcrb")
+        iv=233
+      case ("afolbio")
+        iv=234
+      case ("rfolbio")
+        iv=235
+      case ("afolcrb")
+        iv=236
+      case ("rfolcrb")
+        iv=237
+      case ("agmd")
+        iv=237
       case ("acc")
         iv=301
       case ("mort")
@@ -806,7 +873,21 @@ c
         wk1(itrn)=0.0
         wk2(itrn)=0.
         wk4(itrn)=0.
+        mcfv(itrn)=0.
+        scfv(itrn)=0.
         bfv(itrn)=0.0
+        cull(itrn)=0.
+        decaycd(itrn)=0
+        wdldstem(itrn)=0
+        abvgrd_bio(itrn)=0.
+        merch_bio(itrn)=0.
+        cubsaw_bio(itrn)=0.
+        foli_bio(itrn)=0.
+        abvgrd_carb(itrn)=0.
+        merch_carb(itrn)=0.
+        cubsaw_carb(itrn)=0.
+        foli_carb(itrn)=0.
+        carb_frac(itrn)=0.
         iestat(itrn)=0
         ptbalt(itrn)=0.
         idtree(itrn)=10000000+icyc*10000+itrn

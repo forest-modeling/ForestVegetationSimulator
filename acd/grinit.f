@@ -122,6 +122,7 @@ C----------
       LBAMAX = .FALSE.
       LZEIDE = .FALSE.
       CFMIN = 0.
+      SCFMIN = 0.
       TCFMIN = 0.
       BFMIN = 0.
       BAMIN = 0.
@@ -145,6 +146,7 @@ C----------
    11 CONTINUE
 C----------
       MANAGD = 0
+      ISTDORG = 0
       ALPHA = 0.05
       BJPHI = 0.74
       BJTHET = 0.42

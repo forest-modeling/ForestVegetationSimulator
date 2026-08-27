@@ -40,18 +40,24 @@ C
       INCLUDE 'DBSCOM.F77'
 C
 C
+      include 'wdbkwtdata.inc'
+C
+C
 COMMONS
 C
       CHARACTER*8 TID,CSPECIES
       CHARACTER*2000 SQLStmtStr
       CHARACTER*20 TABLENAME,DTYPE,CREATENAM
-      CHARACTER*5 NTCUFT,NMCUFT,NBDFT
+      CHARACTER*5 NTCUFT,NMCUFT,NSCUFT,NBDFT
       CHARACTER*8 NAMDCF,NAMDBF
       INTEGER IWHO,I,JYR,IP,ITPLAB,IRCODE,IDMR,ICDF,IBDF,IPTBAL,KODE
       INTEGER ISPC,I1,I2,I3
       INTEGER*4 IDCMP1,IDCMP2
       DATA IDCMP1,IDCMP2/10000000,20000000/
       REAL CW,P,DGI,DP,TEM,ESTHT,TREAGE
+      REAL CARBFACT,ABVGRD_BIO,MERCH_BIO,SAW_BIO
+      REAL ABVGRD_CARB,MERCH_CARB,SAW_CARB
+
 C---------
 C     IF TREEOUT IS NOT TURNED ON OR THE IWHO VARIABLE IS NOT 1
 C     THEN JUST RETURN
@@ -70,64 +76,67 @@ C     For CS, LS, NE and SN, the table name is FVS_TreeList_East and the followi
 C     Column names change from: TCuFt, MCuFt, BdFt to MCuFt, SCuFt, SBdFt
 
       IF(TRIM(DBMSOUT).EQ.'EXCEL') THEN
-        IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' .OR. VARACD.EQ.'SN' .OR.
-     -      VARACD.EQ.'NE') THEN
-          TABLENAME = '[FVS_TreeList_East$]'
-          CREATENAM =  'FVS_TreeList_East'
-          NTCUFT  = 'MCuFt'
-          NMCUFT  = 'SCuFt'
-          NBDFT   = 'SBdFt'
-          NAMDCF  = 'Ht2TDMCF'
-          NAMDBF  = 'Ht2TDSCF'
-        ELSE
+    !     IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' .OR. VARACD.EQ.'SN' .OR.
+    !  -      VARACD.EQ.'NE') THEN
+    !       TABLENAME = '[FVS_TreeList_East$]'
+    !       CREATENAM =  'FVS_TreeList_East'
+    !       NTCUFT  = 'MCuFt'
+    !       NMCUFT  = 'SCuFt'
+    !       NBDFT   = 'SBdFt'
+    !       NAMDCF  = 'Ht2TDMCF'
+    !       NAMDBF  = 'Ht2TDSCF'
+    !     ELSE
           TABLENAME = '[FVS_TreeList$]'
           CREATENAM =  'FVS_TreeList'
           NTCUFT  = 'TCuFt'
           NMCUFT  = 'MCuFt'
+          NSCUFT  = 'SCuFt'
           NBDFT   = 'BdFt'
           NAMDCF  = 'Ht2TDCF '
           NAMDBF  = 'Ht2TDBF '
-        ENDIF
+        ! ENDIF
         DTYPE = 'Number'
       ELSEIF(TRIM(DBMSOUT).EQ.'ACCESS') THEN
-        IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' .OR. VARACD.EQ.'SN' .OR.
-     -      VARACD.EQ.'NE') THEN
-          TABLENAME = 'FVS_TreeList_East'
-          CREATENAM = 'FVS_TreeList_East'
-          NTCUFT  = 'MCuFt'
-          NMCUFT  = 'SCuFt'
-          NBDFT   = 'SBdFt'
-          NAMDCF  = 'Ht2TDMCF'
-          NAMDBF  = 'Ht2TDSCF'
-        ELSE
+    !     IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' .OR. VARACD.EQ.'SN' .OR.
+    !  -      VARACD.EQ.'NE') THEN
+    !       TABLENAME = 'FVS_TreeList_East'
+    !       CREATENAM = 'FVS_TreeList_East'
+    !       NTCUFT  = 'MCuFt'
+    !       NMCUFT  = 'SCuFt'
+    !       NBDFT   = 'SBdFt'
+    !       NAMDCF  = 'Ht2TDMCF'
+    !       NAMDBF  = 'Ht2TDSCF'
+    !     ELSE
           TABLENAME = 'FVS_TreeList'
           CREATENAM = 'FVS_TreeList'
           NTCUFT  = 'TCuFt'
           NMCUFT  = 'MCuFt'
+          NSCUFT  = 'SCuFt'
           NBDFT   = 'BdFt'
           NAMDCF  = 'Ht2TDCF '
           NAMDBF  = 'Ht2TDBF '
-        ENDIF
+        ! ENDIF
         DTYPE = 'Double'
       ELSE
-        IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' .OR. VARACD.EQ.'SN' .OR.
-     -      VARACD.EQ.'NE') THEN
-          TABLENAME = 'FVS_TreeList_East'
-          CREATENAM = 'FVS_TreeList_East'
-          NTCUFT  = 'MCuFt'
-          NMCUFT  = 'SCuFt'
-          NBDFT   = 'SBdFt'
-          NAMDCF  = 'Ht2TDMCF'
-          NAMDBF  = 'Ht2TDSCF'
-        ELSE
+    !     IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' .OR. VARACD.EQ.'SN' .OR.
+    !  -      VARACD.EQ.'NE') THEN
+    !       TABLENAME = 'FVS_TreeList_East'
+    !       CREATENAM = 'FVS_TreeList_East'
+    !       NTCUFT  = 'MCuFt'
+    !       NMCUFT  = 'SCuFt'
+    !       NBDFT   = 'SBdFt'
+    !       NAMDCF  = 'Ht2TDMCF'
+    !       NAMDBF  = 'Ht2TDSCF'
+    !     ELSE
           TABLENAME = 'FVS_TreeList'
           CREATENAM = 'FVS_TreeList'
           NTCUFT  = 'TCuFt'
           NMCUFT  = 'MCuFt'
+          NSCUFT  = 'SCuFt'
           NBDFT   = 'BdFt'
           NAMDCF  = 'Ht2TDCF '
           NAMDBF  = 'Ht2TDBF '
-        ENDIF
+        ! ENDIF
         DTYPE = 'real'
       ENDIF
 
@@ -177,7 +186,14 @@ C     IF NOT, THEN WE NEED TO CREATE IT
      -             'PtBAL double null,'//
      -             NTCUFT // ' double null,'//
      -             NMCUFT // ' double null,'//
+     -             NSCUFT // ' double null,'// 
      -             NBDFT  // ' double null,'//
+     -             'AbvGrd_Bio double null,'//
+     -             'Merch_Bio double null,'//
+     -             'Sawtimber_Bio double null,'//
+     -             'AbvGrd_Carbon double null,'//
+     -             'Merch_Carbon double null,'//
+     -             'Sawtimber_Carbon dbouble null,'//
      -             'MDefect int null,'//
      -             'BDefect int null,'//
      -             'TruncHt int null,'//
@@ -212,7 +228,14 @@ C     IF NOT, THEN WE NEED TO CREATE IT
      -             'PtBAL Number null,'//
      -             NTCUFT // ' Number null,'//
      -             NMCUFT // ' Number null,'//
+     -             NSCUFT // ' Number null,'// 
      -             NBDFT  // ' Number null,'//
+     -             'AbvGrd_Bio Number null,'//
+     -             'Merch_Bio Number null,'//
+     -             'Sawtimber_Bio Number null,'//
+     -             'AbvGrd_Carbon Number null,'//
+     -             'Merch_Carbon Number null,'//
+     -             'Sawtimber_Carbon Number null,'//
      -             'MDefect int null,'//
      -             'BDefect int null,'//
      -             'TruncHt int null,'//
@@ -246,7 +269,14 @@ C     IF NOT, THEN WE NEED TO CREATE IT
      -             'PtBAL real null,'//
      -             NTCUFT // ' real null,'//
      -             NMCUFT // ' real null,'//
+     -             NSCUFT // ' real null,'// 
      -             NBDFT  // ' real null,'//
+     -             'AbvGrd_Bio real null,'//
+     -             'Merch_Bio real null,'//
+     -             'Sawtimber_Bio real null,'//
+     -             'AbvGrd_Carbon real null,'//
+     -             'Merch_Carbon real null,'//
+     -             'Sawtimber_Carbon real null,'//
      -             'MDefect int null,'//
      -             'BDefect int null,'//
      -             'TruncHt int null,'//
@@ -334,6 +364,15 @@ C           GET DG INPUT
             DGI=DG(I)
             IF(ICYC.EQ.0 .AND. TEM.EQ.0) DGI=WORK1(I)
 
+            CARBFACT = 0
+            CARBFACT = WDBKWT(FIASJSP(ISP(I)),12)
+            ABVGRD_BIO = DRYBIO(1,I)+DRYBIO(13,I)
+            MERCH_BIO  = DRYBIO(6,I)+DRYBIO(8,I)
+            SAW_BIO    = DRYBIO(6,I)
+            ABVGRD_CARB = ABVGRD_BIO * CARBFACT
+            MERCH_CARB = MERCH_BIO * CARBFACT
+            SAW_CARB = SAW_BIO * CARBFACT
+
 C
 C           DETERMINE PREFERED OUTPUT FORMAT FOR SPECIES CODE
 C           KEYWORD OVER RIDES
@@ -357,7 +396,9 @@ C
      -           'TreeId,TreeIndex,Species,TreeVal,SSCD,PtIndex,TPA,',
      -           'MortPA,DBH,DG,',
      -           'HT,HTG,PctCr,CrWidth,MistCD,BAPctile,PtBAL,',
-     -           NTCUFT,',',NMCUFT,',',NBDFT,',',
+     -           NTCUFT,',',NMCUFT,',',NSCUFT,',',NBDFT,',',
+     -           'AbvGrd_Bio,Merch_Bio,Sawtimber_Bio,'
+     -           'AbvGrd_Carbon,Merch_Carbon,Sawtimber_Carbon,'
      -           'MDefect,BDefect,TruncHt,EstHt,ActPt,',
      -           NAMDCF,',',NAMDBF,',','TreeAge) VALUES(''',
      -           CASEID,''',''',TRIM(NPLT),
@@ -365,7 +406,10 @@ C
      -           trim(CSPECIES),"',",IMC(I),',',ISPECL(I),',',ITRE(I),
      -           ',',P,',',DP,',',DBH(I),',',DGI,',',HT(I),',',HTG(I),
      -           ',',ICR(I),',',CW,',',IDMR,',',PCT(I),',',IPTBAL,',',
-     -           CFV(I),',',WK1(I),',',BFV(I),',',ICDF,',',IBDF,',',
+     -           CFV(I),',',MCFV(I),',',SCFV(I),',',BFV(I),','
+     -           ABVGRD_BIO,',',MERCH_BIO,',',SAW_BIO,','
+     -           ABVGRD_CARB,',',MERCH_CARB,',',SAW_CARB,','
+     -           ,ICDF,',',IBDF,',',
      -           ((ITRUNC(I)+5)/100),',',ESTHT,',',IPVEC(ITRE(I)),
      -           ',',HT2TD(I,2),',',HT2TD(I,1),',',TREAGE,')'
 
@@ -425,6 +469,15 @@ C       CYCLE 0, PRINT INPUT DG ONLY, UNLESS DIRECTED TO PRINT ESTIMATES.
 C       PUT PROB IN MORTALITY COLUMN
         DP = P
         P = 0.
+C       GET BIOMASS AND CARBON
+        CARBFACT = 0
+        CARBFACT = WDBKWT(FIASJSP(ISP(I)),12)
+        ABVGRD_BIO = DRYBIO(1,I)+DRYBIO(13,I)
+        MERCH_BIO  = DRYBIO(6,I)+DRYBIO(8,I)
+        SAW_BIO    = DRYBIO(6,I)
+        ABVGRD_CARB = ABVGRD_BIO * CARBFACT
+        MERCH_CARB = MERCH_BIO * CARBFACT
+        SAW_CARB = SAW_BIO * CARBFACT
 
 C
 C       DETERMINE PREFERED OUTPUT FORMAT FOR SPECIES CODE
@@ -449,7 +502,9 @@ C
      -       'TreeId,TreeIndex,Species,TreeVal,SSCD,PtIndex,TPA,',
      -       'MortPA,DBH,DG,',
      -       'HT,HTG,PctCr,CrWidth,MistCD,BAPctile,PtBAL,',
-     -       NTCUFT,',',NMCUFT,',',NBDFT,',',
+     -       NTCUFT,',',NMCUFT,',',NSCUFT,',',NBDFT,',',
+     -       'AbvGrd_Bio,Merch_Bio,Sawtimber_Bio,'
+     -       'AbvGrd_Carbon,Merch_Carbon,Sawtimber_Carbon,'
      -       'MDefect,BDefect,TruncHt,EstHt,ActPt,',
      -       NAMDCF,',',NAMDBF,',','TreeAge) VALUES(''',
      -       CASEID,''',''',TRIM(NPLT),
@@ -457,7 +512,10 @@ C
      -       ",'",trim(CSPECIES),"',",IMC(I),',',ISPECL(I),',',ITRE(I),
      -       ',',P,',',DP,',',DBH(I),',',DGI,',',HT(I),',',HTG(I),
      -       ',',ICR(I),',',CW,',',IDMR,',',PCT(I),',',IPTBAL,',',
-     -       CFV(I),',',WK1(I),',',BFV(I),',',ICDF,',',IBDF,',',
+     -       CFV(I),',',MCFV(I),',',SCFV(I),',',BFV(I),','
+     -       ABVGRD_BIO,',',MERCH_BIO,',',SAW_BIO,','
+     -       ABVGRD_CARB,',',MERCH_CARB,',',SAW_CARB,','
+     -       ,ICDF,',',IBDF,',',
      -       ((ITRUNC(I)+5)/100),',',ESTHT,',',IPVEC(ITRE(I)),
      -       ',',HT2TD(I,2),',',HT2TD(I,1),',',TREAGE,')'
 

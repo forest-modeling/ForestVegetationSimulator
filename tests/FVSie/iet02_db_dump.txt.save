@@ -1,7 +1,8 @@
-FVS_ATRTList        FVS_DM_Stnd_Sum     FVS_Regen_Ingrow    FVS_Stats_Stand   
-FVS_Cases           FVS_DM_Sz_Sum       FVS_Regen_SitePrep  FVS_StrClass      
-FVS_CutList         FVS_Error           FVS_Regen_Tally     FVS_Summary       
-FVS_DM_Spp_Sum      FVS_Regen_HabType   FVS_Stats_Species   FVS_TreeList      
+FVS_ATRTList        FVS_DM_Sz_Sum       FVS_Regen_SitePrep  FVS_Summary       
+FVS_Cases           FVS_Error           FVS_Regen_Tally     FVS_TreeList      
+FVS_CutList         FVS_InvReference    FVS_Stats_Species 
+FVS_DM_Spp_Sum      FVS_Regen_HabType   FVS_Stats_Stand   
+FVS_DM_Stnd_Sum     FVS_Regen_Ingrow    FVS_StrClass      
 S248112,"UNTHINNED CONTROL.",iet01,11.0,IE
 S248112,"TEST EXPANDED THINDBH OPTION",iet01,11.0,IE
 S248112,"SHELTERWOOD PRESCRIPTION FROM THE USER MANUAL",iet01,11.0,IE
@@ -67,7 +68,7 @@ FVS_Regen_Ingrow----,6
 FVS_Regen_SitePrep--,3
 FVS_Regen_Tally-----,57
 FVS_Stats_Species---,28
-FVS_Stats_Stand-----,16
+FVS_Stats_Stand-----,24
 FVS_StrClass--------,DF,LP
 FVS_StrClass--------,DF,LP
 FVS_StrClass--------,GF,DF

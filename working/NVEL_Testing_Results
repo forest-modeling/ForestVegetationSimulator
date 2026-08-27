@@ -1,0 +1,548 @@
+# Variant Overview of NVEL Potential Issues
+
+* Direct Volume Equations (DEVW)
+  According to an email from Yingfang (7/17/2024) DVE (Direct Volume Equation) equations are fixed top and cannot be modified.  
+
+  * Chojnacky (DVEW)
+    * R2OLDV Some species get a secondary product cubic volume, which appears to be merchantable volume above a 6" top and a set 4" primary top.  Other species set merchantable cubic to total cubic.
+
+    * R3D2 Top diameters are fixed, but total, merch, and secondary are computed independently.  
+
+    * R4D2H Calculates cubic volume.  Top diameter is fixed and total volume value returned is same as merchantable volume.
+
+  * Eager Mill (DVEW)
+  Appears to calculate total, merch (6" top) and secondary as topwood, as difference between material above 6" top and material above 4" top
+  
+  * Edminster (DVEW)
+  Some species such as Engleman spruce and ponderosa pine has fixed 4" merch top, topwood (V(7)) is computed if a primary product top is set to greater than 6", but is based on a 6" primary top if entered value is greater.  Many other species set merchantable volume to same as total volume.  
+  
+  * Gevorkiantz (900DVEE)
+  Sawlog top diameter is read and used.  Secondary product top if fixed at 4"
+
+  * Hann and Bare (DVEW)
+  Part of R3D2HV routine.  Computes total, merch (fixed 4" top), and secondary as difference between 6" top and 4" top
+  
+  * Kemp (DVEW)
+  DVEST Subroutine calls R1KEMP subroutine, which has a PROD input, but no **top diameter parameter**.  Top diameter is fixed and total volume value returned is same as merchantable volume.  
+  
+  * Larson (DVEW)
+  DVEST (Direct Volume Estimator?) subroutine makes call to R10D2H with MTOPP variable.  Merchantable cubic foot volume is computed through calculation using DBH^2 * HT, no top diameter involved in computation.  
+
+  * N Central Station (DVEW)
+  R1ALLENC --> Paper birch and cottonwood Total volume = Merch volume, other species utilize primary top diameter.  No secondary volume generated.
+
+  * Pillsbury and Kirkley (DEVW)
+  Subroutine DVEST calls R5HARV, which only accepts MTOPP, no secondary product top.
+
+    * Juniper species appears to be defaulted to 4" top by the coefficients, not modifiable.
+    * Giant Sequoia doesn't appear to take top dia into account either.
+    * Misc hardwood species bases cubic foot volume on a 2" range for top diameter (3:5,5:7,7:9).  Secondary product cubic volume appears to be based on 4" top.
+
+* Flewelling Profile 32ft Log Rule
+Subroutine MERLEN returns the merchantable length from stump to specified top, and sets HT1PRD.  Also is basis for N16SEG variable assignment in profile.f, and NUMSEG as set in NUMLOG call.  Subsequently, LOGLEN is computed in SEGMNT routine to determine length of available logs.
+
+Merchantable cubic foot volume (V(4)) is based on the MERLEN and LOGLEN.  No secondary product cubic volume (V(7)) is returned.
+
+* Flewelling Profile 2-Point Profile
+Both primary product and secondary top diameters appear to function properly and independantly and impact their product estimates.  
+
+* Curtis Profile 32ft Log Rule (32CURW)
+Trees less than 40ft in height or less than 9" DOB are assigned the same volume for total cubic and merchantable cubic without regard to top diameter.  MTOPP appears to be considered for trees over these limits.  Secondary product cubic volumes (V(7)) are not computed.
+
+* Behre's Hyperbola (BEHW)
+Accepts variable primary top diameter but does not compute secondary product ie. no V(7) computed.
+
+* Demars Profile (DWMW)
+Trees less than 40ft in height or less than 9" DOB are assigned the same volume for total cubic and merchantable cubic without regard to top diameter.  MTOPP appears to be considered for trees over these limits.  Secondary product cubic volumes (V(7)) are not computed.
+
+* Wensel and Olsen Profile (500WO2W)
+Both primary product and secondary top diameters appear to function properly and independantly and impact their product estimates.
+
+* Rustagi Loveless Profile Model (MATW)
+r4vol subroutine does not take MTOPS as a parameter, but does calculate volume based on a modifiable primary top diameter.  The V(7) value returned is from primary merchantible top to tip of tree.  This is true for all 400MATW*** computations.
+
+* Clark Equations (900CLKE)
+Both primary product and secondary top diameters appear to function properly and independantly and impact their product estimates.
+
+## AK - Alaska
+
+### AK Variant Eqution Models
+
+* Flewelling Profile 32ft Log Rule (F32W)
+* Demars Profile Model (DEMW)
+* Larson Volume Equation (DVEW)
+* Curtis Profile Model 32ft Log Rule (CURW)
+
+#### Demars Profile Model (DEMW)
+
+Trees less than 40ft in height or less than 9" DOB are assigned the same volume for total cubic and merchantable cubic without regard to top diameter.  MTOPP appears to be considered for trees over these limits.  Secondary product cubic volumes (V(7)) are not computed.
+
+#### Larson Volume Equation (DVEW)
+
+According to an email from Yingfang (7/17/2024) DVE (Direct Volume Equation) equations are fixed top and cannot be modified.  
+
+DVEST (Direct Volume Estimator?) subroutine makes call to R10D2H with MTOPP variable.  
+
+Merchantable cubic foot volume is computed through calculation using DBH^2 * HT, no top diameter involved in computation.  
+
+#### Flewelling Profile 32ft Log Rule (F32W)
+
+Subroutine MERLEN returns the merchantable length from stump to specified top, and sets HT1PRD.  Also is basis for N16SEG variable assignment in profile.f, and NUMSEG as set in NUMLOG call.  Subsequently, LOGLEN is computed in SEGMNT routine to determine length of available logs.
+
+Merchantable cubic foot volume (V(4)) is based on the MERLEN and LOGLEN.  No secondary product cubic volume (V(7)) is returned.
+
+#### Curtis Profile Model 32ft Log Rule
+
+Trees less than 40ft in height or less than 9" DOB are assigned the same volume for total cubic and merchantable cubic without regard to top diameter.  MTOPP appears to be considered for trees over these limits.  Secondary product cubic volumes (V(7)) are not computed.
+
+| Location | Volume Category | Result            | Equation to Review    |
+|---------|------------------|-------------------|-----------------------|
+| 1004    | 1                | Works as modified |                       |
+| 1005    | 1                | Works as modified |                       |
+|  703    | 1                | Works as modified |                       |
+|  713    | 2                | Does not Match    | SF (011) 'A01DEMW000' |
+|         |                  |                   | AF (019) 'A01DEMW000' |
+|         |                  |                   | SS (098) 'A00F32W098' |
+|         |                  |                   | LP (108) 'A01DEMW000' |
+|         |                  |                   | RC (242) 'A01DEMW000' |
+|         |                  |                   | WH (263) 'A00F32W260' |
+|         |                  |                   | MH (264) 'A01DEMW000' |
+|         |                  |                   | RA (351) 'A32CURW351' |
+|  720    | 2                | Does not Match    | See 713               |
+| 7400    | 2                | Does not Match    | See 713               |
+| 7401    | 2                | Does not Match    | See 713               |
+| 7402    | 2                | Does not Match    | See 713               |
+| 7403    | 2                | Does not Match    | See 713               |
+| 7404    | 2                | Does not Match    | See 713               |
+| 7405    | 2                | Does not Match    | See 713               |
+| 7406    | 2                | Does not Match    | See 713               |
+| 7407    | 2                | Does not Match    | See 713               |
+| 7408    | 2                | Does not Match    | See 713               |
+| 8112    | 1                | Works as Modified | See 713               |
+| 8134    | 1                | Works as Modified | See 713               |
+| 8135    | 1                | Works as Modified | See 713               |
+
+### A01DEMW000
+
+The r10vol and r10volo NVEL routines do not compute a secondary product cubic volume (V(7)), only primary product volume (V(4)).  Volume differences come from value of MTOPP (merchantable top diameter of primary product).
+
+Potential work around by calling VOLINIT in two seperate calls, first call with MTOPP set to smaller top diameter (TOPD) rather than sawtimber / board foot top diameter to set total merchantible cubic foot volume from V(4) position, and secondary call to VOLINIT with larger sawtimber top diameter as MTOPP to return cubic sawtimber volume, which will need to be pulled from V(4).
+
+### A00F32W098
+
+Subroutine MERLEN returns the merchantable length from stump to specified top, and sets HT1PRD.  Also is basis for N16SEG variable assignment in profile.f, and NUMSEG as set in NUMLOG call.  Subsequently, LOGLEN is computed in SEGMNT routine to determine length of available logs.
+
+Merchantable cubic foot volume (V(4)) is based on the MERLEN and LOGLEN.  No secondary product cubic volume (V(7)) is returned.
+
+Work around noted in 'A01DEMW000' should work.  
+
+### A32CURW351
+
+This equation utilizes the R10vol and R10volo routines as described above.
+
+## BM - Blue Mountains
+
+All tests runs matched between existing and modified versions of NVEL call
+
+### BM Variant Eqution Models
+
+* Behre's Hyperbola
+* Flewelling 2-Point Profile Model
+
+### BM - Flewelling 2-Point Profile Model
+
+Both primary product and secondary top diameters appear to function properly and independantly and impact their product estimates.  
+
+### BM - Behre's Hyperbola
+
+Accepts variable primary top diameter but does not compute secondary product ie. no V(7) computed.
+
+## CA - Inland California and Southern Cascades
+
+* Wensel and Olsen Profile Model (500WO2W**)
+* Behre's Hyperbola (BEHW)
+* Flewelling's 2-Point Profile Model (FW2W)
+* Pillsbury and Kirkley (DEVW)
+
+### CA - Wensel and Olsen Profile Model
+
+Both primary product and secondary top diameters appear to function properly and independantly and impact their product estimates.
+
+### CA - Behre's Hyperbola
+
+Accepts variable primary top diameter but does not compute secondary product ie. no V(7) computed.
+
+### CA - Pillsbury and Kirkley (DEVW)
+
+Subroutine DVEST calls R5HARV, which only accepts MTOPP, no secondary product top.
+
+* Juniper species appears to be defaulted to 4" top by the coefficients, not modifiable.
+* Giant Sequoia doesn't appear to take top dia into account either.
+* Misc hardwood species bases cubic foot volume on a 2" range for top diameter (3:5,5:7,7:9).  Secondary product cubic volume appears to be based on 4" top.
+
+
+| Location | Result            | Equation to Review    |
+|----------|-------------------|-----------------------|
+| 505      | Issue Noted       | CN (251) '500DVEW807' |
+|          |                   | BM (312) '500DVEW312' |
+|          |                   | BU (333) '500DVEW807' |
+|          |                   | MA (361) '500DVEW361' |
+|          |                   | GC (431) '500DVEW431' |
+|          |                   | DG (492) '500DVEW807' |
+|          |                   | FL (542) '500DVEW807' |
+|          |                   | WN (600) '500DVEW818' |
+|          |                   | TO (631) '500DVEW631' |
+|          |                   | SY (730) '500DVEW818' |
+|          |                   | AS (746) '500DVEW818' |
+|          |                   | CW (747) '500DVEW818' |
+|          |                   | LO (801) '500DVEW801' |
+|          |                   | CY (805) '500DVEW805' |
+|          |                   | BL (807) '500DVEW807' |
+|          |                   | EO (811) '500DVEW811' |
+|          |                   | WO (815) '500DVEW815' |
+|          |                   | BO (818) '500DVEW818' |
+|          |                   | VO (821) '500DVEW821' |
+|          |                   | IO (839) '500DVEW839' |
+|          |                   | WI (920) '500DVEW807' |
+|          |                   | CL (981) '500DVEW981' |
+|          |                   | OH (998) '500DVEW801' |
+| 506      | Issue Noted       | See 505               |
+| 508      | Issue Noted       | See 505               |
+| 511      | Issue Noted       | See 505               |
+| 514      | Issue Noted       | See 505               |
+| 610      | Works as Modified |                       |
+| 611      | Works as Modified |                       |
+| 710      | Works as Modified |                       |
+| 711      | Works as Modified |                       |
+| 712      | Works as Modified |                       |
+
+### 500DVEW807
+
+Subroutine DVEST calls R5HARV, which only accepts MTOPP, no secondary product top.
+
+* Juniper species appears to be defaulted to 4" top by the coefficients, not modifiable.
+* Giant Sequoia doesn't appear to take top dia into account either.
+* Misc hardwood species bases cubic foot volume on a 2" range for top diameter (3:5,5:7,7:9).  Secondary product cubic volume appears to be based on 4" top.
+
+```FORTRAN
+C************************************************
+    
+      ELSE 
+        TOPC = MTOPP
+        D = DBHOB
+        BA = D**2 * 0.005454154
+        CV4 = COFA(SPEC,1) * DBHOB**COFA(SPEC,2)*HTTOT**COFA(SPEC,3) * 
+     >        IV**COFA(SPEC,4)
+        CV8 = COFB(SPEC,1) * DBHOB**COFB(SPEC,2)*HTTOT**COFB(SPEC,3) * 
+     >        IV**COFB(SPEC,4)
+        IF (CV4.GT.0.AND.CV8.GT.0) THEN
+          CV6 = CV4-((CV4-CV8)*.4)
+        ELSE
+          CV6=0
+        ENDIF
+        CVT = COFC(SPEC,1) * DBHOB**COFC(SPEC,2)*HTTOT**COFC(SPEC,3) *
+     >        IV**COFC(SPEC,4)
+        IF (TOPC.ge.3 .and. topc.lt. 5) THEN
+           CUFTGROS = CV4
+        ELSEIF (TOPC.ge.5 .and. topc.lt.7) THEN
+           CUFTGROS = CV6
+        ELSEIF (TOPC.ge.7 .and. topc.le.9) THEN
+           CUFTGROS = CV8
+        ELSEIF(TOPC.lt.3)THEN
+           CUFTGROS = CVT
+        ELSE
+           CUFTGROS = 0.0
+        ENDIF
+        VOL(4) = CUFTGROS
+        VOL(7) = CV4-CUFTGROS
+        vol(1) = cvt
+C END CUFT CALCULATIONS
+```
+
+**In the CA variant, top diameter isn't relevant for some species and secondary product top diameter is set to 4" for other species.  The two call system may be an improvement in some instances, but useless for some species.**
+
+## CI - Central Idaho
+
+* Flewelling 2-Point Profile Model (FW2W)
+* Rustagi Loveless Profile Model (MATW)
+* Behres Hyperbola (BEHW)
+* Chojnacky (DVEW)
+* Kemp (DVEW)
+* Edminster (DVEW)
+
+### CI - R1 Kemp (Direct Volume Equation)
+
+DVEST Subroutine calls R1KEMP subroutine, which has a PROD input, but no **top diameter parameter**.  Top diameter is fixed and total volume value returned is same as merchantable volume.  
+
+### CI - Chojnacky (Direct Volume Equation)
+
+R4D2H Calculates cubic volume.  Top diameter is fixed and total volume value returned is same as merchantable volume.  
+
+### CI - Edminster (Direct Volume Equation)
+
+Some species such as Engleman spruce and ponderosa pine has fixed 4" merch top, topwood (V(7)) is computed if a primary product top is set to greater than 6", but is based on a 6" primary top if entered value is greater.  Many other species set merchantable volume to same as total volume.  
+
+### CI - Rustagi Loveless (MATW)
+
+r4vol subroutine does not take MTOPS as a parameter, but does calculate volume based on a modifiable primary top diameter.  The V(7) value returned is from primary merchantible top to tip of tree.  This is true for all 400MATW*** computations.
+
+| Location | Result            | Equation to Review    |
+|----------|-------------------|-----------------------|
+| 402      | Issue Noted       | AF (019) '400MATW019' |
+|          |                   | WL (073) '400MATW073' |
+|          |                   | WB (101) '400MATW108' |
+|          |                   | LP (108) '400MATW108' |
+|          |                   | LM (113) '400MATW108' |
+|          |                   | WP (119) '400MATW117' |
+|          |                   | RC (242) '400MATW081' |
+|          |                   | WH (263) '400MATW015' |
+|          |                   | OS (299) '400MATW108' |
+|          |                   | AS (746) '400MATW746' |
+|          |                   | OH (998) '400MATW108' |
+| 406      | Issue Noted       | GF (017) '400MATW015' |
+|          |                   | AF (019) '400MATW019' |
+|          |                   | WL (073) '400MATW073' |
+|          |                   | ES (093) '400MATW093' |
+|          |                   | WB (101) '400MATW108' |
+|          |                   | LP (108) '400MATW108' |
+|          |                   | LM (113) '400MATW108' |
+|          |                   | WP (119) '400MATW117' |
+|          |                   | PP (122) '400MATW122' |
+|          |                   | DF (202) '400MATW202' |
+|          |                   | RC (242) '400MATW081' |
+|          |                   | WH (263) '400MATW015' |
+|          |                   | OS (299) '400MATW108' |
+|          |                   | AS (746) '400MATW746' |
+|          |                   | OH (998) '400MATW108' |
+| 412      | Issue Noted       | See Location 402      |
+| 413      | Issue Noted       | See Location 402      |
+| 414      | Issue Noted       | See Location 406      |
+
+### 102DVEW060
+
+DVEST Subroutine calls R1KEMP subroutine, which has a PROD input, but no **top diameter parameter**.  A PROD value of '02' is used to assign a KLASS value of 3, while a PROD value of '01' translates to a KLASS value of 4.  
+
+### 400MATW019
+
+r4vol subroutine does not take MTOPS as a parameter, but does calculate volume based on a modifiable primary top diameter.  The V(7) value returned is from primary merchantible top to tip of tree.  This is true for all 400MATW*** computations.
+
+The methodologies mentioned in the AK Variant discussion could be a viable work around.
+
+## CR - Central Rockies
+
+* Flewelling 2-Point Profile Model (FW2W)
+* Hann and Bare (DVEW)
+* Chojnacky (DVEW)
+* Eager Mill (DVEW)
+
+### CR - Chojnacky
+
+R2OLDV Some species get a secondary product cubic volume, which appears to be merchantable volume above a 6" top and a set 4" primary top.  Other species set merchantable cubic to total cubic.
+R3D2 Top diameters are fixed, but total, merch, and secondary are computed independently.  
+
+### CR - Hann and Bare
+
+Part of R3D2HV routine.  Computes total, merch (fixed 4" top), and secondary as difference between 6" top and 4" top
+
+### CR - Edgar Mill
+
+Appears to calculate total, merch (6" top) and secondary as topwood, as difference between material above 6" top and material above 4" top
+
+
+| Location | Result            | Equation to Review    |
+|----------|-------------------|-----------------------|
+| 202      | Issue Noted       | WF (015) '200FW2W015' |
+|          |                   | GF (017) 'I00FW2W019' |
+|          |                   | CB (018) 'I00FW2W019' |
+|          |                   | AF (019) 'I00FW2W019' |
+|          |                   | WL (073) '407FW2W093' |
+|          |                   | ES (093) '407FW2W093' |
+|          |                   | WS (094) '407FW2W093' |
+|          |                   | BS (096) '407FW2W093' |
+|          |                   | WB (101) '200FW2W122' |
+|          |                   | BC (102) '200FW2W122' |
+|          |                   | LP (108) '200FW2W108' |
+|          |                   | LM (113) '200FW2W122' |
+|          |                   | SW (114) '200FW2W122' |
+|          |                   | CI (118) '200FW2W122' |
+|          |                   | PP (122) '200FW2W122' |
+|          |                   | DF (202) '200FW2W202' |
+|          |                   | AS (746) '200FW2W746' |
+| 203      | Works as Modified |  |
+| 204      | Issue Noted       | See Location 202  |
+| 206      | Issue Noted       | See Location 202  |
+| 207      | Works as Modified |  |
+| 209      | Issue Noted       | See Location 202  |
+| 210      | Issue Noted       | See Location 202  |
+| 212      | Issue Noted       | See Location 202  |
+| 213      | Issue Noted       | See Location 202  |
+| 214      | Issue Noted       | See Location 202  |
+| 215      | Issue Noted       | See Location 202  |
+| 301      | Issue Noted       | Above and include: |
+|          |                   | AJ (063) '300DVEW060' |
+|          |                   | UJ (065) '300DVEW060' |
+|          |                   | RM (066) '300DVEW060' |
+|          |                   | ER (068) '300DVEW060' |
+|          |                   | OJ (069) '300DVEW060' |
+|          |                   | PM (133) '300DVEW106' |
+|          |                   | PD (134) '300DVEW106' |
+|          |                   | AZ (143) '300DVEW106' |
+|          |                   | OS (299) '300DVEW060' |
+|          |                   | PB (375) '300DVEW999' |
+|          |                   | PW (745) '300DVEW999' |
+|          |                   | NC (749) '300DVEW999' |
+|          |                   | AW (803) '300DVEW800' |
+|          |                   | EM (810) '300DVEW800' |
+|          |                   | GO (814) '300DVEW800' |
+|          |                   | BK (823) '300DVEW800' |
+|          |                   | SO (843) '300DVEW800' |
+|          |                   | OH (998) '300DVEW999' |
+| 302      | Issue Noted       |  |
+| 303      | Issue Noted       |  |
+| 304      | Issue Noted       |  |
+| 305      | Issue Noted       |  |
+| 306      | Issue Noted       |  |
+| 307      | Issue Noted       |  |
+| 308      | Issue Noted       |  |
+| 309      | Issue Noted       |  |
+| 310      | Issue Noted       |  |
+| 312      | Issue Noted       |  |
+
+### 200FW2W015
+
+The profile subroutine calls TCUBIC subroutine.  MTOPS sets TIPD which is limited to a maximum value of 4.  However, this routine only computes total cubic volume (V(1)).  Elsewhere in the profile subroutine, a call to MERLEN calculates the merchantable length to specified top diameter (MTOPP).  NUMSEG is then calculated in NUMLOG from the LMERCH variable.  This NUMSEG is then used to compute merchantable volume (V(4)).  
+
+## CS - Central States
+
+* Clark Equations (900CLKE)
+* Gevorkiantz (900DVEE)
+
+### CS - Clark Equations
+
+Both primary product and secondary top diameters appear to function properly and independantly and impact their product estimates.
+
+### CS - Gevorkiantz Equations
+
+Sawlog top diameter is read and used.  Secondary product top if fixed at 4"
+
+## EC - Eastern Cascades
+
+* Flewellings 2-Point Profile Model
+* Behre's Hyperbola
+
+### EC - Flewellings 2-Point Profile Model
+
+Both primary product and secondary top diameters appear to function properly and independantly and impact their product estimates.  
+
+### EC - Behre's Hyperbola
+
+Accepts variable primary top diameter but does not compute secondary product ie. no V(7) computed.
+
+## EM - Eastern Montana
+
+* Flewellings 2-Point Profile Model
+* Kemp Equation
+* N Central Station 
+
+### EM - Flewellings 2-Point Profile Model
+
+Both primary product and secondary top diameters appear to function properly and independantly and impact their product estimates.
+
+### EM - Kemp Equation
+
+DVEST Subroutine calls R1KEMP subroutine, which has a PROD input, but no **top diameter parameter**.  Top diameter is fixed and total volume value returned is same as merchantable volume.
+
+### EM - N Central Station
+
+R1ALLENC --> Paper birch and cottonwood Total volume = Merch volume, other species utilize primary top diameter.  No secondary volume generated.
+
+## IE - Inland Empire
+
+* Flewelling 2-Point
+* Behre's Hyperbola
+* Kemp 
+* Edminster
+* N Central Station
+
+### IE - Edminster (200DVEW###)
+
+R2OLDV Some species get a secondary product cubic volume, which appears to be merchantable volume above a 6" top and a set 4" primary top.  Other species set merchantable cubic to total cubic.
+
+### IE - N Central Station
+
+R1ALLENC --> Paper birch and cottonwood Total volume = Merch volume, other species utilize primary top diameter.  No secondary volume generated.
+
+## KT - Kootenai
+
+* KT - Flewelling 2-Point Profile
+
+## NC - Klamath Mountains
+
+* Wensel and Olsen Profile Model
+* Behre's Hyperbola
+* Pillsbury and Kirkley
+
+### NC - Pillsbury and Kirkley
+
+Subroutine DVEST calls R5HARV, which only accepts MTOPP, no secondary product top.
+
+* Juniper species appears to be defaulted to 4" top by the coefficients, not modifiable.
+* Giant Sequoia doesn't appear to take top dia into account either.
+* Misc hardwood species bases cubic foot volume on a 2" range for top diameter (3:5,5:7,7:9).  Secondary product cubic volume appears to be based on 4" top.
+
+### NC - Behre's Hyperbola
+
+Accepts variable primary top diameter but does not compute secondary product ie. no V(7) computed.
+
+## OC - ORGANON Southwest Oregon
+
+* Wensel and Olsen
+* Behre's Hyperbola
+* Flewelling 2-Point
+* Pillsbury and Kirkley
+
+## OP - ORGANON Pacific NW
+
+* Behre's Hyperbola
+* Flewelling 2-Point Profile
+
+## PN - Pacific NW
+
+* Behre's Hyperbola
+* Flewelling 2-Point Profile
+
+## SO - South Central Oregon
+
+* Wensel and Olsen Profile
+* Behre's Hyperbola
+* Flewelling INGY 2-Point
+* Pillsbury Kirkley
+
+## TT - Tetons
+
+* Rustagi and Loveless Profile (400MATW)
+* Chojnacky (400DVEW)
+
+### Chojnacky
+
+R4D2H Calculates cubic volume.  Top diameter is fixed and total volume value returned is same as merchantable volume.
+
+### Rustagi and Loveless
+
+r4vol subroutine does not take MTOPS as a parameter, but does calculate volume based on a modifiable primary top diameter.  The V(7) value returned is from primary merchantible top to tip of tree.  This is true for all 400MATW*** computations.
+
+## UT - Utah
+
+* Rustagi and Loveless (400MAT)
+* Flewelling 2-Point (400FW2W)
+* Chojnacky (400DVEW)
+
+## WC - Western Cascades
+
+* Flewelling 2-Point Profile
+* Behre's Hyperbola
+
+## WS - Western Sierra
+
+* Wensel and Olsen (500WO2W)
+* Pillsbury and Krikley (500DVEW)

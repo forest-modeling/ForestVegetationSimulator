@@ -158,7 +158,7 @@ C
       CHARACTER*3 TREESP(5)
       CHARACTER*8 KEYWRD
       CHARACTER*7 CSTAT
-      CHARACTER*10 KARD(7)
+      CHARACTER*10 KARD(12)
       CHARACTER*6 STAGE(3)
       CHARACTER*20 WSTEA
       CHARACTER*25 CWTYP
@@ -169,11 +169,11 @@ C
      &         IP, IS, ISKIP, ISTAGE, ISTART , ISTLNB, IUNIT,
      &         IZNUL, J, K, KODE, N, NEN, NSKIP, NUMBR
 
-      REAL ARRAY(7), RECNT, X
+      REAL ARRAY(12), RECNT, X
 
 
       LOGICAL DEBUG,LKECHO
-      LOGICAL LNOTBK(7),LSTRT, LADDS, LOUTP
+      LOGICAL LNOTBK(12),LSTRT, LADDS, LOUTP
 
 CLRD  EQUIVALENCE (KARD,RECORD)
 
@@ -194,10 +194,10 @@ C
       WSTEA  = ' '
       STR40  = ' '
       RECORD = ' '
-      DO I=1,8
+      DO I=1,12
         KARD(I) = ' '
       END DO
-      DO I=1,7
+      DO I=1,12
         LNOTBK(I) = .FALSE.
         ARRAY(I)  = 0.0
       END DO

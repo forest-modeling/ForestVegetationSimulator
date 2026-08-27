@@ -25,7 +25,7 @@ C----------
 *     MVOL     MERCH VOLUMNE UP TO HEIGHT
 *
 *  LOCAL VARIABLE DEFINITIONS:
-*     VM = MERCH. VOLUME
+*     MCF = MERCH. VOLUME
 *     JS = SNAG SPECIES
 *     IHT = AN INDEX OF HT
 *
@@ -47,13 +47,15 @@ C.... COMMON INCLUDE FILES.
 
 C.... VARIABLE DECLARATIONS.
 
-      REAL     VM, VMAX, VN
+      REAL     MCF, VMAX, BFMAX, TCF, SCF
       LOGICAL  LTKIL, LC, LCONE, CTKFLG, BTKFLG, DEBUG
       LOGICAL  LMERCHIN, LMERCH
       INTEGER  JS, ISPC, IT
       REAL     D, H, BARK, XHT, VOL2HT
       INTEGER  IOUT,II,JSP,IHT
-      REAL     XH,XD,BRATIO,D2H,BBFV,X
+      INTEGER  CRWNRTO,CWN,DCY,WSTM
+      REAL     XH,XD,BRATIO,D2H,BBFV,X,CL,BIODRY(15)
+      CHARACTER LIVEDEAD,LVD
 
 C     CALCULATE THE VOLUME
 
@@ -61,17 +63,38 @@ C     CALCULATE THE VOLUME
       D = DBHS(II)
       H = HTDEAD(II)
       LMERCH = .FALSE.
+      CWN = 0
+      CL = 0
+      DCY = 0
+      WSTM = 0
+      IF(LFIANVB) THEN
+        LVD = 'D'
+      ELSE
+        LVD = ' '
+      ENDIF
 
       GOTO 1000
 
 C     ENTRY POINT FOR SNAGS CREATED BY **CUTS**.
 
-      ENTRY FMSVL2(JSP,XD,XH,XHT,VOL2HT,LMERCHIN,DEBUG,IOUT)
+      ENTRY FMSVL2(JSP,XD,XH,XHT,VOL2HT,CRWNRTO,
+     1             LIVEDEAD,LMERCHIN,DEBUG,IOUT)
 
       JS = JSP
       D  = XD
       H  = XH
       LMERCH = LMERCHIN
+
+      CWN = CRWNRTO
+      CL     = 0
+      DCY    = 0
+      WSTM   = 0
+      BIODRY = 0
+      IF(LFIANVB) THEN
+        LVD = LIVEDEAD
+      ELSE
+        LVD = ' '
+      ENDIF
 
  1000 CONTINUE
 
@@ -104,26 +127,34 @@ C     TKILL = LTKIL
       BTKFLG = .FALSE.
 
       IF(METHC(ISPC).EQ.6 .OR. METHC(ISPC).EQ.10) THEN
-         CALL NATCRS (VN,VM,BBFV,ISPC,D,H,LTKIL,BARK,IHT,VMAX,
-     1        CTKFLG,BTKFLG,-1)
+         CALL NATCRS (TCF,MCF,SCF,BBFV,ISPC,D,H,LTKIL,
+     1                CWN,BARK,IHT,VMAX,BFMAX,
+     1                CL,DCY,WSTM,BIODRY,
+     1                LVD,CTKFLG,BTKFLG,-1)
       ELSEIF ((METHC(ISPC).EQ.8).OR.(METHC(ISPC).EQ.5)) THEN
-         CALL OCFVOL (VN,VM,ISPC,D,H,LTKIL,BARK,IHT,VMAX,LCONE,
+         CALL OCFVOL (TCF,MCF,ISPC,D,H,LTKIL,BARK,IHT,VMAX,LCONE,
      1        CTKFLG,IT)
       ELSE
-         CALL CFVOL (ISPC,D,H,D2H,VN,VM,VMAX,LTKIL,LCONE,BARK,IHT,
+         CALL CFVOL (ISPC,D,H,D2H,TCF,MCF,VMAX,LTKIL,LCONE,BARK,IHT,
      1        CTKFLG)
       ENDIF
       IF(CTKFLG .AND. LTKIL)
-     1     CALL CFTOPK (ISPC,D,H,VN,VM,VMAX,LCONE,BARK,IHT)
+     1     CALL CFTOPK (ISPC,D,H,TCF,MCF,SCF,VMAX,LCONE,BARK,IHT)
 
 C     Give some small volume to very tiny trees.
 C     based on cone with D = 1 inch
       X = 0.005454154 * H
-      VOL2HT = MAX(X,VN)
-      
-      IF (LMERCH) VOL2HT = VM
 
-      IF (DEBUG) WRITE(IOUT,40)ISPC,D,H,LCONE,VN,VOL2HT
+      IF (VARACD .EQ. 'CS' .OR. VARACD .EQ. 'LS'
+     >    .OR. VARACD .EQ. 'NE' .OR. VARACD .EQ. 'SN') THEN
+        VOL2HT = MAX(X,MCF)
+        IF (LMERCH) VOL2HT = SCF
+      ELSE
+        VOL2HT = MAX(X,TCF)
+        IF (LMERCH) VOL2HT = MCF
+      ENDIF
+
+      IF (DEBUG) WRITE(IOUT,40)ISPC,D,H,LCONE,TCF,VOL2HT
  40   FORMAT(' FMSVOL ISPC=',I3,' D=',F7.3,' H=',F7.3,
      >     ' LCONE=',L2,' VN=',F7.3,' VOL2HT=',F10.3)
 

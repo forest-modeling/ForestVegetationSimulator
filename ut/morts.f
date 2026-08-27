@@ -647,7 +647,7 @@ C
   351     FORMAT(/,2('***************'/),'WARNING: FOR ALTERNATE ',
      &    'MORTALITY, TPA IN DBH CLASS OF ',F8.1,
      &    ' TREES/ACRE IS LESS THAN THE ADDITIONAL MORTALITY TPA',
-     &    /,9X,' OF ',F8.1,' TREES/ACRE.  '
+     &    /,9X,' OF ',F8.1,' TREES/ACRE.  ',
      &    'ALTERNATE MORTALITY CANCELLED.',/2('***************'/),/)
           GO TO 353
         ENDIF

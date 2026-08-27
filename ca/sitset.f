@@ -209,8 +209,8 @@ C----------
       IF(JJ.GT.MAXSP)JJ=MAXSP
       WRITE(JOSTND,90)(NSP(K,1)(1:2),K=J,JJ)
    90 FORMAT(/'SPECIES ',5X,10(A2,6X))
-      WRITE(JOSTND,91)(SDIDEF(K),K=J,JJ )
-   91 FORMAT('SDI MAX ',   10F8.0)
+      WRITE(JOSTND,91)(NINT(SDIDEF(K)),K=J,JJ )
+   91 FORMAT('SDI MAX ',   10I8.0)
       IF(JJ .EQ. MAXSP)GO TO 93
    92 CONTINUE
    93 CONTINUE
@@ -227,11 +227,13 @@ C----------
         DO I=1,MAXSP
         IF(TOPD(I) .LE. 0.) TOPD(I) = 4.5
         IF(BFTOPD(I) .LE. 0.) BFTOPD(I) = 4.5
+        IF(SCFTOPD(I) .LE. 0.) SCFTOPD(I) = 4.5
         END DO
       CASE DEFAULT
         DO I=1,MAXSP
         IF(TOPD(I) .LE. 0.) TOPD(I) = 6.
         IF(BFTOPD(I) .LE. 0.) BFTOPD(I) = 6.
+        IF(SCFTOPD(I) .LE. 0.) SCFTOPD(I) = 6.
         END DO
       END SELECT
 C----------
@@ -255,15 +257,21 @@ C----------
       PROD='  '
       VAR='CA'
 C
+      IF (LFIANVB) CALL NVB_REGION_CHECK
       DO ISPC=1,MAXSP
       READ(FIAJSP(ISPC),'(I4)')IFIASP
+      VOLEQ='           '
       IF(((METHC(ISPC).EQ.6).OR.(METHC(ISPC).EQ.9)).AND.
      &     (VEQNNC(ISPC).EQ.'           '))THEN
         CALL VOLEQDEF(VAR,IREGN,FORST,DIST,IFIASP,PROD,VOLEQ,ERRFLAG)
         VEQNNC(ISPC)=VOLEQ
+      ELSE IF(METHC(ISPC).EQ.10 .AND. VEQNNC(ISPC).EQ.'          ') THEN
+        CALL NVBEQDEF(IFIASP,VOLEQ)
+        VEQNNC(ISPC)=VOLEQ
       ENDIF
       IF(((METHB(ISPC).EQ.6).OR.(METHB(ISPC).EQ.9)).AND.
      &     (VEQNNB(ISPC).EQ.'           '))THEN
+        VOLEQ='           '
         CALL VOLEQDEF(VAR,IREGN,FORST,DIST,IFIASP,PROD,VOLEQ,ERRFLAG)
         VEQNNB(ISPC)=VOLEQ
       ENDIF
@@ -281,7 +289,7 @@ C  WRITE VOLUME EQUATION NUMBER TABLE
 C----------
       CALL VOLEQHEAD(JOSTND)
       WRITE(JOSTND,230)(NSP(J,1)(1:2),VEQNNC(J),VEQNNB(J),J=1,MAXSP)
- 230  FORMAT(4(2X,A2,4X,A10,1X,A10,1X))
+ 230  FORMAT(4(2X,A2,4X,A11,1X,A10,1X))
 C
       RETURN
       END

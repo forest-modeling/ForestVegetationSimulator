@@ -23,9 +23,9 @@ COMMONS
 C
 
       CHARACTER*8  KEYWRD
-      REAL         ARRAY(7)
+      REAL         ARRAY(12)
       INTEGER      IPRINT
-      LOGICAL      LNOTBK(7),LKECHO
+      LOGICAL      LNOTBK(12),LKECHO
 
 C     TURN ON THE CALCULATIONS.
 

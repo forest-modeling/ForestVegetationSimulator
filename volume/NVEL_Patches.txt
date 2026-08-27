@@ -1,0 +1,12 @@
+fixed an issue in R9Clark, when  (1.0-17.3/totht)**p, resulted in an underflow condition.  The fix was as follows:
+
+      IF((1.0-17.3/totht).LT.0.005748.AND.p.GT.14)THEN
+        Y = 0
+      ELSE
+        Y=(1.0-17.3/totht)**p
+      ENDIF
+
+I was testing some additional databases obtained from FSVeg DA for region 8, SN variant, and hit a few more instances where the computation was used as caused underflow. 
+
+R9clark.f: Subroutine R9dib, within IF statement ‘IF(Ib.EQ.1.0)
+R9clark.f: Subroutine R9ht, early in the subroutine that sets the combined variables

@@ -802,9 +802,9 @@ C
      &              ', IYEAR=',I4,':', / ,
      &          ' ',T5,'NSNGS(add)=',I4,', NDEAD=',I4,', NSVOBJ=',I5,//,
      &          ' ',T5,'SNAG LIST AFTER ADDING CUT/MORTALITY:',//,
-     &          ' ',T5,'  I   IDTREE  SPP ODIA OLEN IYRCOD STATUS '
+     &          ' ',T5,'  I   IDTREE  SPP ODIA OLEN IYRCOD STATUS ',
      &                 'FALLDIR OPROB STDNG',/,
-     &          ' ',T5,'---- -------- --- ---- ---- ------ ------ '
+     &          ' ',T5,'---- -------- --- ---- ---- ------ ------ ',
      &                 '------- ----- -----' )
 C                       XXXX XXXXXXXX XXX XX.X XXX. XXXXXX XXXXXX
 C                       XXXXXX. XXXX. XXXX.

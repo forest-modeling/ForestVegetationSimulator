@@ -258,7 +258,7 @@ C----------
      >     T109,'YEAR: ',I4,T121,'PAGE: ',I2/
      >     '  TREE   TREE SP SP TR SS PNT  ',
      >     'TREES    MORTAL   CURR  DIB   CURR  HT',5X,'MAX',7X,'BA   ',
-     >     'POINT TOT MCH SAW CU SAW BD PW SL TRC',/,
+     >     'POINT TOT CU MCH CU SAW CU SAW BD PW SL TRC',/,
      >     ' NUMBER  INDX CD NO CL CD NUM PER ACRE PER ACRE  ',
      >     'DIAM  INCR   HT  INCR CR  CW  MS ',
      >     '%-TILE  BAL CU FT VL FT VOL FT VL  DF DF  HT',/,
@@ -276,13 +276,13 @@ C----------
      >     T109,'YEAR: ',I4,T121,'PAGE: ',I2/
      >     '  TREE   TREE SP SP TR SS PNT  ',
      >     'TREES    MORTAL   CURR  DIAM  CURR  HT',5X,'MAX',7X,'BA   ',
-     >     'POINT TOT CU MCH CU  MCH BD MC BF TRC',/,
+     >     'POINT TOT CU MCH CU SAW CU MCH BD MC BF TRC',/,
      >     ' NUMBER  INDX CD NO CL CD NUM PER ACRE PER ACRE  ',
      >     'DIAM  INCR   HT  INCR CR  CW  MS ',
-     >     '%-TILE  BAL  FT VOL FT VOL  FT VOL DF DF  HT',/,
+     >     '%-TILE  BAL  FT VOL FT VOL  FT VOL FT VOL DF DF  HT',/,
      >     '-------- ---- -- -- -- -- --- -------- -------- ----- ',
      >     '----- ----- ---- -- ---- -- ------ ----- ------ ',
-     >     '------ ------- -- -- ---')
+     >     '------ ------- ------- -- -- ---')
         END SELECT
 C
       ENDIF
@@ -370,26 +370,26 @@ C----------
             WRITE(KOLIST,21) TID,I,NSP(ISP(I),1)(1:2),ISP(I),IMC(I),
      >      ISPECL(I),IPVEC(ITRE(I)),P,DP,DBH(I),DGI  ,HT(I),HTG(I),
      >      ICR(I),CW,
-     >      IDMR,PCT(I),IPTBAL,CFV(I),WK1(I),BFV(I),ICDF,IBDF,
+     >      IDMR,PCT(I),IPTBAL,CFV(I),MCFV(I),SCFV(I),BFV(I),ICDF,IBDF,
      >      ((ITRUNC(I)+5)/100)
    21       FORMAT(A8,1X,I4,1X,A2,I3,2(1X,I2),1X,I3,1X,F8.3,1X,F8.3,1X,
      >       F5.1,1X,F5.2,1X,F5.1,1X,F4.1,1X,I2,1X,F4.1,1X,I2,
-     >       1X,F6.2,1X,I5,1X,F6.1,1X,F6.1,1X,F7.1,1X,I2,1X,I2,
-     >       1X,I3)
+     >       1X,F6.2,1X,I5,1X,F6.1,1X,F6.1,1X,F6.1,1X,F7.1,
+     >       1X,I2,1X,I2,1X,I3)
           ELSE
             WRITE(KOLIST,20) TID,I,NSP(ISP(I),1)(1:2),ISP(I),IMC(I),
      >      ISPECL(I),IPVEC(ITRE(I)),P,DP,DBH(I),DGI  ,HT(I),HTG(I),
      >      ICR(I),CW,
-     >      IDMR,PCT(I),IPTBAL,CFV(I),WK1(I),BFV(I),ICDF,IBDF,
+     >      IDMR,PCT(I),IPTBAL,CFV(I),MCFV(I),SCFV(I),BFV(I),ICDF,IBDF,
      >      ((ITRUNC(I)+5)/100)
    20       FORMAT(A8,1X,2I4,I5,F9.3,F8.2,3F7.2,I3,I4,F9.3,I4,F9.2,
-     >       F9.3,F9.2,F9.2,I4,I7,I4)
+     >       F9.3,F9.2,F9.2,F9.2,I4,I7,I4)
           ENDIF
         ELSE
           WRITE(KOLIST,*) TID,I,NSP(ISP(I),1)(1:2),ISP(I),IMC(I),
      >    ISPECL(I),IPVEC(ITRE(I)),P,DP,DBH(I),DGI,HT(I),HTG(I),
      >    ICR(I),CW,
-     >    IDMR,PCT(I),IPTBAL,CFV(I),WK1(I),BFV(I),ICDF,IBDF,
+     >    IDMR,PCT(I),IPTBAL,CFV(I),MCFV(I),SCFV(I),BFV(I),ICDF,IBDF,
      >    ((ITRUNC(I)+5)/100)
         ENDIF
 C----------
@@ -401,28 +401,28 @@ C----------
             WRITE(KOLIST,23) TID,I,NSP(ISP(I),1)(1:2),ISP(I),IMC(I),
      >      ISPECL(I),IPVEC(ITRE(I)),P,DP,DBH(I),DGI  ,HT(I),HTG(I),
      >      ICR(I),CW,
-     >      IDMR,PCT(I),IPTBAL,CFV(I),WK1(I),BFV(I),ICDF,IBDF,
+     >      IDMR,PCT(I),IPTBAL,CFV(I),MCFV(I),SCFV(I),BFV(I),ICDF,IBDF,
      >      ((ITRUNC(I)+5)/100)
    23       FORMAT(A8,1X,I4,1X,A2,3(1X,I2),1X,I3,1X,F8.3,1X,F8.3,1X,
      >       F5.1,1X,F5.2,1X,F5.1,1X,F4.1,1X,I2,1X,F4.1,1X,I2,
-     >       1X,F6.2,1X,I5,1X,F6.1,1X,F6.1,1X,F7.1,1X,I2,1X,I2,
+     >       1X,F6.2,1X,I5,1X,F6.1,1X,F6.1,1X,F6.1,1X,F7.1,1X,I2,1X,I2,
      >       1X,I3)
           ELSE
             WRITE(KOLIST,24) TID,I,NSP(ISP(I),1)(1:2),ISP(I),IMC(I),
      >      ISPECL(I),IPVEC(ITRE(I)),P,DP,DBH(I),DGI  ,HT(I),HTG(I),
      >      ICR(I),CW,
-     >      IDMR,PCT(I),IPTBAL,CFV(I),WK1(I),BFV(I),ICDF,IBDF,
+     >      IDMR,PCT(I),IPTBAL,CFV(I),MCFV(I),SCFV(I),BFV(I),ICDF,IBDF,
      >      ((ITRUNC(I)+5)/100)
    24       FORMAT(A8,1X,I4,1X,A2,3(1X,I2),1X,I3,1X,F8.2,1X,F8.2,1X,
      >       F5.1,1X,F5.2,1X,F5.1,1X,F4.1,1X,I2,1X,F4.1,1X,I2,
-     >       1X,F6.2,1X,I5,1X,F6.1,1X,F6.1,1X,F7.1,1X,I2,1X,I2,
+     >       1X,F6.2,1X,I5,1X,F6.1,1X,F6.1,1X,F6.1,1X,F7.1,1X,I2,1X,I2,
      >       1X,I3)
           ENDIF
         ELSE
           WRITE(KOLIST,*) TID,I,NSP(ISP(I),1)(1:2),ISP(I),IMC(I),
      >    ISPECL(I),IPVEC(ITRE(I)),P,DP,DBH(I),DGI  ,HT(I),HTG(I),
      >    ICR(I),CW,
-     >    IDMR,PCT(I),IPTBAL,CFV(I),WK1(I),BFV(I),ICDF,IBDF,
+     >    IDMR,PCT(I),IPTBAL,CFV(I),MCFV(I),SCFV(I),BFV(I),ICDF,IBDF,
      >    ((ITRUNC(I)+5)/100)
         ENDIF
 C
@@ -480,20 +480,20 @@ C
           WRITE(KOLIST,21) TID,I,NSP(ISP(I),1)(1:2),ISP(I),IMC(I),
      >    ISPECL(I),IPVEC(ITRE(I)),P,DP,DBH(I),DGI  ,HT(I),HTG(I),
      >    ICR(I),CW,
-     >    IDMR,PCT(I),IPTBAL,CFV(I),WK1(I),BFV(I),ICDF,IBDF,
+     >    IDMR,PCT(I),IPTBAL,CFV(I),MCFV(I),SCFV(I),BFV(I),ICDF,IBDF,
      >    ((ITRUNC(I)+5)/100)
         ELSE
           WRITE(KOLIST,20) TID,I,NSP(ISP(I),1)(1:2),ISP(I),IMC(I),
      >    ISPECL(I),IPVEC(ITRE(I)),P,DP,DBH(I),DGI  ,HT(I),HTG(I),
      >    ICR(I),CW,
-     >    IDMR,PCT(I),IPTBAL,CFV(I),WK1(I),BFV(I),ICDF,IBDF,
+     >    IDMR,PCT(I),IPTBAL,CFV(I),MCFV(I),SCFV(I),BFV(I),ICDF,IBDF,
      >    ((ITRUNC(I)+5)/100)
         ENDIF
       ELSE
           WRITE(KOLIST,*) TID,I,NSP(ISP(I),1)(1:2),ISP(I),IMC(I),
      >    ISPECL(I),IPVEC(ITRE(I)),P,DP,DBH(I),DGI  ,HT(I),HTG(I),
      >    ICR(I),CW,
-     >    IDMR,PCT(I),IPTBAL,CFV(I),WK1(I),BFV(I),ICDF,IBDF,
+     >    IDMR,PCT(I),IPTBAL,CFV(I),MCFV(I),SCFV(I),BFV(I),ICDF,IBDF,
      >    ((ITRUNC(I)+5)/100)
       ENDIF
   150 CONTINUE

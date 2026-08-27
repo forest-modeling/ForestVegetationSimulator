@@ -136,11 +136,11 @@ C.... Common include files.
 C.... Local variable declarations.
 
       LOGICAL      DEBUG,LKECHO
-      LOGICAL      LNOTBK(7),LINIT
+      LOGICAL      LNOTBK(12),LINIT
 
       CHARACTER*16 RRJSP(ITOTSP)
       CHARACTER*12 DISTYP(0:ITOTRR)
-      CHARACTER*10 KARD(7), T1, T2, T3
+      CHARACTER*10 KARD(12), T1, T2, T3
       CHARACTER*8  TABLE(42), KEYWRD, PASKEY
       CHARACTER*4  C4TMP
       CHARACTER*80 RECORD
@@ -149,7 +149,7 @@ C.... Local variable declarations.
      &         IRMAX, IRMIN, IRRPSH, ISIZE, ISL, ISPC, J, JAGE, KEY,
      &         K, KODE, KSP, M, MYACT(9), NEXT, NUMBER
 
-      REAL     ANS, ARRAY(7), DEN, DIAM, PRMS(10), RDPRP, RTD, TT 
+      REAL     ANS, ARRAY(12), DEN, DIAM, PRMS(10), RDPRP, RTD, TT 
 
 C.... Data Statements.
 C

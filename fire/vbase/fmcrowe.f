@@ -271,7 +271,8 @@ C     CREATE AN ADJUSTMENT FACTOR.
 
         XNEG1  = -1.0
         LMERCH = .FALSE.
-        CALL FMSVL2(SPIYV,D,H,XNEG1,VT,LMERCH,DEBUG,JOSTND)
+        CALL FMSVL2(SPIYV,D,H,XNEG1,VT,0,
+     >              ' ',LMERCH,DEBUG,JOSTND)
         VT1 = 0.0015*DX*DX*HX     !!! MVD eqn. - volume of a cone minus some % for loss of tip volume  
         VT2 = 0.0015*D*D*H
         VT = (VT/VT2)*VT1

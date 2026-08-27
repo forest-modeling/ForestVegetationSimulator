@@ -29,18 +29,18 @@ C----------
       INTEGER    KWCNT
       PARAMETER (KWCNT = 7)
 c
-      LOGICAL      LNOTBK(7)
+      LOGICAL      LNOTBK(12)
       LOGICAL      LKECHO,LNOTRE
       LOGICAL      DEBUG
 C
       CHARACTER*8  TABLE(KWCNT)
       CHARACTER*8  KEYWRD
-      CHARACTER*10 KARD(7)
+      CHARACTER*10 KARD(12)
       CHARACTER    FNAME*80
       INTEGER      KODE,IPRMPT,NUMBER
       INTEGER      ORGINP
 C
-      REAL         ARRAY(7)
+      REAL         ARRAY(12)
 C----------
 C INITIALIZATIONS:
 C----------

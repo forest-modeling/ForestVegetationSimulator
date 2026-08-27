@@ -41,8 +41,6 @@ COMMONS
 C
       CHARACTER*8 TID,CSPECIE1,CSPECIE2,CSPECIE3
       CHARACTER*17 TBLNAME
-      CHARACTER*5 NTCUFT,NMCUFT,NBDFT
-      CHARACTER*8 NAMDCF,NAMDBF
       CHARACTER*2000 SQLStmtStr
       INTEGER IWHO,I,IP,ITPLAB,iRet,IDMR,ICDF,IBDF,IPTBAL,KODE
       INTEGER ISPC,I1,I2,I3,ColNumber
@@ -50,11 +48,11 @@ C
       DATA IDCMP1,IDCMP2/10000000,20000000/
       REAL TEM
       REAL*8 CW,P,DGI,DP,ESTHT,TREAGE,DDBH,DHT,DHTG,DPCT,
-     >       DCFV,DWK1,DBFV,DHT2TD2,DHT2TD1
+     >       DCFV,DWK1,DSWK,DBFV,DHT2TD2,DHT2TD1!,
 
       integer fsql3_tableexists,fsql3_exec,fsql3_bind_int,fsql3_step,
      >        fsql3_prepare,fsql3_bind_double,fsql3_finalize,
-     >        fsql3_bind_text,fsql3_reset
+     >        fsql3_bind_text,fsql3_reset,fsql3_addcolifabsent
 
 C     IF TREEOUT IS NOT TURNED ON OR THE IWHO VARIABLE IS NOT 1
 C     THEN JUST RETURN
@@ -67,25 +65,7 @@ C     IS THIS OUTPUT A REDIRECT OF THE REPORT THEN SET KODE TO 0
 
       CALL DBSCASE(1)
 
-C     For CS, LS, NE and SN, the table name is FVS_TreeList_East and the following
-C     Column names change from: TCuFt, MCuFt, BdFt to MCuFt, SCuFt, SBdFt
-
-      IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' .OR. VARACD.EQ.'SN' .OR.
-     >    VARACD.EQ.'NE') THEN
-        TBLNAME = 'FVS_TreeList_East'
-        NTCUFT  = 'MCuFt'   ! options: MCuFt or SCuFt
-        NMCUFT  = 'SCuFt'   ! options: SCuFt or MCuFt
-        NBDFT   = 'SBdFt'   ! options: SBdFt or BdFt
-        NAMDCF  = 'Ht2TDMCF'
-        NAMDBF  = 'Ht2TDSCF'
-      ELSE
         TBLNAME = 'FVS_TreeList'
-        NTCUFT  = 'TCuFt'
-        NMCUFT  = 'MCuFt'
-        NBDFT   = 'BdFt'
-        NAMDCF  = 'Ht2TDCF '
-        NAMDBF  = 'Ht2TDBF '
-      ENDIF
 
       iRet = fsql3_exec (IoutDBref,"Begin;"//Char(0))
       iRet = fsql3_tableexists(IoutDBref,TRIM(TBLNAME)//CHAR(0))
@@ -114,16 +94,17 @@ C     Column names change from: TCuFt, MCuFt, BdFt to MCuFt, SCuFt, SBdFt
      -             'MistCD int null,'//
      -             'BAPctile real null,'//
      -             'PtBAL real null,'//
-     -             NTCUFT // ' real null,'//
-     -             NMCUFT // ' real null,'//
-     -             NBDFT  // ' real null,'//
+     -             'TCuFt real null,'//
+     -             'MCuFt real null,'//
+     -             'SCuFt real null,'//
+     -             'BdFt real null,'//
      -             'MDefect int null,'//
      -             'BDefect int null,'//
      -             'TruncHt int null,'//
      -             'EstHt real null,'//
      -             'ActPt int null,'//
-     -             NAMDCF // ' real null,'//
-     -             NAMDBF // ' real null,'//
+     -             'Ht2TDCF real null,'//
+     -             'Ht2TDBF real null,'//
      -             'TreeAge real null);'//CHAR(0)
          iRet = fsql3_exec(IoutDBref,SQLStmtStr)
          IF (iRet .NE. 0) THEN
@@ -132,16 +113,27 @@ C     Column names change from: TCuFt, MCuFt, BdFt to MCuFt, SCuFt, SBdFt
            RETURN
          ENDIF
       ENDIF
+
+C--------
+C     CHECK EXISTING TABLE FOR COLUMN(S) ADDED WITH NVB UPGRADE (2024)
+C     `SCuFt`
+C     TO ACCOUNT FOR ADDING TO DATABASE CREATED PROIR TO UPGRADE
+C--------
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TBLNAME)//CHAR(0),
+     >        "SCuFt"//CHAR(0),"real"//CHAR(0))
+
       WRITE(SQLStmtStr,*)'INSERT INTO ',TBLNAME,
      -  ' (CaseID,StandID,Year,PrdLen,',
      -  'TreeId,TreeIndex,SpeciesFVS,SpeciesPLANTS,SpeciesFIA,',
      -  'TreeVal,SSCD,PtIndex,TPA,',
      -  'MortPA,DBH,DG,',
-     -  'HT,HTG,PctCr,CrWidth,MistCD,BAPctile,PtBAL,',NTCUFT,',',
-     -  NMCUFT,',',NBDFT,',MDefect,BDefect,TruncHt,',
-     -  'EstHt,ActPt,',NAMDCF,',',NAMDBF,',','TreeAge) VALUES (''',
-     -  CASEID,''',''',TRIM(NPLT),''',',IY(ICYC+1),',',IFINT,
-     - ',?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);'
+     -  'HT,HTG,PctCr,CrWidth,MistCD,BAPctile,PtBAL,',
+     -  'TCuFt,MCuFt,SCuFt,BdFt,',
+     -  'MDefect,BDefect,TruncHt,',
+     -  'EstHt,ActPt,Ht2TDCF,Ht2TDBF,TreeAge) VALUES (''',
+     -  CASEID,''',''',TRIM(NPLT),''',',IY(ICYC+1),',',IFINT,',',
+     - '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,',
+     - '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);'
       iRet = fsql3_prepare(IoutDBref,trim(SQLStmtStr)//CHAR(0))
       IF (iRet .NE. 0) THEN
         ITREELIST = 0
@@ -229,7 +221,6 @@ C
             CSPECIE2 = PLNJSP(ISP(I))
             CSPECIE3 = FIAJSP(ISP(I))
 
-
             ColNumber=1
             iRet = fsql3_bind_text(IoutDBref,ColNumber,TID,
      >                         LEN_TRIM(TID))
@@ -280,11 +271,15 @@ C
             DCFV = CFV(I)
             iRet = fsql3_bind_double(IoutDBref,ColNumber,DCFV)
             ColNumber=ColNumber+1
-            DWK1 = WK1(I)
+            DWK1 = MCFV(I)
             iRet = fsql3_bind_double(IoutDBref,ColNumber,DWK1)
+            ColNumber=ColNumber+1
+            DSWK = SCFV(I)
+            iRet = fsql3_bind_double(IoutDBref,ColNumber,DSWK)
             ColNumber=ColNumber+1
             DBFV = BFV(I)
             iRet = fsql3_bind_double(IoutDBref,ColNumber,DBFV)
+C           Report Volume Defect
             ColNumber=ColNumber+1
             iRet = fsql3_bind_int(IoutDBref,ColNumber,ICDF)
             ColNumber=ColNumber+1
@@ -376,7 +371,6 @@ C
         CSPECIE2 = PLNJSP(ISP(I))
         CSPECIE3 = FIAJSP(ISP(I))
 
-
         ColNumber=1
         iRet = fsql3_bind_text(IoutDBref,ColNumber,TID,
      >                         LEN_TRIM(TID))
@@ -427,11 +421,15 @@ C
         DCFV = CFV(I)
         iRet = fsql3_bind_double(IoutDBref,ColNumber,DCFV)
         ColNumber=ColNumber+1
-        DWK1 = WK1(I)
+        DWK1 = MCFV(I)
         iRet = fsql3_bind_double(IoutDBref,ColNumber,DWK1)
+        ColNumber=ColNumber+1
+        DSWK = SCFV(I)
+        iRet = fsql3_bind_double(IoutDBref,ColNumber,DSWK)
         ColNumber=ColNumber+1
         DBFV = BFV(I)
         iRet = fsql3_bind_double(IoutDBref,ColNumber,DBFV)
+C       Report Volume Defect
         ColNumber=ColNumber+1
         iRet = fsql3_bind_int(IoutDBref,ColNumber,ICDF)
         ColNumber=ColNumber+1

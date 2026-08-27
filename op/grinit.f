@@ -68,6 +68,9 @@ C
       DATA NONE/'NONE'/
 C----------
       VARACD = 'OP'
+      ECOREG = ''
+      CFCTYPE = 'F'
+      BFCTYPE = 'F'
       CALL LNKINT
       DO 5 I=1,MAXSP
       SDIDEF(I) = 0.0
@@ -91,6 +94,9 @@ C----------
       BFSTMP(I) = 1.0
       BFTOPD(I) = 0.
       BFMIND(I) = 0.
+      SCFSTMP(I) = 1.0
+      SCFTOPD(I) = 0.
+      SCFMIND(I) = 0.
       BFLA0(I) = 0.0
       BFLA1(I) = 1.0
       CFLA0(I) = 0.0
@@ -124,6 +130,7 @@ C----------
       LZEIDE = .FALSE.
       CALCSDI = ' '
       CFMIN = 0.
+      SCFMIN = 0.
       TCFMIN = 0.
       BFMIN = 0.
       BAMIN = 0.
@@ -147,12 +154,14 @@ C----------
    11 CONTINUE
 C----------
       MANAGD = 0
+      ISTDORG = 0
       ALPHA = 0.05
       BJPHI = 0.74
       BJTHET = 0.42
       ASPECT = 0.
       LAUTON = .FALSE.
       LFIA = .FALSE.
+      LFIANVB = .FALSE.
       AUTMAX = 60.0
       AUTMIN = 45.0
       BAF = 40.
@@ -252,6 +261,8 @@ C----------
       DBHZEIDE=0.
       DBHSTAGE=0.
       DR016=0.
+      ODR016=0.
+      ATDR016=0.
       DBHSDI=0.
       JSPINDEF=0
       CCCOEF=1.0

@@ -13,7 +13,7 @@ COMMONS
 C
 C
       INTEGER MXI
-      PARAMETER (MXI=53)
+      PARAMETER (MXI=57)
 
       INTEGER INTS(MXI), ILIMIT, IPNT
       REAL    WK3(*)
@@ -74,6 +74,10 @@ C
       IREG4        = INTS( 51)
       IREG5        = INTS( 52)
       IPOTFIREC    = INTS( 53)
+      IVBCSUM      = INTS( 54)
+      IVBCTRELST   = INTS( 55)
+      IVBCCUTLST   = INTS( 56)
+      IVBCATRLST   = INTS( 57)
 
       CALL IFREAD(WK3, IPNT, ILIMIT, LENSTRINGS, 3, 2)
 C

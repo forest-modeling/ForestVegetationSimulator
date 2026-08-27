@@ -600,6 +600,22 @@ C
       IMC(ITRN)=1
       ISP(ITRN)=I
       CFV(ITRN)=0.
+      MCFV(ITRN)=0.
+      SCFV(ITRN)=0.
+C
+      CULL(ITRN)        = 0.
+      DECAYCD(ITRN)     = 0
+      WDLDSTEM(ITRN)    = 0
+      ABVGRD_BIO(ITRN)  = 0.
+      ABVGRD_CARB(ITRN) = 0.
+      MERCH_BIO(ITRN)   = 0.
+      MERCH_CARB(ITRN)  = 0.
+      CUBSAW_BIO(ITRN)  = 0.
+      CUBSAW_CARB(ITRN) = 0.
+      FOLI_BIO(ITRN)    = 0.
+      FOLI_CARB(ITRN)   = 0.
+      CARB_FRAC(ITRN)   = 0.
+C
       ITRUNC(ITRN)=0
       NORMHT(ITRN)=0
       HT2TD(ITRN,1)=0.
@@ -615,6 +631,7 @@ C
 C
       PTOCFV(ITRN)=0.
       PMRCFV(ITRN)=0.
+      PSCFV(ITRN)=0.
       PMRBFV(ITRN)=0.
       NCFDEF(ITRN)=0
       NBFDEF(ITRN)=0

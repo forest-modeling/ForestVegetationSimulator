@@ -89,13 +89,14 @@ C.... Variable declarations.
       INTEGER SPI,IC,ITRNC
       REAL    D,H,HP,SG,XV(0:5)
 
-      INTEGER J
+      INTEGER J, CRDUM, DCYDUM, WDSTDUM
 
-      LOGICAL LDUM1,LDUM2
+      LOGICAL LDDUM, CTKFDUM, BTKDUM
+
       REAL    C, DEADWT, DOMPCT, DP1, DP2, DP3
       REAL    LIVEWT, TEMP, P1, P2, P3, P4, R, TOTWT, DRC, X, X0
       REAL    V, DBHCUT, LDM
-      REAL    VM,XDUM1,XDUM2,XDUM3
+      REAL    VM,SCFDUM,BFDUM,BRKDUM,VMDUM,BFVDUM,RCDUM,BIODUM(15)
       REAL    DBR1, DBR2, DBR3, DBR4, DBR5, DFOL
       REAL    DCTLOW, DCTHGH, SMWGT, XVAL(3), YVAL(3), ALGSLP
 
@@ -406,8 +407,24 @@ C         subalpine fir
 C         aspen
           CASE (2)
 
-            CALL NATCRS (V,VM,XDUM1,SPI,D,H,.FALSE.,XDUM2,ITRNC,
-     &          XDUM3,LDUM1,LDUM2,-1)
+            SCFDUM=0
+            BFDUM=0
+            CRDUM=0
+            BRKDUM=0
+            VMDUM=0
+            BFVDUM=0
+            RCDUM=0
+            DCYDUM=0
+            WDSTDUM=0
+            BIODUM=0
+            LDDUM=.FALSE.
+            CTKFDUM=.FALSE.
+            BTKDUM=.FALSE.
+
+            CALL NATCRS (V,VM,SCFDUM,BFDUM,SPI,D,H,.FALSE.,
+     &                   CRDUM,BRKDUM,ITRNC,VMDUM,BFVDUM,
+     &                   RCDUM,DCYDUM,WDSTDUM,BIODUM,
+     &                   LDDUM,CTKFDUM,BTKDUM,-1)
 
 C           INPUT   D (IN) CONVERTED TO (M)
 C           INPUT   V (FT**3)CONVERTED TO (M**3);

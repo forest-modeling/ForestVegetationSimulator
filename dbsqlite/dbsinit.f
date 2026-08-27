@@ -55,6 +55,10 @@ C
       IATRTLIST= 0
       ITREELIST= 0
       ICUTLIST = 0
+      IVBCSUM  = 0
+      IVBCTRELST = 0
+      IVBCCUTLST = 0
+      IVBCATRLST = 0
       IDM1     = 0
       IDM2     = 0
       IDM3     = 0

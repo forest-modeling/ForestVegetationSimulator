@@ -107,7 +107,7 @@ C----------
          ICLASS=IDBH
          IF (P .LE. 0.0) GOTO 500
          CVOLT(ISPC)=CVOLT(ISPC)+CFV(I)*P
-         CVOLC(ISPC)=CVOLC(ISPC)+WK1(I)*P
+         CVOLC(ISPC)=CVOLC(ISPC)+MCFV(I)*P
          CVOLB(ISPC)=CVOLB(ISPC)+BFV(I)*P
          CTREE(ISPC)=CTREE(ISPC)+P
          CBA(ISPC)=CBA(ISPC)+ P*D*D*.005454

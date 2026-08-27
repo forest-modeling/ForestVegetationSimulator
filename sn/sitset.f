@@ -160,13 +160,16 @@ C----------
       IF (SITEAR(ISISP) .LE. SIMIN(ISISP)) THEN
         SITEAR(ISISP) = SIMIN(ISISP)
         WRITE (JOSTND,110) JSP(ISISP), SITEAR(ISISP)
+        CALL ERRGRO(.TRUE., 54) 
       ENDIF
       IF (SITEAR(ISISP) .GE. SIMAX(ISISP)) THEN
         SITEAR(ISISP) = SIMAX(ISISP)
         WRITE (JOSTND,110) JSP(ISISP), SITEAR(ISISP)
+        CALL ERRGRO(.TRUE., 54) 
       ENDIF
-  110 FORMAT('***** WARNING - THE SITE SPECIES (',A4,') SITE INDEX VALU
-     1E WAS OUTSIDE OF THE ALLOWABLE RANGE, THE VALUE USED WAS ',F5.1)
+  110 FORMAT('***** WARNING - THE SITE SPECIES (',A4,') SITE INDEX ',
+     &' VALUE WAS OUTSIDE OF THE ALLOWABLE RANGE, ',
+     &'THE VALUE USED WAS ',F5.1)
 C----------
 C  COMPUTE RELATIVE SITE INDEX FOR SITE SPECIES
 C----------
@@ -483,13 +486,72 @@ C
             ENDIF
           ENDIF
         ENDIF
+        IF(SCFMIND(ISPC).LE.0.)THEN                 !SET **SCFMIND** DEFAULT
+          IF((ISPC.LE.17).OR.(ISPC.EQ.88))THEN   !SOFTWOODS
+            SELECT CASE(IFOR)
+            CASE(10)
+              IF(ISPC.EQ.2)THEN
+                SCFMIND(ISPC)=9.
+              ELSE
+                SCFMIND(ISPC)=10.
+              ENDIF
+            CASE(11)
+              IF((KODIST.EQ.3).OR.(KODIST.EQ.10))THEN
+                SCFMIND(ISPC)=11.0
+              ELSEIF((ISPC.EQ.2).OR.(ISPC.EQ.12).OR. ! SYP, SPRUCE, FIR GROUP
+     &               (ISPC.EQ.15).OR.(ISPC.EQ.16).OR.(ISPC.EQ.17))THEN
+                SCFMIND(ISPC)=12.
+              ELSE
+                SCFMIND(ISPC)=10.
+              ENDIF
+            CASE DEFAULT
+              SCFMIND(ISPC)=10.
+            END SELECT
+          ELSE                                   !HARDWOODS
+            IF(IFOR.EQ.11)THEN
+              IF((KODIST.EQ.3).OR.(KODIST.EQ.10))THEN
+                SCFMIND(ISPC)=13.
+              ELSE
+                SCFMIND(ISPC)=15.
+              ENDIF
+            ELSE
+              SCFMIND(ISPC)=12.
+            ENDIF
+          ENDIF
+        ENDIF
+        IF(SCFTOPD(ISPC).LE.0.)THEN                 !SET **SCFTOPD** DEFAULT
+          IF((ISPC.LE.17).OR.(JSP(ISPC)(1:2).EQ.'OS'))THEN
+            IF(IFOR.EQ.11)THEN
+              IF((KODIST.EQ.3).OR.(KODIST.EQ.10))THEN
+                SCFTOPD(ISPC)=6.3
+              ELSEIF((ISPC.EQ.2).OR.(ISPC.EQ.12).OR. ! SYP, SPRUCE, FIR GROUP
+     &               (ISPC.EQ.15).OR.(ISPC.EQ.16).OR.(ISPC.EQ.17))THEN
+                SCFTOPD(ISPC)=9.
+              ELSE
+                SCFTOPD(ISPC)=6.3
+              ENDIF
+            ELSE
+              SCFTOPD(ISPC)=7.
+            ENDIF
+          ELSE                                       !HARDWOODS
+            IF(IFOR.EQ.11)THEN
+              IF((KODIST.EQ.3).OR.(KODIST.EQ.10))THEN
+                SCFTOPD(ISPC)=8.
+              ELSE
+                SCFTOPD(ISPC)=11.
+              ENDIF
+            ELSE
+              SCFTOPD(ISPC)=9.
+            ENDIF
+          ENDIF
+        ENDIF
       ELSE                                     !REGION 9
         IF(DBHMIN(ISPC).LE.0.)THEN          !SET **DBHMIN** DEFAULT
           IF((ISPC.LE.17).OR.(ISPC.EQ.88))THEN !SOFTWOODS
             DBHMIN(ISPC)=5.
           ELSE                              !HARDWOODS
             SELECT CASE(IFOR)
-            CASE(5)
+            CASE(14)
               DBHMIN(ISPC)=5.
             CASE DEFAULT
               DBHMIN(ISPC)=6.
@@ -497,11 +559,11 @@ C
           ENDIF
         ENDIF
         IF(TOPD(ISPC).LE.0.)THEN            !SET **TOPD** DEFAULT
-          IF(ISPC.LE.17)THEN                 !SOFTWOODS
+          IF(ISPC.LE.17 .OR. ISPC.EQ.88)THEN                 !SOFTWOODS
             TOPD(ISPC)=4.
           ELSE                              !HARDWOODS
             SELECT CASE (IFOR)
-            CASE(8)
+            CASE(15)
               TOPD(ISPC)=5.
             CASE DEFAULT
               TOPD(ISPC)=4.
@@ -509,17 +571,11 @@ C
           ENDIF
         ENDIF
         IF(BFMIND(ISPC).LE.0.)THEN           !SET **BFMIND** DEFAULT
-          IF(ISPC.LE.17)THEN                 !SOFTWOODS
-            SELECT CASE(IFOR)
-            CASE(5)
-              BFMIND(ISPC)=9.
-              IF(ISPC.EQ.2)BFMIND(ISPC)=6.
-            CASE DEFAULT
-              BFMIND(ISPC)=9.
-            END SELECT
+          IF(ISPC.LE.17 .OR. ISPC.EQ.88)THEN                 !SOFTWOODS
+            BFMIND(ISPC)=9.
           ELSE                              !HARDWOODS
             SELECT CASE(IFOR)
-            CASE(5)
+            CASE(14)
               BFMIND(ISPC)=9.
             CASE DEFAULT
               BFMIND(ISPC)=11.
@@ -527,20 +583,38 @@ C
           ENDIF
         ENDIF
         IF(BFTOPD(ISPC).LE.0.)THEN          !SET **BFTOPD** DEFAULT
-          IF(ISPC.LE.17)THEN                 !SOFTWOOD
-            SELECT CASE(IFOR)
-            CASE(5)
-              BFTOPD(ISPC)=7.6
-              IF(ISPC.EQ.2)BFTOPD(ISPC)=5.
-            CASE DEFAULT
-              BFTOPD(ISPC)=7.6
-            END SELECT
+          IF(ISPC.LE.17 .OR. ISPC.EQ.88)THEN                 !SOFTWOOD
+            BFTOPD(ISPC)=7.6
           ELSE                              !HARDWOODS
             SELECT CASE(IFOR)
-            CASE(5)
+            CASE(14)
               BFTOPD(ISPC)=7.6
             CASE DEFAULT
               BFTOPD(ISPC)=9.6
+            END SELECT
+          ENDIF
+        ENDIF
+        IF(SCFMIND(ISPC).LE.0.)THEN           !SET **SCFMIND** DEFAULT
+          IF(ISPC.LE.17 .OR. ISPC.EQ.88)THEN                 !SOFTWOODS
+            SCFMIND(ISPC)=9.
+          ELSE                              !HARDWOODS
+            SELECT CASE(IFOR)
+            CASE(14)
+              SCFMIND(ISPC)=9.
+            CASE DEFAULT
+              SCFMIND(ISPC)=11.
+            END SELECT
+          ENDIF
+        ENDIF
+        IF(SCFTOPD(ISPC).LE.0.)THEN          !SET **SCFTOPD** DEFAULT
+          IF(ISPC.LE.17 .OR. ISPC.EQ.88)THEN                 !SOFTWOOD
+            SCFTOPD(ISPC)=7.6
+          ELSE                              !HARDWOODS
+            SELECT CASE(IFOR)
+            CASE(14)
+              SCFTOPD(ISPC)=7.6
+            CASE DEFAULT
+              SCFTOPD(ISPC)=9.6
             END SELECT
           ENDIF
         ENDIF
@@ -552,8 +626,10 @@ C----------
       PROD='  '
       VAR='SN'
 C
+      IF (LFIANVB) CALL NVB_REGION_CHECK
       DO ISPC=1,MAXSP
       READ(FIAJSP(ISPC),'(I4)')IFIASP
+      VOLEQ='           '
       IF(((METHC(ISPC).EQ.6).OR.(METHC(ISPC).EQ.9)).AND.
      &     (VEQNNC(ISPC).EQ.'           '))THEN
 
@@ -563,10 +639,19 @@ C
 
       IF(DEBUG)WRITE(16,*)'VAR,IREGN,FORST,DIST,IFIASP,PROD,VOLEQ,',
      & 'ERRFLAG= ',VAR,IREGN,FORST,DIST,IFIASP,PROD,VOLEQ,ERRFLAG
+
+      ELSE IF (METHC(ISPC).EQ.10) THEN
+        CALL NVBEQDEF(IFIASP, VOLEQ)
+        VEQNNC(ISPC) = VOLEQ
+        IF(DEBUG)WRITE(16,*)'VAR,IREGN,FORST,DIST,IFIASP,PROD,VOLEQ,',
+     &  'ERRFLAG= ',VAR,IREGN,FORST,DIST,IFIASP,PROD,VOLEQ,ERRFLAG
+     
       ENDIF
+      IF(VEQNNC(ISPC)(11:11) .EQ. CHAR(0)) VEQNNC(ISPC)(11:11) = " "
       IF(((METHB(ISPC).EQ.6).OR.(METHB(ISPC).EQ.9)).AND.
      &     (VEQNNB(ISPC).EQ.'           '))THEN
         PROD='01'
+        VOLEQ='           '
         CALL VOLEQDEF(VAR,IREGN,FORST,DIST,IFIASP,PROD,VOLEQ,ERRFLAG)
         VEQNNB(ISPC)=VOLEQ
       ENDIF
@@ -788,7 +873,7 @@ C  WRITE VOLUME EQUATION NUMBER TABLE
 C----------
       CALL VOLEQHEAD(JOSTND)
       WRITE(JOSTND,230)(NSP(J,1)(1:2),VEQNNC(J),VEQNNB(J),J=1,MAXSP)
- 230  FORMAT(4(2X,A2,4X,A10,1X,A10,1X))
+ 230  FORMAT(4(2X,A2,4X,A11,1X,A10,1X))
 C
       RETURN
       END
