@@ -14,6 +14,7 @@ jobs:
       matrix:
         os: [windows-latest]
         sys: [ucrt64] #,mingw64]
+        fvs_variant: [ak,bc,bm,ca,ci,cr,cs,ec,em,ie,kt,ls,nc,ne,oc,on,op,pn,sn,so,tt,ut,wc,ws]
       
     runs-on: ${{ matrix.os }}
     
@@ -36,11 +37,11 @@ jobs:
     - name: Compile
       working-directory: ./bin
       run: |
-        make all
+        make FVS${{ matrix.fvs_variant }}
 
     - name: Test
       working-directory: ./tests
-      run: make all
+      run: make FVS${{ matrix.fvs_variant }}
 
     - name: Set Env Vars
       id: vars
