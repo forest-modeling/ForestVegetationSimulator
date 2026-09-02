@@ -10,7 +10,7 @@ jobs:
   build:
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [windows-latest]
         sys: [ucrt64] #,mingw64]
