@@ -296,6 +296,7 @@
 ../metric/vdbsqlite/dbsfmpf.f
 ../metric/vdbsqlite/dbsstandin.f
 ../metric/vdbsqlite/dbssumry.f
+../vdbsqlite/dbsreference.f
 
 ../metric/dbsqlite/dbsatrtls.f
 ../metric/dbsqlite/dbsclsum.f
@@ -383,6 +384,7 @@
 ../pg/putstd.f
 ../pg/stash.f
 ../volume/voleqdef.f
+../volume/NVEL/wdbkwtdata.inc
 ../metric/clim/clin.f
 ../metric/clim/clauestb.f
 ../clim/bc/clcwd.f
