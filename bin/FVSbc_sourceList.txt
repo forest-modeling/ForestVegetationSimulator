@@ -288,6 +288,10 @@
 ../base/volkey.f
 
 ../dbsqlite/DBSCOM.F77
+../dbsqlite/dbs_fiavbc_atrtls.f
+../dbsqlite/dbs_fiavbc_cutlst.f
+../dbsqlite/dbs_fiavbc_trls.f
+
 ../metric/vdbsqlite/dbsfmpfc.f
 ../metric/vdbsqlite/dbsfmpf.f
 ../metric/vdbsqlite/dbsstandin.f
