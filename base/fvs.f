@@ -66,7 +66,6 @@ C The callback for tregro is a library feature, where fvs.f is part of the legac
       LOGICAL DEBUG,LCVGO
       INTEGER IBA
       INTEGER IRSTRTCD,ISTOPDONE,IRTNCD,ISTOPRES,lenCl
-
 C
 C     ******************     EXECUTION BEGINS     ******************
 C
@@ -90,6 +89,7 @@ C     FIND THE RESTART, AND BRANCH AS REQUIRED
 
       call fvsRestart (IRSTRTCD)
       call fvsGetRtnCode(IRTNCD)
+
       IF (DEBUG) WRITE(JOSTND,*) "In FVS, IRSTRTCD=",IRSTRTCD,
      >                           " IRTNCD=",IRTNCD
       if (IRTNCD.ne.0) return
