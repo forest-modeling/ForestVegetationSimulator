@@ -63,4 +63,5 @@ jobs:
       with:
         name: fvs-${{ env.OS_NAME }}-${{ matrix.sys }}-${{ env.BRANCH }}-${{ env.SHORT_SHA }}
         path: |
-          bin/FVS*
+          bin/FVS${{ matrix.fvs_variant }}${{ runner.os == 'Windows' && '.exe' || '' }}
+          bin/FVS${{ matrix.fvs_variant }}${{ runner.os == 'Windows' && '.dll' || '.so' }}
