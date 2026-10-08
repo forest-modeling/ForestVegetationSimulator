@@ -21,11 +21,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     
     steps:
-    - name: Set Variable on Windows
-      if: ${{ runner.os == 'Windows' }}
-      # PowerShell syntax is required unless you explicitly change the step's shell to bash
-      run: echo "PRGSUFX=.exe" >> $env:GITHUB_ENV 
-
     - name: Set Variable on Linux/macOS
       if: ${{ runner.os != 'Windows' }}
       run: echo "PRGSUFX=" >> $GITHUB_OUTPUT
@@ -48,7 +43,7 @@ jobs:
     - name: Compile
       working-directory: ./bin
       run: |
-        make FVS${{ matrix.fvs_variant }}$PRGSUFX
+        make FVS${{ matrix.fvs_variant }}${{ runner.os == 'Windows' && '.exe' || '' }}
 
     - name: Test
       working-directory: ./tests
