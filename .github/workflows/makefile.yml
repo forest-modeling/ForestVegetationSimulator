@@ -44,6 +44,7 @@ jobs:
       working-directory: ./bin
       run: |
         make FVS${{ matrix.fvs_variant }}${{ runner.os == 'Windows' && '.exe' || '' }}
+        make FVS${{ matrix.fvs_variant }}${{ runner.os == 'Windows' && '.dll' || '.so' }}
 
     - name: Test
       working-directory: ./tests
