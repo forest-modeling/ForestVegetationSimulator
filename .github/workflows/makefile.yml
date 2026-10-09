@@ -102,14 +102,15 @@ jobs:
       run: |
         tag="draft-${GITHUB_SHA}"
         title="FVS draft ${{ steps.vars.outputs.SHORT_SHA }}"
-        if release_is_draft=$(gh release view "$tag" --json isDraft --jq .isDraft 2>/dev/null); then
+        if release_is_draft=$(gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft 2>/dev/null); then
           if [[ "$release_is_draft" != "true" ]]; then
             echo "Release $tag already exists and is not a draft." >&2
             exit 1
           fi
-          gh release upload "$tag" release-assets/*.zip --clobber
+          gh release upload "$tag" release-assets/*.zip --repo "$GITHUB_REPOSITORY" --clobber
         else
           gh release create "$tag" release-assets/*.zip \
+            --repo "$GITHUB_REPOSITORY" \
             --draft \
             --title "$title" \
             --notes "Draft binaries for commit $GITHUB_SHA." \
