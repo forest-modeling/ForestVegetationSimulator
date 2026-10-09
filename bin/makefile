@@ -79,7 +79,7 @@ GIT_REMOTE_NAME := origin
 FVS_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/..)
 
 GIT_REMOTE  := $(shell git -C $(FVS_ROOT) remote get-url $(GIT_REMOTE_NAME) 2>/dev/null || echo unknown)
-GIT_ORG     := $(shell echo "$(GIT_REMOTE)" | sed 's#:#/#g' | rev | cut -d/ -f2 | rev)
+GIT_ORG     := $(shell echo "$(GIT_REMOTE)" | sed 's\#:\#/\#g' | rev | cut -d/ -f2 | rev)
 GIT_VERSION := $(shell git -C $(FVS_ROOT) describe --tags --exact-match 2>/dev/null || \
                git -C $(FVS_ROOT) describe --tags 2>/dev/null || echo unknown)
 GIT_HASH    := $(shell git -C $(FVS_ROOT) rev-parse --short HEAD 2>/dev/null || echo unknown)
