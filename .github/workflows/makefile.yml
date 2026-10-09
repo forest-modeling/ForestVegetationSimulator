@@ -1,19 +1,20 @@
-name: Compile FVS with MSYS2 on Windows
+name: Compile FVS
 
 on:
   push:
-    branches: [ "build-fvs", "debug-actions" ]
+    branches: [ "main", "build-fvs", "debug-actions" ]
   pull_request:
-    branches: [ "build-fvs" ]
+    branches: [ "main" ]
 
 jobs:
   build:
-
     strategy:
       fail-fast: true
       matrix:
-        os: [windows-latest]
-        sys: [ucrt64] #,mingw64]
+        os: [windows-latest, ubuntu-latest]
+        #fvs_variant: [ak,bc,bm,ca,ci,cr,cs,ec,em,ie,kt,ls,nc,ne,oc,on,op,pn,sn,so,tt,ut,wc,ws]
+        fvs_variant: [ak,bm,ca,ci,cr,cs,ec,em,ie,kt,ls,nc,ne,oc,op,pn,sn,so,tt,ut,wc,ws]
+        #fvs_variant: [pn,wc]
       
     runs-on: ${{ matrix.os }}
     
@@ -24,10 +25,11 @@ jobs:
         submodules: true
     
     - name: Install MSYS2
+      if: runner.os == 'Windows'
       # https://github.com/msys2/setup-msys2
       uses: msys2/setup-msys2@v2
       with:
-        msystem: ${{matrix.sys}}
+        msystem: ucrt64
         update: true
         install: |
           mingw-w64-ucrt-x86_64-gcc
@@ -36,11 +38,12 @@ jobs:
     - name: Compile
       working-directory: ./bin
       run: |
-        make all
+        make FVS${{ matrix.fvs_variant }}${{ runner.os == 'Windows' && '.exe' || '' }}
+        make FVS${{ matrix.fvs_variant }}${{ runner.os == 'Windows' && '.dll' || '.so' }}
 
     - name: Test
       working-directory: ./tests
-      run: make all
+      run: make FVS${{ matrix.fvs_variant }}
 
     - name: Set Env Vars
       id: vars
@@ -48,15 +51,68 @@ jobs:
       run: |
         short_sha=$(git rev-parse --short "$GITHUB_SHA")
         echo "SHORT_SHA=$short_sha" >> "$GITHUB_ENV"
-        branchName=$(echo "$GITHUB_REF" | sed 's/refs\/heads\///')
-        echo "BRANCH=$branchName" >> "$GITHUB_ENV"
         osName=$(echo "${{ matrix.os }}" | sed 's/-latest//')
         echo "OS_NAME=$osName" >> "$GITHUB_ENV"
         
     - name: Archive Binaries
       uses: actions/upload-artifact@v4
       with:
-        name: fvs-${{ env.OS_NAME }}-${{ matrix.sys }}-${{ env.BRANCH }}-${{ env.SHORT_SHA }}
+        name: fvs-${{ env.OS_NAME }}-${{ matrix.fvs_variant }}-${{ github.sha }}
         path: |
-          bin/FVS*.exe
-          bin/FVS*.dll
+          bin/FVS${{ matrix.fvs_variant }}${{ runner.os == 'Windows' && '.exe' || '' }}
+          bin/FVS${{ matrix.fvs_variant }}${{ runner.os == 'Windows' && '.dll' || '.so' }}
+
+  release:
+    needs: build
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Set release version
+      id: vars
+      shell: bash
+      run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+    - name: Download Windows binaries
+      uses: actions/download-artifact@v4
+      with:
+        pattern: fvs-windows-*-${{ github.sha }}
+        path: artifacts/windows
+        merge-multiple: true
+
+    - name: Download Ubuntu binaries
+      uses: actions/download-artifact@v4
+      with:
+        pattern: fvs-ubuntu-*-${{ github.sha }}
+        path: artifacts/ubuntu
+        merge-multiple: true
+
+    - name: Create OS archives
+      shell: bash
+      run: |
+        mkdir -p release-assets
+        zip -j "release-assets/fvs-windows-${{ steps.vars.outputs.SHORT_SHA }}.zip" artifacts/windows/*
+        zip -j "release-assets/fvs-ubuntu-${{ steps.vars.outputs.SHORT_SHA }}.zip" artifacts/ubuntu/*
+
+    - name: Create or update draft release
+      env:
+        GH_TOKEN: ${{ github.token }}
+      shell: bash
+      run: |
+        tag="draft-${GITHUB_SHA}"
+        title="FVS draft ${{ steps.vars.outputs.SHORT_SHA }}"
+        if release_is_draft=$(gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft 2>/dev/null); then
+          if [[ "$release_is_draft" != "true" ]]; then
+            echo "Release $tag already exists and is not a draft." >&2
+            exit 1
+          fi
+          gh release upload "$tag" release-assets/*.zip --repo "$GITHUB_REPOSITORY" --clobber
+        else
+          gh release create "$tag" release-assets/*.zip \
+            --repo "$GITHUB_REPOSITORY" \
+            --draft \
+            --title "$title" \
+            --notes "Draft binaries for commit $GITHUB_SHA." \
+            --target "$GITHUB_SHA"
+        fi

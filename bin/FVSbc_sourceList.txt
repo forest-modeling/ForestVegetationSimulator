@@ -288,10 +288,15 @@
 ../base/volkey.f
 
 ../dbsqlite/DBSCOM.F77
+../dbsqlite/dbs_fiavbc_atrtls.f
+../dbsqlite/dbs_fiavbc_cutlst.f
+../dbsqlite/dbs_fiavbc_trls.f
+
 ../metric/vdbsqlite/dbsfmpfc.f
 ../metric/vdbsqlite/dbsfmpf.f
 ../metric/vdbsqlite/dbsstandin.f
 ../metric/vdbsqlite/dbssumry.f
+../vdbsqlite/dbsreference.f
 
 ../metric/dbsqlite/dbsatrtls.f
 ../metric/dbsqlite/dbsclsum.f
@@ -379,6 +384,7 @@
 ../pg/putstd.f
 ../pg/stash.f
 ../volume/voleqdef.f
+../volume/NVEL/wdbkwtdata.inc
 ../metric/clim/clin.f
 ../metric/clim/clauestb.f
 ../clim/bc/clcwd.f
