@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-latest, macos-latest]
         #fvs_variant: [ak,bc,bm,ca,ci,cr,cs,ec,em,ie,kt,ls,nc,ne,oc,on,op,pn,sn,so,tt,ut,wc,ws]
         fvs_variant: [ak,bm,ca,ci,cr,cs,ec,em,ie,kt,ls,nc,ne,oc,op,pn,sn,so,tt,ut,wc,ws]
         #fvs_variant: [pn,wc]
@@ -23,6 +23,13 @@ jobs:
       uses: actions/checkout@v4
       with:
         submodules: true
+
+    - name: Install macOS dependencies
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        brew update
+        brew install gcc
     
     - name: Install MSYS2
       if: runner.os == 'Windows'
@@ -88,12 +95,20 @@ jobs:
         path: artifacts/ubuntu
         merge-multiple: true
 
+    - name: Download macOS binaries
+      uses: actions/download-artifact@v4
+      with:
+        pattern: fvs-macos-*-${{ github.sha }}
+        path: artifacts/macos
+        merge-multiple: true
+
     - name: Create OS archives
       shell: bash
       run: |
         mkdir -p release-assets
         zip -j "release-assets/fvs-windows-${{ steps.vars.outputs.SHORT_SHA }}.zip" artifacts/windows/*
         zip -j "release-assets/fvs-ubuntu-${{ steps.vars.outputs.SHORT_SHA }}.zip" artifacts/ubuntu/*
+        zip -j "release-assets/fvs-macos-${{ steps.vars.outputs.SHORT_SHA }}.zip" artifacts/macos/*
 
     - name: Create or update draft release
       env:
