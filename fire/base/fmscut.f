@@ -95,7 +95,7 @@ C               we must remove the trees that were left as downed snags.)
           TKCRBM = TKCRBM + CROWNW(I,ISZ) * Y
           LVCRWN = LVCRWN + (CROWNW(I,ISZ) * Z)
         ENDDO
-        CALL CWD3(ISP(I),DBH(I),DSNG(I),HT(I))
+        CALL CWD3(ISP(I),DBH(I),DSNG(I),HT(I),ICR(I))
 C
 C       CALCULATE VOLUME AND BIOMASS OF CUT MATERIAL NOW IN
 C       THE SNAG (SSNG) OR DOWNED SNAG (DSNG) POOLS; IN
@@ -104,7 +104,8 @@ C
         XNEG1= -1.0
         LMRCH2 = .FALSE.
 
-        CALL FMSVL2(ISP(I),DBH(I),HT(I),XNEG1,X,LMRCH2,DEBUG,JOSTND)
+        CALL FMSVL2(ISP(I),DBH(I),HT(I),XNEG1,X,ICR(I),
+     >              'L',LMRCH2,DEBUG,JOSTND)
         LVSNBM = LVSNBM +
      >    (X * V2T(ISP(I)) * (SSNG(I) + DSNG(I)))
 
@@ -135,7 +136,8 @@ C       REPORTED USING MBIO WHEN JENKINS EQUATIONS ARE IN USE
           X = 0.0
           IF (HRVTRE .GT. 0.0) THEN
             XNEG1= -1.0
-            CALL FMSVL2(ISP(I),DBH(I),HT(I),XNEG1,X,LMERCH,DEBUG,JOSTND)
+            CALL FMSVL2(ISP(I),DBH(I),HT(I),XNEG1,X,ICR(I),
+     >                  'L',LMERCH,DEBUG,JOSTND)
             X = X * V2T(ISP(I)) * HRVTRE
           ENDIF
         ELSE                     ! JENKINS CALCULATION METHOD
@@ -162,7 +164,8 @@ C     TOTAL WEIGHT REMOVED
         X = 0.
         XNEG1= -1.0
         LMERCH = .FALSE.
-        CALL FMSVL2(ISP(I),DBH(I),HT(I),XNEG1,X,LMERCH,DEBUG,JOSTND)
+        CALL FMSVL2(ISP(I),DBH(I),HT(I),XNEG1,X,ICR(I),
+     >              'L',LMERCH,DEBUG,JOSTND)
         X = X * V2T(ISP(I)) * WK3(I)
         TONRMH = TONRMH + X
       ENDDO

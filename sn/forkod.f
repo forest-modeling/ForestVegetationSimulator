@@ -385,7 +385,7 @@ C----------------------------------------------------------------------
         CASE (8212)
           WRITE(JOSTND,87)
    87     FORMAT(/,'********',T12,'TUNICA-BILOXI RES. (8212) BEING ',
-     &    'MAPPED TO 80601 KISATCHIE NF CATAHOULA DIST FOR FURTHER '
+     &    'MAPPED TO 80601 KISATCHIE NF CATAHOULA DIST FOR FURTHER ',
      &    'PROCESSING.')
           KODFOR = 80601
           IFORDI = 806

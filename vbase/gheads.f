@@ -138,9 +138,9 @@ C
 C
       WRITE(KOSTND,220)
   220 FORMAT(/T35,'NATIONAL VOLUME ESTIMATOR LIBRARY EQUATION NUMBERS',
-     &/,4('SPECIES CUBIC FOOT BOARD FOOT ')/
-C     & 4('          EQ. NO.    EQ. NO.  ')/
-     &  4('------- ---------- ---------- '))
+     &/,4('SPECIES  CUBIC FOOT BOARD FOOT ')/
+C     & 4('           EQ. NO.    EQ. NO.  ')/
+     &  4('------- ----------- ---------- '))
 C
       RETURN
       END

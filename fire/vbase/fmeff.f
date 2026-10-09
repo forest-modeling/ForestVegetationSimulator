@@ -557,7 +557,12 @@ C
            IF (LPSBURN) POMORT = POMORT + CRBURN * (FMPROB(I) - POMORT)
            BAMORT = BAMORT + POMORT * (DBH(I) / 24.0)**2
            TOTBA = TOTBA + FMPROB(I) * (DBH(I) / 24.0)**2
-           PVOLKL = PVOLKL + (CFV(I) * POMORT)
+           IF(VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' 
+     >        .OR. VARACD.EQ.'NE' .OR. VARACD.EQ.'SN') THEN
+              PVOLKL = PVOLKL + (MCFV(I) * POMORT)
+            ELSE
+              PVOLKL = PVOLKL + (CFV(I) * POMORT)
+            END IF
          ENDIF
 
   100 CONTINUE

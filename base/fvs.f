@@ -218,15 +218,46 @@ C
       DO 20 I=1,ITRN
       CFV(I)=CFV(I)*PROB(I)
       BFV(I)=BFV(I)*PROB(I)
-      WK1(I)=WK1(I)*PROB(I)
+      MCFV(I)=MCFV(I)*PROB(I)
+      SCFV(I)=SCFV(I)*PROB(I)
+      ABVGRD_BIO(I)=ABVGRD_BIO(I)*PROB(I)
+      MERCH_BIO(I)=MERCH_BIO(I)*PROB(I)
+      CUBSAW_BIO(I)=CUBSAW_BIO(I)*PROB(I)
+      FOLI_BIO(I)=FOLI_BIO(I)*PROB(I)
+      ABVGRD_CARB(I)=ABVGRD_CARB(I)*PROB(I)
+      MERCH_CARB(I)=MERCH_CARB(I)*PROB(I)
+      CUBSAW_CARB(I)=CUBSAW_CARB(I)*PROB(I)
+      FOLI_CARB(I)=FOLI_CARB(I)*PROB(I)
+
    20 CONTINUE
    25 CONTINUE
       CALL PCTILE(ITRN,IND,CFV,WK3,OCVCUR(7))
       CALL DIST(ITRN,OCVCUR,WK3)
       CALL PCTILE(ITRN,IND,BFV,WK3,OBFCUR(7))
       CALL DIST(ITRN,OBFCUR,WK3)
-      CALL PCTILE(ITRN,IND,WK1,WK3,OMCCUR(7))
+      CALL PCTILE(ITRN,IND,MCFV,WK3,OMCCUR(7))
       CALL DIST(ITRN,OMCCUR,WK3)
+      CALL PCTILE(ITRN,IND,SCFV,WK3,OSCCUR(7))
+      CALL DIST(ITRN,OSCCUR,WK3)
+C     COMPUTE BIOMASS AND CARBON
+      CALL PCTILE(ITRN,IND,ABVGRD_BIO,WK3,OAGBIOCUR(7))
+      CALL DIST(ITRN,OAGBIOCUR,WK3)
+      CALL PCTILE(ITRN,IND,MERCH_BIO,WK3,OMERBIOCUR(7))
+      CALL DIST(ITRN,OMERBIOCUR,WK3)
+      CALL PCTILE(ITRN,IND,CUBSAW_BIO,WK3,OCSAWBIOCUR(7))
+      CALL DIST(ITRN,OCSAWBIOCUR,WK3)
+      CALL PCTILE(ITRN,IND,FOLI_BIO,WK3,OFOLIBIO(7))
+      CALL DIST(ITRN,OFOLIBIO,WK3)
+C
+      CALL PCTILE(ITRN,IND,ABVGRD_CARB,WK3,OAGCARBCUR(7))
+      CALL DIST(ITRN,OAGCARBCUR,WK3)
+      CALL PCTILE(ITRN,IND,MERCH_CARB,WK3,OMERCARBCUR(7))
+      CALL DIST(ITRN,OMERCARBCUR,WK3)
+      CALL PCTILE(ITRN,IND,CUBSAW_CARB,WK3,OCSAWCARBCUR(7))
+      CALL DIST(ITRN,OCSAWCARBCUR,WK3)
+      CALL PCTILE(ITRN,IND,FOLI_CARB,WK3,OFOLICARB(7))
+      CALL DIST(ITRN,OFOLICARB,WK3)
+      
 C
 C     IF THERE ARE TREE RECORDS, THEN: CONVERT CFV TO A PER TREE
 C     REPRESENTATION.
@@ -235,7 +266,16 @@ C
       DO 30 I=1,ITRN
       CFV(I)=CFV(I)/PROB(I)
       BFV(I)=BFV(I)/PROB(I)
-      WK1(I)=WK1(I)/PROB(I)
+      MCFV(I)=MCFV(I)/PROB(I)
+      SCFV(I)=SCFV(I)/PROB(I)
+      ABVGRD_BIO(I)=ABVGRD_BIO(I)/PROB(I)
+      MERCH_BIO(I)=MERCH_BIO(I)/PROB(I)
+      CUBSAW_BIO(I)=CUBSAW_BIO(I)/PROB(I)
+      FOLI_BIO(I)=FOLI_BIO(I)/PROB(I)
+      ABVGRD_CARB(I)=ABVGRD_CARB(I)/PROB(I)
+      MERCH_CARB(I)=MERCH_CARB(I)/PROB(I)
+      CUBSAW_CARB(I)=CUBSAW_CARB(I)/PROB(I)
+      FOLI_CARB(I)=FOLI_CARB(I)/PROB(I)
    30 CONTINUE
    35 CONTINUE
 C
@@ -266,6 +306,10 @@ C
  9005 FORMAT(' CALLING STATS, CYCLE = ',I2)
       CALL STATS
 C
+C     OUTPUT SIMULATION REFERENCE DATA
+C     
+      CALL DBSREFERENCE
+C
 C     WRITE OUTPUT HEADING FOR STAND COMP TABLE IF NOT TO BE SUPPRESSED
 C     USING DELOTAB KEYWORD.
 C
@@ -282,6 +326,7 @@ C     IF TREE LIST OUTPUT IS REQUESTED...CALL TREE LIST PRINTER.
 C
       CALL MISPRT
       CALL PRTRLS (1)
+      CALL DBS_FIAVBC_TRLS
 C
 C     CREATE THE INITIAL STAND VISULIZATION.
 C
@@ -365,24 +410,11 @@ C
 C     IF TREE LIST OUTPUT IS REQUESTED...CALL TREE LIST PRINTER.
 C
       CALL PRTRLS (1)
+      CALL DBS_FIAVBC_TRLS
 C
 C     IF RUNNING FVSSTAND POST-PROCESSOR, CALL FILE PRINTER.
 C
       CALL FVSSTD (1)
-C                                                                          !Remove these
-C     FIND AND RUN ANY SCHEDULED SYSTEM CALLS.                             !Remove these
-C                                                                          !Remove these
-Cx      CALL OPFIND (1,MYACT,NTODO)                                        !Remove these
-Cx      IF (NTODO.GT.0) THEN                                               !Remove these
-Cx         DO ITODO=1,NTODO                                                !Remove these
-Cx            CALL OPGET(ITODO,1,IDAT,IACTK,NP,PRM)                        !Remove these
-Cx            IF (IACTK.EQ.MYACT(1)) THEN                                  !Remove these
-Cx               CALL OPGETC (ITODO,SYSCMD)                                !Remove these
-Cx               CALL OPDONE (ITODO,IY(ICYC+1)-1)                          !Remove these
-Cx               IF (SYSCMD.NE.' ') CALL SYSTEM(SYSCMD)                    !Remove these
-Cx            ENDIF                                                        !Remove these
-Cx         ENDDO                                                           !Remove these
-Cx      ENDIF                                                              !Remove these
 C
       IF ( ICYC .LT. NCYC ) THEN
         CALL ClearRestartCode
@@ -403,6 +435,7 @@ C
       OLDBA=BA
       OLDAVH=AVH
       ORMSQD=RMSQD
+      ODR016=DR016
       RELDM1=RELDEN
       CALL SDICLS(0,0.,999.,1,SDIBC,SDIBC2,STAGEA,STAGEB,0)
       SDIAC=SDIBC

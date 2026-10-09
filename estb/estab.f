@@ -1207,6 +1207,22 @@ C
       ISP(ITRN)=I
       ITRE(ITRN)=NNID
       CFV(ITRN)=0.
+      MCFV(ITRN)=0.
+      SCFV(ITRN)=0.
+C
+      CULL(ITRN)        = 0.
+      DECAYCD(ITRN)     = 0
+      WDLDSTEM(ITRN)    = 0
+      ABVGRD_BIO(ITRN)  = 0.
+      ABVGRD_CARB(ITRN) = 0.
+      MERCH_BIO(ITRN)   = 0.
+      MERCH_CARB(ITRN)  = 0.
+      CUBSAW_BIO(ITRN)  = 0.
+      CUBSAW_CARB(ITRN) = 0.
+      FOLI_BIO(ITRN)    = 0.
+      FOLI_CARB(ITRN)   = 0.
+      CARB_FRAC(ITRN)   = 0.
+C
       ITRUNC(ITRN)=0
       DEFECT(ITRN)=0
       ISPECL(ITRN)=0
@@ -1220,6 +1236,7 @@ C
 C
       PTOCFV(ITRN)=0.
       PMRCFV(ITRN)=0.
+      PSCFV(ITRN)=0.
       PMRBFV(ITRN)=0.
       NCFDEF(ITRN)=0
       NBFDEF(ITRN)=0
@@ -1278,6 +1295,22 @@ C
       ISP(ITRN)=I
       ITRE(ITRN)=NNID
       CFV(ITRN)=0.0
+      MCFV(ITRN)=0.
+      SCFV(ITRN)=0.
+C
+      CULL(ITRN)        = 0.
+      DECAYCD(ITRN)     = 0
+      WDLDSTEM(ITRN)    = 0
+      ABVGRD_BIO(ITRN)  = 0.
+      ABVGRD_CARB(ITRN) = 0.
+      MERCH_BIO(ITRN)   = 0.
+      MERCH_CARB(ITRN)  = 0.
+      CUBSAW_BIO(ITRN)  = 0.
+      CUBSAW_CARB(ITRN) = 0.
+      FOLI_BIO(ITRN)    = 0.
+      FOLI_CARB(ITRN)   = 0.
+      CARB_FRAC(ITRN)   = 0.
+C
       ITRUNC(ITRN)=0
       DEFECT(ITRN)=0
       ISPECL(ITRN)=0
@@ -1292,6 +1325,7 @@ C
 C
       PTOCFV(ITRN)=0.
       PMRCFV(ITRN)=0.
+      PSCFV(ITRN)=0.
       PMRBFV(ITRN)=0.
       NCFDEF(ITRN)=0
       NBFDEF(ITRN)=0
@@ -1352,6 +1386,22 @@ C
       IF(NOTE(ITPP+JJ).NE.1.AND.STOADJ.GT.0.0) IMC(ITRN)=2
       ISP(ITRN)=I
       CFV(ITRN)=0.
+      MCFV(ITRN)=0.
+      SCFV(ITRN)=0.
+C
+      CULL(ITRN)        = 0.
+      DECAYCD(ITRN)     = 0
+      WDLDSTEM(ITRN)    = 0
+      ABVGRD_BIO(ITRN)  = 0.
+      ABVGRD_CARB(ITRN) = 0.
+      MERCH_BIO(ITRN)   = 0.
+      MERCH_CARB(ITRN)  = 0.
+      CUBSAW_BIO(ITRN)  = 0.
+      CUBSAW_CARB(ITRN) = 0.
+      FOLI_BIO(ITRN)    = 0.
+      FOLI_CARB(ITRN)   = 0.
+      CARB_FRAC(ITRN)   = 0.
+C
       ITRUNC(ITRN)=0
       DEFECT(ITRN)=0
       ISPECL(ITRN)=0
@@ -1365,6 +1415,7 @@ C
 C
       PTOCFV(ITRN)=0.
       PMRCFV(ITRN)=0.
+      PSCFV(ITRN)=0.
       PMRBFV(ITRN)=0.
       NCFDEF(ITRN)=0
       NBFDEF(ITRN)=0

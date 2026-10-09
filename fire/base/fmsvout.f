@@ -111,22 +111,26 @@ C         TCWD VECTOR.
 C         CALCULATE THE TOTAL SNAG VOLUME.
 
           CALL FMSVL2(ISNSP(IS2F(I)),ODIA(IS2F(I)),
-     >      OLEN(IS2F(I)),OLEN(IS2F(I)),VOL(1),.FALSE.,.FALSE.,JOSTND)
+     >      OLEN(IS2F(I)),OLEN(IS2F(I)),VOL(1), 0, 
+     >      'D',.FALSE.,.FALSE.,JOSTND)
 
 C         CALCULATE THE VOLUME UP TO 12 INCH DIAMETER.
 
           HT12 = OLEN(IS2F(I)) - (( 12.0 * (OLEN(IS2F(I))*12.-36.)/
      >      ODIA(IS2F(I)))/12.)
           CALL FMSVL2(ISNSP(IS2F(I)),ODIA(IS2F(I)),
-     >      OLEN(IS2F(I)), HT12, VOL(2),.FALSE.,.FALSE.,JOSTND)
+     >      OLEN(IS2F(I)), HT12, VOL(2),0,
+     >      'D',.FALSE.,.FALSE.,JOSTND)
           HT6 = OLEN(IS2F(I)) - ( (6.0 * (OLEN(IS2F(I))*12.-36.) /
      >      ODIA(IS2F(I)))/12.)
           CALL FMSVL2(ISNSP(IS2F(I)),ODIA(IS2F(I)),
-     >      OLEN(IS2F(I)), HT6, VOL(3),.FALSE.,.FALSE.,JOSTND)
+     >      OLEN(IS2F(I)), HT6, VOL(3), 0,
+     >      'D',.FALSE.,.FALSE.,JOSTND)
           HT3 = OLEN(IS2F(I)) - ( (3.0 * (OLEN(IS2F(I))*12.-36.)/
      >      ODIA(IS2F(I)))/12.)
           CALL FMSVL2(ISNSP(IS2F(I)),ODIA(IS2F(I)),
-     >      OLEN(IS2F(I)), HT3, VOL(4),.FALSE.,.FALSE.,JOSTND)
+     >      OLEN(IS2F(I)), HT3, VOL(4), 0,
+     >      'D',.FALSE.,.FALSE.,JOSTND)
 
           IF ( HT3.GE.OLEN(IS2F(I)) .OR. HT3.LT.0. ) THEN
 
@@ -206,23 +210,26 @@ C         TCWD VECTOR
 C         CALCULATE THE TOTAL SNAG VOLUME.
 
           CALL FMSVL2(ISNSP(IS2FTMP(I)),ODIA(IS2FTMP(I)),
-     >      OLEN(IS2FTMP(I)),OLEN(IS2FTMP(I)), VOL(1),
-     >      .FALSE.,.FALSE.,JOSTND)
+     >      OLEN(IS2FTMP(I)),OLEN(IS2FTMP(I)), VOL(1),0,
+     >      'D',.FALSE.,.FALSE.,JOSTND)
 
 C         CALCULATE THE VOLUME UP TO 12 INCH DIAMETER.
 
           HT12 = OLEN(IS2FTMP(I)) - ((12.0 *
      >      (OLEN(IS2FTMP(I))*12.-36.)/ODIA(IS2FTMP(I)))/12.)
           CALL FMSVL2(ISNSP(IS2FTMP(I)),ODIA(IS2FTMP(I)),
-     >      OLEN(IS2FTMP(I)), HT12, VOL(2),.FALSE.,.FALSE.,JOSTND)
+     >      OLEN(IS2FTMP(I)), HT12, VOL(2),0,
+     >      'D',.FALSE.,.FALSE.,JOSTND)
           HT6 = OLEN(IS2FTMP(I)) - ( (6.0 *
      >      (OLEN(IS2FTMP(I))*12.-36.)/ODIA(IS2FTMP(I)))/12.)
           CALL FMSVL2(ISNSP(IS2FTMP(I)),ODIA(IS2FTMP(I)),
-     >      OLEN(IS2FTMP(I)), HT6, VOL(3),.FALSE.,.FALSE.,JOSTND)
+     >      OLEN(IS2FTMP(I)), HT6, VOL(3), 0,
+     >      'D',.FALSE.,.FALSE.,JOSTND)
           HT3 = OLEN(IS2FTMP(I)) - ( (3.0 *
      >      (OLEN(IS2FTMP(I))*12.-36.)/ODIA(IS2FTMP(I)))/12.)
           CALL FMSVL2(ISNSP(IS2FTMP(I)),ODIA(IS2FTMP(I)),
-     >      OLEN(IS2FTMP(I)), HT3, VOL(4),.FALSE.,.FALSE.,JOSTND)
+     >      OLEN(IS2FTMP(I)), HT3, VOL(4), 0,
+     >      'D',.FALSE.,.FALSE.,JOSTND)
 
           IF ( HT3.GE.OLEN(IS2FTMP(I)) .OR. HT3.LT.0. ) THEN
 

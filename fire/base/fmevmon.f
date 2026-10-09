@@ -308,7 +308,8 @@ C  PASS OVER THE INITIALLY-HARD SNAGS
           HS = HTIHSALV(I)
           TPA = SALVSPA(I,1)
           IF (TPA .GT. 0.) THEN
-            CALL FMSVL2(ISPS,XD,HTD,HS,X1,.FALSE.,DEBUG,JOSTND)
+            CALL FMSVL2(ISPS,XD,HTD,HS,X1,0,
+     &                  'D',.FALSE.,DEBUG,JOSTND)
             X = TPA * X1
             IF (HARDSALV(I)) THEN
               XH = XH + X
@@ -322,7 +323,8 @@ C     PASS OVER THE INITIALLY-SOFT SNAGS
           HS = HTISSALV(I)
           TPA = SALVSPA(I,2)
           IF (TPA .GT. 0. ) THEN
-             CALL FMSVL2(ISPS,XD,HTD,HS,X1,.FALSE.,DEBUG,JOSTND)
+             CALL FMSVL2(ISPS,XD,HTD,HS,X1,0,
+     &                  'D',.FALSE.,DEBUG,JOSTND)
             X = TPA * X1
             XS = XS + X
           ENDIF
@@ -601,7 +603,8 @@ C
               HS = HTIHSALV(I)
               TPA = SALVSPA(I,1)
               IF (TPA .GT. 0.) THEN
-                CALL FMSVL2(ISPS,XD,HTD,HS,X1,.FALSE.,DEBUG,JOSTND)
+                CALL FMSVL2(ISPS,XD,HTD,HS,X1,0,
+     &                     'D',.FALSE.,DEBUG,JOSTND)
                 XH = TPA * X1
               ENDIF
 C
@@ -610,7 +613,8 @@ C
               HS = HTISSALV(I)
               TPA = SALVSPA(I,2)
               IF (TPA .GT. 0. ) THEN
-                CALL FMSVL2(ISPS,XD,HTD,HS,X1,.FALSE.,DEBUG,JOSTND)
+                CALL FMSVL2(ISPS,XD,HTD,HS,X1,0,
+     &                      'D',.FALSE.,DEBUG,JOSTND)
                 XS = TPA * X1
               ENDIF
 C
@@ -685,7 +689,8 @@ C  CONSTRAIN TO HEIGHT RANGE
 C
               IF((H.GE.XLHT).AND.(H.LT.XHHT))THEN
                 LMERCH = .FALSE.
-                CALL FMSVL2(ISPC,D,H,XM1,VT,LMERCH,.FALSE.,JOSTND)
+                CALL FMSVL2(ISPC,D,H,XM1,VT,0, 
+     &                      'L',LMERCH,.FALSE.,JOSTND)
            
                 IF (DEBUG) WRITE(JOSTND,60) I,FMPROB(I),PROB(I),
      >                                      ISP(I),D,H,VT
@@ -755,7 +760,8 @@ C
               IF((H.GE.XLHT).AND.(H.LT.XHHT))THEN
                 LMERCH = .FALSE.
            
-                CALL FMSVL2(ISPC,D,H,XM1,VT,LMERCH,.FALSE.,JOSTND)
+                CALL FMSVL2(ISPC,D,H,XM1,VT,0, 
+     &                     'L',LMERCH,.FALSE.,JOSTND)
            
                 IF (DEBUG) WRITE(JOSTND,61) I,FMPROB(I),PROB(I),
      >                                      ISP(I),D,H,VT

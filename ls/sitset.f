@@ -261,10 +261,9 @@ C----------
 C
       IF(IFLAG .EQ. 1) THEN
         WRITE(JOSTND,1)
-    1   FORMAT(/,3('***************'/),'WARNING: SITE SPECIES ',
-     &    'AND/OR SITE CODE IS MISSING.  A DEFAULT IS BEING ASSIGNED.',
-     &    ' THIS PROJECTION SHOULD NOT BE TAKEN SERIOUSLY.',/,
-     &    3('***************'/),/)
+    1   FORMAT('***************WARNING: SITE SPECIES ',
+     &    'AND/OR SITE CODE IS MISSING.  A DEFAULT IS BEING ASSIGNED.')
+      CALL ERRGRO(.TRUE., 54) 
       ENDIF
 C----------
 C  COMPUTE SPECIES SITE FROM STAND SITE FOR ALL SPECIES WHICH HAVE
@@ -351,6 +350,38 @@ C----------
           END SELECT
         ENDIF
       ENDIF
+      IF(SCFMIND(ISPC).LE.0.)THEN                 !SET **SCFMIND** DEFAULT
+        IF(ISPC.LE.14)THEN                     !SOFTWOODS
+          SCFMIND(ISPC)=9.
+        ELSE                                   !HARDWOODS
+          SELECT CASE(IFOR)
+          CASE(2)
+            SCFMIND(ISPC)=9.
+            IF(ISPC.GE.40.AND.ISPC.LE.42)SCFMIND(ISPC)=11.
+          CASE(5)
+            SCFMIND(ISPC)=11.
+            IF(ISPC.GE.40.AND.ISPC.LE.42)SCFMIND(ISPC)=9.
+          CASE DEFAULT
+            SCFMIND(ISPC)=11.
+          END SELECT
+        ENDIF
+      ENDIF
+      IF(SCFTOPD(ISPC).LE.0.)THEN                 !SET **SCFTOPD** DEFAULT
+        IF(ISPC.LE.14)THEN                     !SOFTWOODS
+          SCFTOPD(ISPC)=7.6
+        ELSE                                   !HARDWOODS
+          SELECT CASE(IFOR)
+          CASE(2)
+            SCFTOPD(ISPC)=7.6
+            IF(ISPC.GE.40.AND.ISPC.LE.42)SCFTOPD(ISPC)=9.6
+          CASE(5)
+            SCFTOPD(ISPC)=7.6
+            IF(ISPC.GE.40.AND.ISPC.LE.42)SCFTOPD(ISPC)=7.6
+          CASE DEFAULT
+            SCFTOPD(ISPC)=9.6
+          END SELECT
+        ENDIF
+      ENDIF
       ENDDO
 C----------
 C  LOAD VOLUME EQUATION ARRAYS FOR ALL SPECIES IF USING CLARK
@@ -368,8 +399,10 @@ C----------
 C
       METHB8=0
       METHC8=0
+      IF (LFIANVB) CALL NVB_REGION_CHECK
       DO ISPC=1,MAXSP
       READ(FIAJSP(ISPC),'(I4)')IFIASP
+      VOLEQ='           '
       IF(((METHC(ISPC).EQ.6).OR.(METHC(ISPC).EQ.9).OR.
      &    (METHC(ISPC).EQ.5)).AND.(VEQNNC(ISPC).EQ.'           '))THEN
         IF(METHC(ISPC).EQ.5)THEN
@@ -383,9 +416,13 @@ C      WRITE(16,*)'PROD,IFIASP,ISPC,VEQNNC(ISPC)= ',PROD,IFIASP,ISPC,
 C     &VEQNNC(ISPC)
       ELSEIF(METHC(ISPC).EQ.8)THEN
           METHC8=METHC8+1
+      ELSEIF(METHC(ISPC).EQ.10 .AND. VEQNNC(ISPC).EQ.'           ')THEN
+        CALL NVBEQDEF(IFIASP,VOLEQ)
+        VEQNNC(ISPC)=VOLEQ
       ENDIF
       IF(((METHB(ISPC).EQ.6).OR.(METHB(ISPC).EQ.9).OR.
      &    (METHB(ISPC).EQ.5)).AND.(VEQNNB(ISPC).EQ.'           '))THEN
+        VOLEQ='           '
         IF(METHB(ISPC).EQ.5)THEN
           IF((KFORST.EQ.4).OR.(KFORST.EQ.24))THEN
             VOLEQ(1:7)='902DVEE'
@@ -408,8 +445,8 @@ C     &VEQNNC(ISPC)
       IF(JJ.GT.MAXSP)JJ=MAXSP
       WRITE(JOSTND,90)(NSP(K,1)(1:2),K=J,JJ)
    90 FORMAT(/'SPECIES ',5X,10(A2,6X))
-      WRITE(JOSTND,91)(SDIDEF(K),K=J,JJ )
-   91 FORMAT('SDI MAX ',   10F8.0)
+      WRITE(JOSTND,91)(NINT(SDIDEF(K)),K=J,JJ )
+   91 FORMAT('SDI MAX ',   10I8.0)
       IF(JJ .EQ. MAXSP)GO TO 93
    92 CONTINUE
    93 CONTINUE
@@ -428,6 +465,6 @@ C----------
      &CALL VOLEQHEAD(JOSTND)
       IF((METHC8.NE.MAXSP).AND.(METHB8.NE.MAXSP))
      &WRITE(JOSTND,230)(NSP(J,1)(1:2),VEQNNC(J),VEQNNB(J),J=1,MAXSP)
- 230  FORMAT(4(2X,A2,4X,A10,1X,A10,1X))
+ 230  FORMAT(4(2X,A2,4X,A11,1X,A10,1X))
       RETURN
       END

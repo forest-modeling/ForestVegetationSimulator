@@ -8,10 +8,10 @@ C    14-JUL-2010 Lance R. David (FMSC)
 C       Previous note revision date 1986
 C       Added IMPLICIT NONE and declared variables as needed.
 C----------
-      CHARACTER*10 KARD(7)
+      CHARACTER*10 KARD(12)
       CHARACTER*8 KEYWRD
       INTEGER IOUT, IRECNT
-      REAL ARRAY(7)
+      REAL ARRAY(12)
       WRITE (IOUT,70) IRECNT,KEYWRD,ARRAY,KARD
    70 FORMAT (/,'CARD NUM =',I5,'; KEYWORD FIELD = ''',A8,''''/,
      >        '     PARAMETERS ARE:',7F14.7,/,

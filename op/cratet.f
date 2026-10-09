@@ -372,7 +372,7 @@ C----------
      >           ' TMPCAL(1,',I2,') = ',F9.6,
      >           ' TMPCAL(2,',I2,') = ',F9.6,
      >           ' TMPCAL(3,',I2,') = ',F9.6,
-     >           ' NEWCAL('I2') = ',I3)
+     >           ' NEWCAL(',I2,') = ',I3)
         ENDDO         
       ENDIF
 C----------

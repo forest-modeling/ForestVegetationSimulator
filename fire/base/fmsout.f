@@ -223,7 +223,7 @@ C     Print the snag output headings.
          WRITE(JSNOUT,211)
          WRITE(JSNOUT,220)
          WRITE(JSNOUT,222)
-  200    FORMAT(' ESTIMATED SNAG CHARACTERISTICS '
+  200    FORMAT(' ESTIMATED SNAG CHARACTERISTICS ',
      &          '(BASED ON STOCKABLE AREA), STAND ID=',A)
   210    FORMAT(13X,'DEATH CURR',
      &         ' HEIGHT CURR VOLUME (FT3)      ',

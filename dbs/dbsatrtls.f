@@ -44,7 +44,7 @@ C
       CHARACTER*8 TID,CSPECIES
       CHARACTER*2000 SQLStmtStr
       CHARACTER*20 TABLENAME,DTYPE,CREATENAM
-      CHARACTER*5 NTCUFT,NMCUFT,NBDFT
+      CHARACTER*5 NTCUFT,NMCUFT,NSCUFT,NBDFT
       CHARACTER*8 NAMDCF,NAMDBF
       INTEGER IWHO,I,JYR,IP,ITPLAB,IRCODE,IDMR,ICDF,IBDF,IPTBAL,KODE
       INTEGER ISPC,I1,I2,I3
@@ -70,64 +70,67 @@ C     For CS, LS, NE and SN, the table name is FVS_ATRTList_East and the followi
 C     Column names change from: TCuFt, MCuFt, BdFt to MCuFt, SCuFt, SBdFt
 
       IF(TRIM(DBMSOUT).EQ.'EXCEL') THEN
-        IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' .OR. VARACD.EQ.'SN' .OR.
-     -      VARACD.EQ.'NE') THEN
-          TABLENAME = '[FVS_ATRTList_East$]'
-          CREATENAM =  'FVS_ATRTList_East'
-          NTCUFT  = 'MCuFt'
-          NMCUFT  = 'SCuFt'
-          NBDFT   = 'SBdFt'
-          NAMDCF  = 'Ht2TDMCF'
-          NAMDBF  = 'Ht2TDSCF'
-        ELSE
+    !     IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' .OR. VARACD.EQ.'SN' .OR.
+    !  -      VARACD.EQ.'NE') THEN
+    !       TABLENAME = '[FVS_ATRTList_East$]'
+    !       CREATENAM =  'FVS_ATRTList_East'
+    !       NTCUFT  = 'MCuFt'
+    !       NMCUFT  = 'SCuFt'
+    !       NBDFT   = 'SBdFt'
+    !       NAMDCF  = 'Ht2TDMCF'
+    !       NAMDBF  = 'Ht2TDSCF'
+    !     ELSE
           TABLENAME = '[FVS_ATRTList$]'
           CREATENAM =  'FVS_ATRTList'
           NTCUFT  = 'TCuFt'
           NMCUFT  = 'MCuFt'
+          NSCUFT  = 'SCuFt'
           NBDFT   = 'BdFt'
           NAMDCF  = 'Ht2TDCF '
           NAMDBF  = 'Ht2TDBF '
-        ENDIF
+        ! ENDIF
         DTYPE = 'Number'
       ELSEIF(TRIM(DBMSOUT).EQ.'ACCESS') THEN
-        IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' .OR. VARACD.EQ.'SN' .OR.
-     -      VARACD.EQ.'NE') THEN
-          TABLENAME = 'FVS_ATRTList_East'
-          CREATENAM = 'FVS_ATRTList_East'
-          NTCUFT  = 'MCuFt'
-          NMCUFT  = 'SCuFt'
-          NBDFT   = 'SBdFt'
-          NAMDCF  = 'Ht2TDMCF'
-          NAMDBF  = 'Ht2TDSCF'
-        ELSE
+    !     IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' .OR. VARACD.EQ.'SN' .OR.
+    !  -      VARACD.EQ.'NE') THEN
+    !       TABLENAME = 'FVS_ATRTList_East'
+    !       CREATENAM = 'FVS_ATRTList_East'
+    !       NTCUFT  = 'MCuFt'
+    !       NMCUFT  = 'SCuFt'
+    !       NBDFT   = 'SBdFt'
+    !       NAMDCF  = 'Ht2TDMCF'
+    !       NAMDBF  = 'Ht2TDSCF'
+    !     ELSE
           TABLENAME = 'FVS_ATRTList'
           CREATENAM = 'FVS_ATRTList'
           NTCUFT  = 'TCuFt'
           NMCUFT  = 'MCuFt'
+          NSCUFT  = 'SCuFt'
           NBDFT   = 'BdFt'
           NAMDCF  = 'Ht2TDCF '
           NAMDBF  = 'Ht2TDBF '
-        ENDIF
+        ! ENDIF
         DTYPE = 'Double'
       ELSE
-        IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' .OR. VARACD.EQ.'SN' .OR.
-     -      VARACD.EQ.'NE') THEN
-          TABLENAME = 'FVS_ATRTList_East'
-          CREATENAM = 'FVS_ATRTList_East'
-          NTCUFT  = 'MCuFt'
-          NMCUFT  = 'SCuFt'
-          NBDFT   = 'SBdFt'
-          NAMDCF  = 'Ht2TDMCF'
-          NAMDBF  = 'Ht2TDSCF'
-        ELSE
+    !     IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS' .OR. VARACD.EQ.'SN' .OR.
+    !  -      VARACD.EQ.'NE') THEN
+    !       TABLENAME = 'FVS_ATRTList_East'
+    !       CREATENAM = 'FVS_ATRTList_East'
+    !       NTCUFT  = 'MCuFt'
+    !       NMCUFT  = 'SCuFt'
+    !       NBDFT   = 'SBdFt'
+    !       NAMDCF  = 'Ht2TDMCF'
+    !       NAMDBF  = 'Ht2TDSCF'
+    !     ELSE
           TABLENAME = 'FVS_ATRTList'
           CREATENAM = 'FVS_ATRTList'
           NTCUFT  = 'TCuFt'
           NMCUFT  = 'MCuFt'
+          NSCUFT  = 'SCuFt'
           NBDFT   = 'BdFt'
           NAMDCF  = 'Ht2TDCF '
           NAMDBF  = 'Ht2TDBF '
-        ENDIF
+        ! ENDIF
         DTYPE = 'real'
       ENDIF
 
@@ -178,6 +181,7 @@ C     IF IT DOESNT THEN WE NEED TO CREATE IT
      -             'PtBAL double null,'//
      -             NTCUFT // ' double null,'//
      -             NMCUFT // ' double null,'//
+                   NSCUFT // ' double null,'//  
      -             NBDFT  // ' double null,'//
      -             'MDefect int null,'//
      -             'BDefect int null,'//
@@ -213,6 +217,7 @@ C     IF IT DOESNT THEN WE NEED TO CREATE IT
      -             'PtBAL Number null,'//
      -             NTCUFT // ' Number null,'//
      -             NMCUFT // ' Number null,'//
+                   NSCUFT // ' Number null,'//
      -             NBDFT  // ' Number null,'//
      -             'MDefect int null,'//
      -             'BDefect int null,'//
@@ -247,6 +252,7 @@ C     IF IT DOESNT THEN WE NEED TO CREATE IT
      -             'PtBAL real null,'//
      -             NTCUFT // ' real null,'//
      -             NMCUFT // ' real null,'//
+                   NSCUFT // ' real null,'//
      -             NBDFT  // ' real null,'//
      -             'MDefect int null,'//
      -             'BDefect int null,'//
@@ -357,7 +363,7 @@ C
      -         'TreeId,TreeIndex,Species,TreeVal,SSCD,PtIndex,TPA,',
      -         'MortPA,DBH,DG,',
      -         'HT,HTG,PctCr,CrWidth,MistCD,BAPctile,PtBAL,',
-     -         NTCUFT,',',NMCUFT,',',NBDFT,',',
+     -         NTCUFT,',',NMCUFT,',',NSCUFT,',',NBDFT,',',
      -         'MDefect,BDefect,TruncHt,EstHt,ActPt,',
      -         NAMDCF,',',NAMDBF,',','TreeAge) VALUES(''',
      -         CASEID,''',''',TRIM(NPLT),''',',
@@ -365,7 +371,8 @@ C
      -         trim(CSPECIES),''',',IMC(I),',',ISPECL(I),',',ITRE(I),
      -         ',',P,',',DP,',',DBH(I),',',DGI,',',HT(I),',',HTG(I),
      -         ',',ICR(I),',',CW,',',IDMR,',',PCT(I),',',IPTBAL,',',
-     -         CFV(I),',',WK1(I),',',BFV(I),',',ICDF,',',IBDF,',',
+     -         CFV(I),',',MCFV(I),',',SCFV(I),',',BFV(I),',',ICDF,','
+     -         ,IBDF,',',
      -         ((ITRUNC(I)+5)/100),',',ESTHT,',',IPVEC(ITRE(I)),
      -         ',',HT2TD(I,2),',',HT2TD(I,1),',',TREAGE,')'
 

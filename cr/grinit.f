@@ -67,6 +67,9 @@ C----------
       INTEGER I,J,K
 C----------
       VARACD = 'CR'
+      ECOREG = ''
+      CFCTYPE = 'F'
+      BFCTYPE = 'F'
       CALL LNKINT
       DO 5 I=1,MAXSP
       SDIDEF(I) = 0.0
@@ -86,6 +89,7 @@ C----------
       METHB(I) = 6
       METHC(I) = 6
       BFSTMP(I) = 1.0
+      SCFSTMP(I) = 1.0
 C----------
 C CF & BF LIMITS ARE DEPENDENT ON REGION AND MODEL TYPE.
 C THEY WILL BE SET IN SITSET.
@@ -94,6 +98,8 @@ C----------
       TOPD(I) = 0.0
       BFTOPD(I) = 0.0
       BFMIND(I) = 0.0
+      SCFTOPD(I) = 0.0
+      SCFMIND(I) = 0.0
 C
       BFLA0(I) = 0.0
       BFLA1(I) = 1.0
@@ -130,6 +136,7 @@ C
 C
       BAINIT = 0.0
       CFMIN = 0.
+      SCFMIN = 0.
       TCFMIN = 0.
       BFMIN = 0.
       BAMIN = 0.
@@ -153,12 +160,14 @@ C----------
    11 CONTINUE
 C----------
       MANAGD = 0
+      ISTDORG = 0
       ALPHA = 0.05
       BJPHI = 0.74
       BJTHET = 0.42
       ASPECT = 0.
       LAUTON = .FALSE.
       LFIA = .FALSE.
+      LFIANVB = .FALSE.
       AUTMAX = 60.0
       AUTMIN = 45.0
       BAF = 40.
@@ -258,6 +267,8 @@ C----------
       DBHZEIDE=0.
       DBHSTAGE=0.
       DR016=0.
+      ODR016=0.
+      ATDR016=0.
       DBHSDI=0.
       JSPINDEF=0
       CCCOEF=1.0 

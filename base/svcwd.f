@@ -300,8 +300,10 @@ C  sp,d,ht values instead of using snag index number to retrieve)
 C----------
             DIAM2 = SNGDIA(IS2F(IOBJ))
             HTD2  = SNGLEN(IS2F(IOBJ))
-            CALL FMSVL2(SP,DIAM2,HTD2,HICUT,VHI,.FALSE.,.FALSE.,JOSTND)
-            CALL FMSVL2(SP,DIAM2,HTD2,LOCUT,VLO,.FALSE.,.FALSE.,JOSTND)
+            CALL FMSVL2(SP,DIAM2,HTD2,HICUT,VHI,0, 
+     &                  'D',.FALSE.,.FALSE.,JOSTND)
+            CALL FMSVL2(SP,DIAM2,HTD2,LOCUT,VLO,0, 
+     &                  'D',.FALSE.,.FALSE.,JOSTND)
             DIF = VHI - VLO
 
 C----------
@@ -747,7 +749,7 @@ C----------
  1110   FORMAT(/,' ',T5,'TCWD3 ARRAY, UNPILED ONLY:',/,
      &           ' ',T5,' 1-3in   3-6in   6-12in  12+in ',/,
      &           ' ',T5,'------- ------- ------- -------',/,
-     &           ' ',T5,F7.3,1X,3(F7.2,1X)'AVERAGE PIECESIZE',/,
+     &           ' ',T5,F7.3,1X,3(F7.2,1X),'AVERAGE PIECESIZE',/,
      &           ' ',T5,4(F7.1,1X),'EXPECTED PIECECOUNT',/,
      &           ' ',T5,4(I7,1X),'EXISING SVS CWD OBJECTS',/,
      &           ' ',T5,4(I7,1X),'SVS OBJECT CHANGE',/,

@@ -48,8 +48,8 @@ C     LOGICAL LMERCH
       REAL    TVOLI, R1, R1SQ, R2SQ, P1, P2, SDIFF, S2
       REAL    HIHT(2), LOHT(2), DIS, DIH, OLDHTH, OLDHTS
       REAL    VHI(2), VLO(2), RHRAT, DIF, HICUT, LOCUT
-      REAL    BP(0:9), BPH(0:9), SCNV(2), TOSOFT
-      INTEGER IDANUW
+      REAL    BP(0:9), BPH(0:9), SCNV(2), TOSOFT, DUMHT
+      INTEGER IDANUW,CRWNRTO
 
 C     Conventional breakpoints for fuel size categories.
 
@@ -183,7 +183,10 @@ cc1      LOHT(2) = 1.0
 C     GET A TOTAL VOLUME FOR THIS SNAG
 
       TVOLI=0.
-      CALL FMSVOL(I,HTD,TVOLI,.false.,JOSTND)
+      DUMHT = -1.0
+      CALL FMSVL2(SP,DIAM,HTD,DUMHT,TVOLI,0,
+     &            'D',.false.,.false.,JOSTND)
+C      CALL FMSVOL(I,HTD,TVOLI,.false.,JOSTND)
       IF (DEBUG) WRITE (JOSTND,*) 'I(CWD1)=',I,' HTD=',HTD,
      >                            ' TVOLI=',TVOLI
 
@@ -235,7 +238,10 @@ C     soft and hard
 C     GET A TOTAL VOLUME FOR THIS SNAG
 
       TVOLI=0.
-      CALL FMSVOL(I,HTD,TVOLI,.false.,JOSTND)
+      DUMHT = -1.0
+      CALL FMSVL2(SP,DIAM,HTD,DUMHT,TVOLI,0,
+     &            'D',.false.,.false.,JOSTND)
+C      CALL FMSVOL(I,HTD,TVOLI,.false.,JOSTND)
 
       GOTO 1000
 
@@ -249,7 +255,7 @@ C     D       = DBH
 C     DIH     = DENSITY (#/AC) OF DOWNED (HARD) SNAGS FROM **CUTS**
 C     HT      = HEIGHT (FT) OF TREE JUST DOWNED
 
-      ENTRY CWD3(KSP, D, DIH, HTH)
+      ENTRY CWD3(KSP, D, DIH, HTH, CRWNRTO)
 
       DEBUG = .FALSE.
 
@@ -276,7 +282,8 @@ cc1      LOHT(2) = 1.
 C     GET A TOTAL VOLUME FOR THIS TREE (created by cuts)
 
       TVOLI=-1      
-      CALL FMSVL2(SP,DIAM,HTD,TVOLI,TVOLI,.false.,.false.,JOSTND)
+      CALL FMSVL2(SP,DIAM,HTD,TVOLI,TVOLI,CRWNRTO,
+     &            'D',.false.,.false.,JOSTND)
 
 
 C *******************************************************************

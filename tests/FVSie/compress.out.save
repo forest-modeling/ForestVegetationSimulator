@@ -1,6 +1,6 @@
 
 
-         FOREST VEGETATION SIMULATOR     VERSION 3617 -- INLAND EMPIRE EXPANDED                 RV:20210630    08-11-2021  11:15:43
+     FOREST VEGETATION SIMULATOR     VERSION FS2026.B -- INLAND EMPIRE EXPANDED                 RV:20260413    04-15-2026  14:17:52
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ STANDSQL   STANDSQL COMMAND FOR INPUT DATA BASE: FVS_Data.db
            LATITUDE:            47.5772
 
            HABITAT TYPE WILL BE MAPPED TO 260 FOR THIS PROJECTION.
-           HABITAT/PV_CODE:         262
+           HABITAT/PV_CODE:        262
            PV REFERENCE CODE:       101
            ASPECT:                120.0
            SLOPE:                 60.00
@@ -66,10 +66,10 @@ STANDSQL   STANDSQL COMMAND FOR INPUT DATA BASE: FVS_Data.db
            SAM_WT:            26.000000
            STK_PCNT:              1.000
            DG_TRANS:                  0
-           DG_MEASURE:               10
+           DG_MEASURE:             10.0
            HTG_TRANS:                 0
-           HTG_MEASURE:               5
-           MORT_MEASURE:              5
+           HTG_MEASURE:             5.0
+           MORT_MEASURE:            5.0
            END OF DATA BASE READ.
 
 TREESQL    TREESQL COMMAND FOR INPUT DATA BASE: FVS_Data.db
@@ -135,16 +135,16 @@ DESIGN     BASAL AREA FACTOR=    0.0; INVERSE OF FIXED PLOT AREA=    1.0; BREAK 
            PROPORTION OF STAND CONSIDERED STOCKABLE=  1.000
 
 STDINFO    FOREST-LOCATION CODE=     116; HABITAT TYPE=260; AGE=    0; ASPECT AZIMUTH IN DEGREES= 120.; SLOPE=  60.%
-           ELEVATION(100'S FEET)= 33.0;  REFERENCE CODE= 101 
+           ELEVATION(100'S FEET)= 33.0;  REFERENCE CODE= 101 ; ECOREGION=           
 
 SPECIES      WP      WL      DF      GF      WH      RC      LP      ES      AF      PP
-SDI MAX     669.    669.    669.    669.    669.    669.    669.    669.    669.    669.
+SDI MAX      669     669     669     669     669     669     669     669     669     669
 
 SPECIES      MH      WB      LM      LL      PM      RM      PY      AS      CO      MM
-SDI MAX     669.    669.    669.    669.    669.    669.    669.    669.    669.    669.
+SDI MAX      669     669     669     669     669     669     669     669     669     669
 
 SPECIES      PB      OH      OS
-SDI MAX     669.    669.    669.
+SDI MAX      669     669     669
 
            ALPHA SPECIES - FIA CODE CROSS REFERENCE:
             WP=  119 ;  WL=  073 ;  DF=  202 ;  GF=  017 ;  WH=  263 ;  RC=  242 ;  LP=  108 ;  ES=  093 ; AF=  019 
@@ -152,14 +152,14 @@ SDI MAX     669.    669.    669.
             CO=  740 ;  MM=  321 ;  PB=  375 ;  OH=  998 ;  OS=  299 
 
                                   NATIONAL VOLUME ESTIMATOR LIBRARY EQUATION NUMBERS
-SPECIES CUBIC FOOT BOARD FOOT SPECIES CUBIC FOOT BOARD FOOT SPECIES CUBIC FOOT BOARD FOOT SPECIES CUBIC FOOT BOARD FOOT 
-------- ---------- ---------- ------- ---------- ---------- ------- ---------- ---------- ------- ---------- ---------- 
-  WP    I00FW2W119 I00FW2W119   WL    I00FW2W073 I00FW2W073   DF    I00FW2W202 I00FW2W202   GF    I00FW2W017 I00FW2W017
-  WH    I00FW2W260 I00FW2W260   RC    I00FW2W242 I00FW2W242   LP    I00FW2W108 I00FW2W108   ES    I00FW2W093 I00FW2W093
-  AF    I00FW2W019 I00FW2W019   PP    I00FW2W122 I00FW2W122   MH    I00FW2W260 I00FW2W260   WB    I00FW2W012 I00FW2W012
-  LM    I00FW2W073 I00FW2W073   LL    I00FW2W019 I00FW2W019   PM    102DVEW106 102DVEW106   RM    102DVEW106 102DVEW106
-  PY    616BEHW231 616BEHW231   AS    102DVEW746 102DVEW746   CO    102DVEW740 102DVEW740   MM    200DVEW746 200DVEW746
-  PB    101DVEW375 101DVEW375   OH    200DVEW746 200DVEW746   OS    I00FW2W260 I00FW2W260
+SPECIES  CUBIC FOOT BOARD FOOT SPECIES  CUBIC FOOT BOARD FOOT SPECIES  CUBIC FOOT BOARD FOOT SPECIES  CUBIC FOOT BOARD FOOT 
+------- ----------- ---------- ------- ----------- ---------- ------- ----------- ---------- ------- ----------- ---------- 
+  WP    I00FW2W119  I00FW2W119   WL    I00FW2W073  I00FW2W073   DF    I00FW2W202  I00FW2W202   GF    I00FW2W017  I00FW2W017
+  WH    I00FW2W260  I00FW2W260   RC    I00FW2W242  I00FW2W242   LP    I00FW2W108  I00FW2W108   ES    I00FW2W093  I00FW2W093
+  AF    I00FW2W019  I00FW2W019   PP    I00FW2W122  I00FW2W122   MH    I00FW2W260  I00FW2W260   WB    I00FW2W012  I00FW2W012
+  LM    I00FW2W073  I00FW2W073   LL    I00FW2W019  I00FW2W019   PM    102DVEW106  102DVEW106   RM    102DVEW106  102DVEW106
+  PY    616BEHW231  616BEHW231   AS    102DVEW746  102DVEW746   CO    102DVEW740  102DVEW740   MM    200DVEW746  200DVEW746
+  PB    101DVEW375  101DVEW375   OH    200DVEW746  200DVEW746   OS    I00FW2W260  I00FW2W260
 
 SITECODE   SITE INDEX INFORMATION:
             WP=    0.;  WL=    0.;  DF=    0.;  GF=    0.;  WH=    0.;  RC=    0.;  LP=    0.;  ES=    0.; AF=    0.
@@ -209,25 +209,25 @@ HEIGHT INCREMENT MODEL                          1.00  1.00  1.00
 NUMBER OF RECORDS WITH MISTLETOE                   0     0     6
 
 
-         FOREST VEGETATION SIMULATOR     VERSION 3617 -- INLAND EMPIRE EXPANDED                 RV:20210630    08-11-2021  11:15:44
+     FOREST VEGETATION SIMULATOR     VERSION FS2026.B -- INLAND EMPIRE EXPANDED                 RV:20260413    04-15-2026  14:17:52
 
 STAND ID: 01160805050012                MGMT ID: A001    
 
 
 
-                                SUMMARY STATISTICS (PER ACRE OR STAND BASED ON TOTAL STAND AREA)
---------------------------------------------------------------------------------------------------------------------------------------
-               START OF SIMULATION PERIOD                     REMOVALS             AFTER TREATMENT    GROWTH THIS PERIOD
-         --------------------------------------------- ----------------------- ---------------------  ------------------   MAI  ------
-         NO OF              TOP      TOTAL MERCH MERCH NO OF TOTAL MERCH MERCH              TOP  RES  PERIOD ACCRE MORT   MERCH FOR SS
-YEAR AGE TREES  BA  SDI CCF HT  QMD  CU FT CU FT BD FT TREES CU FT CU FT BD FT  BA  SDI CCF HT   QMD  YEARS   PER  YEAR   CU FT TYP ZT
----- --- ----- --- ---- --- --- ---- ----- ----- ----- ----- ----- ----- ----- --- ---- --- --- ----  ------ ---- -----   ----- ------
-2014   0   140  87  155  83  69 10.6  2020  1657  8211     0     0     0     0  87  155  83  69 10.6       4   48    17     0.0 201 13
-2018   4   135  89  158  85  70 11.0  2145  1821  9218     0     0     0     0  89  158  85  70 11.0      10   50    16     0.0 201 13
-2028  14   124  96  165  91  74 11.9  2481  2115 10674     0     0     0     0  96  165  91  74 11.9      10   51    17     0.0 201 13
-2038  24   254 103  200  95  78  8.6  2818  2427 12673     0     0     0     0 103  200  95  78  8.6      10   53    16     0.0 201 13
-2048  34   214 111  205 101  81  9.7  3190  2820 15032     0     0     0     0 111  205 101  81  9.7      10   56    18     0.0 201 13
-2058  44   204 118  214 105  86 10.3  3573  3229 17384     0     0     0     0 118  214 105  86 10.3       0    0     0     0.0 201 13
+                                         SUMMARY STATISTICS (PER ACRE OR STAND BASED ON TOTAL STAND AREA)
+--------------------------------------------------------------------------------------------------------------------------------------------------
+                      START OF SIMULATION PERIOD                       REMOVALS               AFTER TREATMENT     GROWTH THIS PERIOD
+         --------------------------------------------------- ----------------------------- ---------------------  ------------------   MAI  ------
+         NO OF              TOP      TOTAL MERCH SAWLG MERCH NO OF TOTAL MERCH SAWLG MERCH              TOP  RES  PERIOD ACCRE MORT   MERCH FOR SS
+YEAR AGE TREES  BA  SDI CCF HT  QMD  CU FT CU FT CU FT BD FT TREES CU FT CU FT CU FT BD FT  BA  SDI CCF HT   QMD  YEARS   PER  YEAR   CU FT TYP ZT
+---- --- ----- --- ---- --- --- ---- ----- ----- ----- ----- ----- ----- ----- ----- ----- --- ---- --- --- ----  ------ ---- -----   ----- ------
+2014   0   140  87  155  83  69 10.6  2020  1637     0  8116     0     0     0     0     0  87  155  83  69 10.6       4   48    17     0.0 201 13
+2018   4   135  89  158  85  70 11.0  2145  1795     0  9026     0     0     0     0     0  89  158  85  70 11.0      10   50    16     0.0 201 13
+2028  14   124  96  165  91  74 11.9  2481  2091     0 10519     0     0     0     0     0  96  165  91  74 11.9      10   51    17     0.0 201 13
+2038  24   254 103  200  95  78  8.6  2818  2407     0 12531     0     0     0     0     0 103  200  95  78  8.6      10   53    16     0.0 201 13
+2048  34   214 111  205 101  81  9.7  3190  2799     0 14826     0     0     0     0     0 111  205 101  81  9.7      10   56    18     0.0 201 13
+2058  44   204 118  214 105  86 10.3  3573  3203     0 17245     0     0     0     0     0 118  214 105  86 10.3       0    0     0     0.0 201 13
 
 
 
@@ -330,7 +330,7 @@ YEAR   AGE   /ACRE  SQFT  CU FT   /ACRE  SQFT  CU FT   /ACRE  SQFT  CU FT    INF
 2058    44     204   118   3573      15    26    779       3     3     89      7    22      1     2    0.6   3.9
 
 
-         FOREST VEGETATION SIMULATOR     VERSION 3617 -- INLAND EMPIRE EXPANDED                 RV:20210630    08-11-2021  11:15:44
+     FOREST VEGETATION SIMULATOR     VERSION FS2026.B -- INLAND EMPIRE EXPANDED                 RV:20260413    04-15-2026  14:17:52
 
 ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -384,7 +384,7 @@ STANDSQL   STANDSQL COMMAND FOR INPUT DATA BASE: FVS_Data.db
            LATITUDE:            47.5772
 
            HABITAT TYPE WILL BE MAPPED TO 260 FOR THIS PROJECTION.
-           HABITAT/PV_CODE:         262
+           HABITAT/PV_CODE:        262
            PV REFERENCE CODE:       101
            ASPECT:                120.0
            SLOPE:                 60.00
@@ -396,10 +396,10 @@ STANDSQL   STANDSQL COMMAND FOR INPUT DATA BASE: FVS_Data.db
            SAM_WT:            26.000000
            STK_PCNT:              1.000
            DG_TRANS:                  0
-           DG_MEASURE:               10
+           DG_MEASURE:             10.0
            HTG_TRANS:                 0
-           HTG_MEASURE:               5
-           MORT_MEASURE:              5
+           HTG_MEASURE:             5.0
+           MORT_MEASURE:            5.0
            END OF DATA BASE READ.
 
 TREESQL    TREESQL COMMAND FOR INPUT DATA BASE: FVS_Data.db
@@ -472,16 +472,16 @@ DESIGN     BASAL AREA FACTOR=    0.0; INVERSE OF FIXED PLOT AREA=    1.0; BREAK 
            PROPORTION OF STAND CONSIDERED STOCKABLE=  1.000
 
 STDINFO    FOREST-LOCATION CODE=     116; HABITAT TYPE=260; AGE=    0; ASPECT AZIMUTH IN DEGREES= 120.; SLOPE=  60.%
-           ELEVATION(100'S FEET)= 33.0;  REFERENCE CODE= 101 
+           ELEVATION(100'S FEET)= 33.0;  REFERENCE CODE= 101 ; ECOREGION=           
 
 SPECIES      WP      WL      DF      GF      WH      RC      LP      ES      AF      PP
-SDI MAX     669.    669.    669.    669.    669.    669.    669.    669.    669.    669.
+SDI MAX      669     669     669     669     669     669     669     669     669     669
 
 SPECIES      MH      WB      LM      LL      PM      RM      PY      AS      CO      MM
-SDI MAX     669.    669.    669.    669.    669.    669.    669.    669.    669.    669.
+SDI MAX      669     669     669     669     669     669     669     669     669     669
 
 SPECIES      PB      OH      OS
-SDI MAX     669.    669.    669.
+SDI MAX      669     669     669
 
            ALPHA SPECIES - FIA CODE CROSS REFERENCE:
             WP=  119 ;  WL=  073 ;  DF=  202 ;  GF=  017 ;  WH=  263 ;  RC=  242 ;  LP=  108 ;  ES=  093 ; AF=  019 
@@ -489,14 +489,14 @@ SDI MAX     669.    669.    669.
             CO=  740 ;  MM=  321 ;  PB=  375 ;  OH=  998 ;  OS=  299 
 
                                   NATIONAL VOLUME ESTIMATOR LIBRARY EQUATION NUMBERS
-SPECIES CUBIC FOOT BOARD FOOT SPECIES CUBIC FOOT BOARD FOOT SPECIES CUBIC FOOT BOARD FOOT SPECIES CUBIC FOOT BOARD FOOT 
-------- ---------- ---------- ------- ---------- ---------- ------- ---------- ---------- ------- ---------- ---------- 
-  WP    I00FW2W119 I00FW2W119   WL    I00FW2W073 I00FW2W073   DF    I00FW2W202 I00FW2W202   GF    I00FW2W017 I00FW2W017
-  WH    I00FW2W260 I00FW2W260   RC    I00FW2W242 I00FW2W242   LP    I00FW2W108 I00FW2W108   ES    I00FW2W093 I00FW2W093
-  AF    I00FW2W019 I00FW2W019   PP    I00FW2W122 I00FW2W122   MH    I00FW2W260 I00FW2W260   WB    I00FW2W012 I00FW2W012
-  LM    I00FW2W073 I00FW2W073   LL    I00FW2W019 I00FW2W019   PM    102DVEW106 102DVEW106   RM    102DVEW106 102DVEW106
-  PY    616BEHW231 616BEHW231   AS    102DVEW746 102DVEW746   CO    102DVEW740 102DVEW740   MM    200DVEW746 200DVEW746
-  PB    101DVEW375 101DVEW375   OH    200DVEW746 200DVEW746   OS    I00FW2W260 I00FW2W260
+SPECIES  CUBIC FOOT BOARD FOOT SPECIES  CUBIC FOOT BOARD FOOT SPECIES  CUBIC FOOT BOARD FOOT SPECIES  CUBIC FOOT BOARD FOOT 
+------- ----------- ---------- ------- ----------- ---------- ------- ----------- ---------- ------- ----------- ---------- 
+  WP    I00FW2W119  I00FW2W119   WL    I00FW2W073  I00FW2W073   DF    I00FW2W202  I00FW2W202   GF    I00FW2W017  I00FW2W017
+  WH    I00FW2W260  I00FW2W260   RC    I00FW2W242  I00FW2W242   LP    I00FW2W108  I00FW2W108   ES    I00FW2W093  I00FW2W093
+  AF    I00FW2W019  I00FW2W019   PP    I00FW2W122  I00FW2W122   MH    I00FW2W260  I00FW2W260   WB    I00FW2W012  I00FW2W012
+  LM    I00FW2W073  I00FW2W073   LL    I00FW2W019  I00FW2W019   PM    102DVEW106  102DVEW106   RM    102DVEW106  102DVEW106
+  PY    616BEHW231  616BEHW231   AS    102DVEW746  102DVEW746   CO    102DVEW740  102DVEW740   MM    200DVEW746  200DVEW746
+  PB    101DVEW375  101DVEW375   OH    200DVEW746  200DVEW746   OS    I00FW2W260  I00FW2W260
 
 SITECODE   SITE INDEX INFORMATION:
             WP=    0.;  WL=    0.;  DF=    0.;  GF=    0.;  WH=    0.;  RC=    0.;  LP=    0.;  ES=    0.; AF=    0.
@@ -546,25 +546,25 @@ HEIGHT INCREMENT MODEL                          1.00  1.00  1.00
 NUMBER OF RECORDS WITH MISTLETOE                   0     0     6
 
 
-         FOREST VEGETATION SIMULATOR     VERSION 3617 -- INLAND EMPIRE EXPANDED                 RV:20210630    08-11-2021  11:15:44
+     FOREST VEGETATION SIMULATOR     VERSION FS2026.B -- INLAND EMPIRE EXPANDED                 RV:20260413    04-15-2026  14:17:52
 
 STAND ID: 01160805050012                MGMT ID: A001    
 
 
 
-                                SUMMARY STATISTICS (PER ACRE OR STAND BASED ON TOTAL STAND AREA)
---------------------------------------------------------------------------------------------------------------------------------------
-               START OF SIMULATION PERIOD                     REMOVALS             AFTER TREATMENT    GROWTH THIS PERIOD
-         --------------------------------------------- ----------------------- ---------------------  ------------------   MAI  ------
-         NO OF              TOP      TOTAL MERCH MERCH NO OF TOTAL MERCH MERCH              TOP  RES  PERIOD ACCRE MORT   MERCH FOR SS
-YEAR AGE TREES  BA  SDI CCF HT  QMD  CU FT CU FT BD FT TREES CU FT CU FT BD FT  BA  SDI CCF HT   QMD  YEARS   PER  YEAR   CU FT TYP ZT
----- --- ----- --- ---- --- --- ---- ----- ----- ----- ----- ----- ----- ----- --- ---- --- --- ----  ------ ---- -----   ----- ------
-2014   0   140  87  155  83  69 10.6  2020  1657  8211     0     0     0     0  87  155  83  69 10.6       4   48    17     0.0 201 13
-2018   4   135  89  158  85  70 11.0  2145  1821  9218     0     0     0     0  89  158  85  70 11.0      10   50    16     0.0 201 13
-2028  14   124  96  165  91  74 11.9  2481  2115 10674     0     0     0     0  96  165  91  74 11.9      10   51    19     0.0 201 13
-2038  24   253 102  199  95  77  8.6  2800  2388 12391     0     0     0     0 102  199  95  77  8.6      10   51    17     0.0 201 13
-2048  34   213 109  202  99  81  9.7  3134  2790 15070     0     0     0     0 109  202  99  81  9.7      10   49    18     0.0 201 13
-2058  44   203 114  208 102  84 10.2  3439  3083 16552     0     0     0     0 114  208 102  84 10.2       0    0     0     0.0 201 13
+                                         SUMMARY STATISTICS (PER ACRE OR STAND BASED ON TOTAL STAND AREA)
+--------------------------------------------------------------------------------------------------------------------------------------------------
+                      START OF SIMULATION PERIOD                       REMOVALS               AFTER TREATMENT     GROWTH THIS PERIOD
+         --------------------------------------------------- ----------------------------- ---------------------  ------------------   MAI  ------
+         NO OF              TOP      TOTAL MERCH SAWLG MERCH NO OF TOTAL MERCH SAWLG MERCH              TOP  RES  PERIOD ACCRE MORT   MERCH FOR SS
+YEAR AGE TREES  BA  SDI CCF HT  QMD  CU FT CU FT CU FT BD FT TREES CU FT CU FT CU FT BD FT  BA  SDI CCF HT   QMD  YEARS   PER  YEAR   CU FT TYP ZT
+---- --- ----- --- ---- --- --- ---- ----- ----- ----- ----- ----- ----- ----- ----- ----- --- ---- --- --- ----  ------ ---- -----   ----- ------
+2014   0   140  87  155  83  69 10.6  2020  1637     0  8116     0     0     0     0     0  87  155  83  69 10.6       4   48    17     0.0 201 13
+2018   4   135  89  158  85  70 11.0  2145  1795     0  9026     0     0     0     0     0  89  158  85  70 11.0      10   50    16     0.0 201 13
+2028  14   124  96  165  91  74 11.9  2481  2091     0 10519     0     0     0     0     0  96  165  91  74 11.9      10   51    19     0.0 201 13
+2038  24   253 102  199  95  77  8.6  2800  2362     0 12211     0     0     0     0     0 102  199  95  77  8.6      10   51    17     0.0 201 13
+2048  34   213 109  202  99  81  9.7  3134  2758     0 14637     0     0     0     0     0 109  202  99  81  9.7      10   49    18     0.0 201 13
+2058  44   203 114  208 102  84 10.2  3439  3054     0 16409     0     0     0     0     0 114  208 102  84 10.2       0    0     0     0.0 201 13
 
 
 

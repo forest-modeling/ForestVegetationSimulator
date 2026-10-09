@@ -42,10 +42,10 @@ C----------
 C  DIMENSIONS FOR INTERNAL VARIABLES (USED AS OUTPUT LABELS):
 C----------
       INTEGER IRT,JYR,I,IOAGE,IKNT,IXF,IFIA,ISWT,J,JSDI,ISNOFT
-      INTEGER IRTNCD
+      INTEGER IRTNCD,ICBS
       REAL DUM1,SUMAGE,AGEKNT,SDIBCTMP,SDIACTMP
       CHARACTER*9 AT1,AT2,AT3,AT4
-      CHARACTER*10 STD(3)
+      CHARACTER*14 STD(4)
 C----------
 C  DATA STATEMENTS:
 C----------
@@ -66,45 +66,28 @@ C----------
 C  ASSIGN JYR.
 C----------
       JYR=IY(ICYC+1)
+      ICBS = 0
 C----------
 C   IF USER HAS SPECIFIED KEYWORDS THAT ALTER VOLUME EQUATION PARAMETERS
 C   (IE VOLUMME BFVOLUME,ETC) THEN PRINT LABEL THAT INDICATES USER
 C   SPECIFIED STANDARDS.  THESE LABLES ARE VARIANT SPECIFIC
 C----------
 C
-      IF ((VARACD .EQ. 'CS') .OR. (VARACD .EQ. 'LS') .OR.
-     1    (VARACD .EQ. 'NE') .OR. (VARACD .EQ. 'SN')) THEN
-C
-         IF (LCVOLS) THEN
-            STD(1)='USER MERCH'
-            STD(2)='SAWLG'
-         ELSE
-            STD(1)='MERCH'
-            STD(2)='SAWLG'
-         ENDIF
-C
-         IF (LBVOLS) THEN
-            STD(3)='USER SAWLG'
-         ELSE
-            STD(3)='SAWLG'
-         ENDIF
-C
-      ELSE
-C
          IF (LCVOLS) THEN
             STD(1)='USER TOTAL'
             STD(2)='USER MERCH'
+            STD(3)='USER CUBIC SAW'
          ELSE
             STD(1)='TOTAL'
             STD(2)='MERCH'
+            STD(3)='CUBIC SAW'
          ENDIF
 C
          IF (LBVOLS) THEN
-            STD(3)='USER MERCH'
+            STD(4)='USER MERCH'
          ELSE
-            STD(3)='MERCH'
+            STD(4)='MERCH'
          ENDIF
-      ENDIF
 C----------
 C  WRITE REMOVAL STATISTICS.  BYPASS IF LSTART IS TRUE OR NUMBER
 C  OF TREES REMOVED WAS LESS THAN OR EQUAL TO ZERO.
@@ -121,9 +104,12 @@ C----------
 C
       WRITE(JOSTND,9005) AT2,STD(1),OCVREM,(OSPTV(I),IOSPTV(I),I=1,4),
      &                       STD(2),OMCREM,(OSPMR(I),IOSPMR(I),I=1,4),
-     &                       STD(3),OBFREM,(OSPBR(I),IOSPBR(I),I=1,4)
+     &                       STD(3),OSCREM,(OSPSR(I),IOSPSR(I),I=1,4),
+     &                       STD(4),OBFREM,(OSPBR(I),IOSPBR(I),I=1,4)
 C
  9005 FORMAT(6X,A9/8X,A10,5F7.1,F8.1,F9.0,' CUFT    ',
+     >       3(F5.0,'% ',A3,','),F5.0,'% ',A3/
+     &      8X,A10,5F7.1,F8.1,F9.0,' CUFT    ',
      >       3(F5.0,'% ',A3,','),F5.0,'% ',A3/
      &      8X,A10,5F7.1,F8.1,F9.0,' CUFT    ',
      >       3(F5.0,'% ',A3,','),F5.0,'% ',A3/
@@ -156,7 +142,8 @@ C----------
      >       3(F5.0,'% ',A3,','),F5.0,'% ',A3)
       WRITE(JOSTND,9005) AT2,STD(1),OCVCUR,(OSPCV(I),IOSPCV(I),I=1,4),
      &                       STD(2),OMCCUR,(OSPMC(I),IOSPMC(I),I=1,4),
-     &                       STD(3),OBFCUR,(OSPBV(I),IOSPBV(I),I=1,4)
+     &                       STD(3),OSCCUR,(OSPSC(I),IOSPSC(I),I=1,4),
+     &                       STD(4),OBFCUR,(OSPBV(I),IOSPBV(I),I=1,4)
   32  CONTINUE 
 C----------
 C  WRITE OUTPUT FOR SAMPLE TREES.  FIRST, OUTPUT STAND CONDITIONS
@@ -241,6 +228,7 @@ C---------
         TRTPA   = 0.
         TRTCUFT = 0.
         TRMCUFT = 0.
+        TRSCUFT = 0.
         TRBDFT  = 0.
         SUMAGE=0.
         AGEKNT=0.
@@ -311,6 +299,7 @@ C
       IOSUM(04,IKNT)=INT(OCVCUR(7)/GROSPC+0.5)
       IOSUM(05,IKNT)=INT(OMCCUR(7)/GROSPC+0.5)
       IOSUM(06,IKNT)=INT(OBFCUR(7)/GROSPC+0.5)
+      IOSUM(21,IKNT)=INT(OSCCUR(7)/GROSPC+0.5) ! ADDED TO END TO END REST OF IOSUM IN LINE
 C
       IOSUM(18,IKNT)=IFORTP
       IOSUM(19,IKNT)=ISZCL
@@ -350,6 +339,7 @@ C----------
       IOSUM(07,IKNT)=INT(ONTREM(7)/GROSPC+0.5)
       IOSUM(08,IKNT)=INT(OCVREM(7)/GROSPC+0.5)
       IOSUM(09,IKNT)=INT(OMCREM(7)/GROSPC+0.5)
+      IOSUM(22,IKNT)=INT(OSCREM(7)/GROSPC+0.5)
       IOSUM(10,IKNT)=INT(OBFREM(7)/GROSPC+0.5)
 C----------
 C  SUM THE REMOVALS
@@ -358,6 +348,7 @@ C---------
         TRTPA   = TRTPA   + ONTREM(7)
         TRTCUFT = TRTCUFT + OCVREM(7)
         TRMCUFT = TRMCUFT + OMCREM(7)
+        TRSCUFT = TRSCUFT + OSCREM(7)
         TRBDFT  = TRBDFT  + OBFREM(7)
       ENDIF
       IOSUM(14,IKNT)=IFINT
@@ -397,20 +388,12 @@ C----------
 C----------
 C  LOAD FINAL MAI VALUE
 C----------
-      IF(MAIFLG .EQ. 0)THEN
-        IF(IOSUM(2,IKNT).GT.0.)THEN
-          IF ((VARACD .EQ. 'CS') .OR. (VARACD .EQ. 'LS') .OR.
-     1      (VARACD .EQ. 'NE') .OR. (VARACD .EQ. 'SN')) THEN
-            BCYMAI(IKNT)=(IOSUM(4,IKNT)+TOTREM)/IOSUM(2,IKNT)
-          ELSE
-            BCYMAI(IKNT)=(IOSUM(5,IKNT)+TOTREM)/IOSUM(2,IKNT)
-          ENDIF
-        ELSE
-          BCYMAI(IKNT)=0.
-        ENDIF
+      IF((MAIFLG .EQ. 0).AND.(IOSUM(2,IKNT).GT.0.))THEN
+          BCYMAI(IKNT)=(IOSUM(5,IKNT)+TOTREM)/IOSUM(2,IKNT)
       ELSE
         BCYMAI(IKNT)=0.
       ENDIF
+
 C----------
 C     CALL **ECEND** TO OUTPUT LAST LINES OF ECONOMIC OUTPUT
 C----------
@@ -424,7 +407,7 @@ C---------
       IF (ITABLE(3).EQ.1) J=0
       CALL GROHED (JOSTND)
       CALL LBSPLW (JOSTND)
-      CALL SUMOUT (IOSUM,20,0,JOSTND,J,I,IKNT,MGMID,NPLT,SAMWT,
+      CALL SUMOUT (IOSUM,22,0,JOSTND,J,I,IKNT,MGMID,NPLT,SAMWT,
      &             ITITLE,IPTINV)
       CALL OPLIST (.FALSE.,NPLT,MGMID,ITITLE)
 C----------
@@ -440,6 +423,9 @@ C----------
      >    ISDIAT(IKNT),IOSUM(13,IKNT),QDBHAT(IKNT),
      >    IOSUM(15,IKNT),IOSUM(16,IKNT)
   170 FORMAT (I4,I6,3I4,F5.1,4I6,3I4,F5.1,I4,I4)
-      IF (.NOT.LSTART) CALL DBSSUMRY2
+      IF (.NOT.LSTART) THEN
+        CALL DBSSUMRY2
+        CALL DBSCARBBIOSUMRY
+      END IF
       RETURN
       END

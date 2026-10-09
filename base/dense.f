@@ -182,7 +182,7 @@ C----------
       TPROB=TPROB+P
       D=DBH(I)
       IF(LBKDEN.AND.LREDO)  D =WK3(I)
-      IF((D.GE.DBHSDI).AND.LZEIDE)SUMDR0=SUMDR0+P*(D)**1.605    ! ADD ZEIDE SUMS IF DIA. >=DBHSDI
+      IF(D.GE.DBHSDI)SUMDR0=SUMDR0+P*(D)**1.605    ! ADD ZEIDE SUMS IF DIA. >=DBHSDI
       DP=D*P
       WK5(I)=D*DP
       TSUMD2=TSUMD2+WK5(I)
@@ -248,7 +248,7 @@ C----------
       RMSQD=0.
       IF (ITRN.GT.0.AND.TPROB.GT.0.0)THEN
         RMSQD = SQRT (TSUMD2 / TPROB)
-        IF(LZEIDE)DR016=(SUMDR0/TPROB)**(1./1.605)
+        DR016=(SUMDR0/TPROB)**(1./1.605)
       ENDIF
       BA = BAT
 C----------

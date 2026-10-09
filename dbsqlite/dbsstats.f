@@ -1,5 +1,5 @@
-      SUBROUTINE DBSSTATS(SPECCD,TPA,BAREA,CFVOL,BFVOL,STDIST1,
-     & STDIST2,STDIST3,STDIST4,STDIST5,STDIST6,STDIST7,STDIST8,
+      SUBROUTINE DBSSTATS(SPECCD,TPA,BAREA,CFVOL,BFVOL,AGBIO,AGCARB,
+     & STDIST1,STDIST2,STDIST3,STDIST4,STDIST5,STDIST6,STDIST7,STDIST8,
      & STDIST9,LABEL,TBL,IYEAR)
       IMPLICIT NONE
 C----------
@@ -22,14 +22,14 @@ C
       INTEGER ColNumber,I,iret1,iret2,TBL,STDIST41,IYEAR,STDIST51
       REAL STDIST1,STDIST2,STDIST3,STDIST4,STDIST5
       REAL STDIST6,STDIST7,STDIST8,STDIST9
-      REAL TPA,BAREA,CFVOL,BFVOL
-      DOUBLE PRECISION TPA1,BAREA1,CFVOL1,BFVOL1
+      REAL TPA,BAREA,CFVOL,BFVOL,AGBIO,AGCARB
+      DOUBLE PRECISION TPA1,BAREA1,CFVOL1,BFVOL1,BIOMASS,CARBON
       DOUBLE PRECISION STDIST11,STDIST21,STDIST31
       DOUBLE PRECISION STDIST61,STDIST71,STDIST81,STDIST91
       CHARACTER*2000 SQLStmtStr
       CHARACTER*4 SPECCD
       CHARACTER*8 CSP1,CSP2,CSP3
-      CHARACTER*16 LABEL
+      CHARACTER*19 LABEL
 C
 C
 COMMONS END
@@ -59,10 +59,12 @@ C
      -              'SpeciesFVS    text null,'//
      -              'SpeciesPLANTS text null,'//
      -              'SpeciesFIA    text null,'//
-     -              'BoardFeet real,'//
-     -              'CubicFeet real,'//
      -              'TreesPerAcre real,'//
-     -              'BasalArea real);'//CHAR(0)
+     -              'BasalArea real,'//
+     -              'CubicFeet real,'//
+     -              'BoardFeet real,'//
+     -              'FIA_AbvGrdBio real,'//
+     -              'FIA_AbvGrdCarb real);'//CHAR(0)
 
       iRet1 = fsql3_exec(IoutDBref,SQLStmtStr)
       IF (iRet1 .NE. 0) THEN
@@ -74,8 +76,11 @@ C
         WRITE(SQLStmtStr,*)'INSERT INTO FVS_Stats_Species',
      -    ' (CaseID,StandID,Year,',
      -    'SpeciesFVS,SpeciesPLANTS,SpeciesFIA,',
-     -    'BoardFeet,CubicFeet,TreesPerAcre,BasalArea)',
-     -    'VALUES(''',CASEID,''',''',TRIM(NPLT),''',?,?,?,?,?,?,?,?);'
+     -    'TreesPerAcre,BasalArea,',
+     -    'CubicFeet,BoardFeet,',
+     -    'FIA_AbvGrdBio,FIA_AbvGrdCarb)',
+     -    'VALUES(''',CASEID,''',''',TRIM(NPLT),''',?,',
+     -    '?,?,?,?,?,?,?,?,?);'
 
         iRet1 = fsql3_prepare(IoutDBref,trim(SQLStmtStr)//CHAR(0))
           IF (iRet1 .NE. 0) THEN
@@ -99,6 +104,8 @@ C     ASSIGN REAL VALUES TO DOUBLE PRECISION VARS
         CFVOL1=CFVOL
         TPA1=TPA
         BAREA1=BAREA
+        CARBON=AGCARB
+        BIOMASS=AGBIO
 
         ColNumber=1
         iRet1 = fsql3_bind_int(IoutDBref,ColNumber,IYEAR)
@@ -112,13 +119,17 @@ C     ASSIGN REAL VALUES TO DOUBLE PRECISION VARS
         iRet1 = fsql3_bind_text(IoutDBref,ColNumber,CSP3,
      >                                     LEN_TRIM(CSP3))
         ColNumber=ColNumber+1
-        iRet1 = fsql3_bind_double(IoutDBref,ColNumber,BFVOL1)
-        ColNumber=ColNumber+1
-        iRet1 = fsql3_bind_double(IoutDBref,ColNumber,CFVOL1)
-        ColNumber=ColNumber+1
         iRet1 = fsql3_bind_double(IoutDBref,ColNumber,TPA1)
         ColNumber=ColNumber+1
         iRet1 = fsql3_bind_double(IoutDBref,ColNumber,BAREA1)
+        ColNumber=ColNumber+1
+        iRet1 = fsql3_bind_double(IoutDBref,ColNumber,CFVOL1)   
+        ColNumber=ColNumber+1
+        iRet1 = fsql3_bind_double(IoutDBref,ColNumber,BFVOL1)
+        ColNumber=ColNumber+1
+        iRet1 = fsql3_bind_double(IoutDBref,ColNumber,BIOMASS)
+        ColNumber=ColNumber+1
+        iRet1 = fsql3_bind_double(IoutDBref,ColNumber,CARBON)
         iRet1 = fsql3_step(IoutDBref)
         iRet1 = fsql3_finalize(IoutDBref)
         IF (iRet1.ne.0) then

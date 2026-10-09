@@ -245,7 +245,7 @@ C
   200     FORMAT(2(/1X,I5))
   201     FORMAT(1X,I5,1X,104('-'))
   202     FORMAT(1X,I5,30X,'******  FIRE MODEL VERSION 1.0 ******')
-  203     FORMAT(1X,I5,28X,'FUEL CONSUMPTION & PHYSICAL EFFECTS'
+  203     FORMAT(1X,I5,28X,'FUEL CONSUMPTION & PHYSICAL EFFECTS',
      &         ' REPORT (BASED ON STOCKABLE AREA)')
   205     FORMAT(1X,I5,6X,'PERCENT',11X,'FUEL CONSUMED ',
      &         '(TONS/ACRE)',12X,12X,9X,6X,'%',2X,'     SMOKE')
@@ -301,7 +301,12 @@ C
 C           ACCUMULATED THE BA AND VOL KILLED.
 
             TOTBAK(KSP)=TOTBAK(KSP)+(CURKIL(I)*DBH(I)*DBH(I)*.005454154)
-            TOTVOLK(KSP)=TOTVOLK(KSP)+(CURKIL(I)*CFV(I))
+            IF (VARACD.EQ.'CS' .OR. VARACD.EQ.'LS'
+     >          .OR. VARACD.EQ.'NE' .OR. VARACD.EQ.'SN') THEN 
+              TOTVOLK(KSP)=TOTVOLK(KSP)+(CURKIL(I)*MCFV(I))
+            ELSE
+              TOTVOLK(KSP)=TOTVOLK(KSP)+(CURKIL(I)*CFV(I))
+            END IF
 
 C           Find the first lower bound that this dbh is less than
 C           This means that the dbh is in the class just before
@@ -366,7 +371,7 @@ C
   315     FORMAT (2(/1X,I5))
   316     FORMAT (1X,I5,1X,117('-'))
   317     FORMAT(1X,I5,33X,'******  FIRE MODEL VERSION 1.0 ******')
-  318     FORMAT (1X,I5,43X,'MORTALITY REPORT '
+  318     FORMAT (1X,I5,43X,'MORTALITY REPORT ',
      &                      '(BASED ON STOCKABLE AREA)')
   320     FORMAT (1X,I5,21X,
      &      'NUMBER KILLED / NUMBER BEFORE ',

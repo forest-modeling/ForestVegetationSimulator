@@ -1,7 +1,9 @@
-      SUBROUTINE DBSSUMRY(IYEAR,IAGE,NPLT,ITPA,IBA,ISDI,ICCF,
-     -  ITOPHT,FQMD,ITCUFT,IMCUFT,IBDFT,IRTPA,IRTCUFT,IRMCUFT,IRBDFT,
-     -  IATBA,IATSDI,IATCCF,IATTOPHT,FATQMD,IPRDLEN,IACC,IMORT,YMAI,
-     -  IFORTP,ISZCL,ISTCL)
+      SUBROUTINE DBSSUMRY(IYEAR, IAGE, NPLT, ITPA, IBA,
+     -                    ISDI, ICCF, ITOPHT,FQMD, ITCUFT,
+     -                    IMCUFT, ISCUFT, IBDFT, IRTPA, IRTCUFT,
+     -                    IRMCUFT, IRSCUFT, IRBDFT, IATBA, IATSDI,
+     -                    IATCCF, IATTOPHT, FATQMD, IPRDLEN, IACC, 
+     -                    IMORT, YMAI, IFORTP, ISZCL, ISTCL)
       IMPLICIT NONE
 C----------
 C VDBSQLITE $Id$
@@ -19,7 +21,8 @@ C
 COMMONS
 C
       INTEGER IYEAR,IAGE,IPRDLEN,IACC,IMORT,ITPA,IBA,ISDI,ICCF,
-     -        ITOPHT,ITCUFT,IMCUFT,IBDFT,IRTPA,IRTCUFT,IRMCUFT,IRBDFT,
+     -        ITOPHT,ITCUFT,IMCUFT,ISCUFT,IBDFT,IRTPA,IRTCUFT,IRMCUFT,
+     -        IRSCUFT,IRBDFT,
      -        IATBA,IATSDI,IATCCF,IATTOPHT,IFORTP,ISZCL,ISTCL
       INTEGER ColNumber,iRet
       DOUBLE PRECISION FQMDB,FATQMDB,YMAIB
@@ -31,7 +34,8 @@ C
 COMMONS END
 
       integer fsql3_tableexists,fsql3_exec,fsql3_bind_int,fsql3_step,
-     >        fsql3_prepare,fsql3_bind_double,fsql3_finalize
+     >        fsql3_prepare,fsql3_bind_double,fsql3_finalize,
+     >        fsql3_addcolifabsent
 
       IF(ISUMARY.NE.1) RETURN
 C
@@ -39,53 +43,10 @@ C
 
 C     DEFINE TABLENAME
 
-      IF ((VARACD .EQ. 'CS') .OR. (VARACD .EQ. 'LS') .OR.
-     >    (VARACD .EQ. 'NE') .OR. (VARACD .EQ. 'SN')) THEN
-        iRet=fsql3_tableexists(IoutDBref,'FVS_Summary_East'//CHAR(0))
-      ELSE
-        iRet=fsql3_tableexists(IoutDBref,'FVS_Summary'//CHAR(0))
-      ENDIF
+        iRet = fsql3_tableexists(IoutDBref,'FVS_Summary'//CHAR(0))
+
       IF(iRet.EQ.0) THEN
-C
-C       EASTERN VARIANT VOLUME NOMENCLATURE
-C
-        IF ((VARACD .EQ. 'CS') .OR. (VARACD .EQ. 'LS') .OR.
-     1      (VARACD .EQ. 'NE') .OR. (VARACD .EQ. 'SN')) THEN
-C
-            SQLStmtStr='CREATE TABLE FVS_Summary_East('//
-     -                 'CaseID text not null,'//
-     -                 'StandID text not null,'//
-     -                 'Year int,'//
-     -                 'Age int,'//
-     -                 'Tpa int,'//
-     -                 'BA int,'//
-     -                 'SDI int,'//
-     -                 'CCF int,'//
-     -                 'TopHt int,'//
-     -                 'QMD real,'//
-     -                 'MCuFt int,'//
-     -                 'SCuFt int,'//
-     -                 'SBdFt int,'//
-     -                 'RTpa int,'//
-     -                 'RMCuFt int,'//
-     -                 'RSCuFt int,'//
-     -                 'RSBdFt int,'//
-     -                 'ATBA int,'//
-     -                 'ATSDI int,'//
-     -                 'ATCCF int,'//
-     -                 'ATTopHt int,'//
-     -                 'ATQMD real,'//
-     -                 'PrdLen int,'//
-     -                 'Acc int,'//
-     -                 'Mort int,'//
-     -                 'MAI real,'//
-     -                 'ForTyp int,'//
-     -                 'SizeCls int,'//
-     -                 'StkCls int);'//CHAR(0)
-        ELSE
-C
-C       WESTERN VARIANT VOLUME NOMENCLATURE
-C
+
             SQLStmtStr='CREATE TABLE FVS_Summary('//
      -                 'CaseID text not null,'//
      -                 'StandID text not null,'//
@@ -99,10 +60,12 @@ C
      -                 'QMD real,'//
      -                 'TCuFt int,'//
      -                 'MCuFt int,'//
+     -                 'SCuFt int,'//
      -                 'BdFt int,'//
      -                 'RTpa int,'//
      -                 'RTCuFt int,'//
      -                 'RMCuFt int,'//
+     -                 'RSCuFt int,'//
      -                 'RBdFt int,'//
      -                 'ATBA int,'//
      -                 'ATSDI int,'//
@@ -116,13 +79,26 @@ C
      -                 'ForTyp int,'//
      -                 'SizeCls int,'//
      -                 'StkCls int);'//CHAR(0)
-        ENDIF
+
         iRet = fsql3_exec(IoutDBref,SQLStmtStr)
         IF (iRet .NE. 0) THEN
           ISUMARY = 0
           RETURN
         ENDIF
       ENDIF
+
+C--------
+C     CHECK TABLE FOR COLUMN(S) ADDED WITH NVB UPGRADE (2024)
+C     `SCuFt`, 
+C     `RSCuFt`,
+C     TO ACCOUNT FOR ADDING TO DATABASE CREATED PROIR TO UPGRADE
+C--------
+      iRet = fsql3_addcolifabsent(IoutDBref,"FVS_Summary"//CHAR(0),
+     >        "SCuFt"//CHAR(0),"int"//CHAR(0))
+
+      iRet = fsql3_addcolifabsent(IoutDBref,"FVS_Summary"//CHAR(0),
+     >        "RSCuFt"//CHAR(0),"int"//CHAR(0))
+
 C
 C     ASSIGN REAL VALUES TO DOUBLE PRECISION VARS
 C
@@ -130,25 +106,22 @@ C
       FATQMDB=FATQMD
       YMAIB=YMAI
 
-      IF ((VARACD .EQ. 'CS') .OR. (VARACD .EQ. 'LS') .OR.
-     1    (VARACD .EQ. 'NE') .OR. (VARACD .EQ. 'SN')) THEN
-C
-        WRITE(SQLStmtStr,*)'INSERT INTO FVS_Summary_East',
-     -          ' (CaseID,StandID,',
-     -          'Year,Age,Tpa,BA,SDI,CCF,TopHt,QMD,MCuFt,SCuFt,SBdFt,',
-     -          'RTpa,RMCuFt,RSCuFt,RSBdFt,ATBA,ATSDI,ATCCF,ATTopHt,',
-     -          'ATQMD,PrdLen,Acc,Mort,MAI,ForTyp,SizeCls,StkCls)',
-     -          'VALUES(''',CASEID,''',''',TRIM(NPLT),''',?,?,?,',
-     -          '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);'
-      ELSE
         WRITE(SQLStmtStr,*)'INSERT INTO FVS_Summary',
-     -           ' (CaseID,StandID,',
-     -           'Year,Age,Tpa,BA,SDI,CCF,TopHt,QMD,TCuFt,MCuFt,BdFt,',
-     -           'RTpa,RTCuFt,RMCuFt,RBdFt,ATBA,ATSDI,ATCCF,ATTopHt,',
-     -           'ATQMD,PrdLen,Acc,Mort,MAI,ForTyp,SizeCls,StkCls)',
-     -           'VALUES(''',CASEID,''',''',TRIM(NPLT),''',?,?,?,',
-     -           '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);'
-      ENDIF
+     -           ' (CaseID,StandID,Year,Age,Tpa,',                       !L1 C5
+     -           'BA,SDI,CCF,TopHt,QMD,',                                !L2 C5
+     -           'TCuFt,MCuFt,SCuFt,BdFt,',                              !L3 C4
+     -           'RTpa,RTCuFt,RMCuFt,RSCuFt,RBdFt,',                     !L6 C5
+     -           'ATBA,ATSDI,ATCCF,ATTopHt,ATQMD,',                      !L9 C5
+     -           'PrdLen,Acc,Mort,MAI,ForTyp,',                          !L10 C5 
+     -           'SizeCls,StkCls)',                                      !L11 C2 
+     -           'VALUES(''',CASEID,''',''',TRIM(NPLT),''',?,?,?,',      !L1 = 5
+     -           '?,?,?,?,?,',                                           !L2 = 5
+     -           '?,?,?,?,',                                             !L3 = 4 
+     -           '?,?,?,?,?,',                                           !L6 = 5
+     -           '?,?,?,?,?,',                                           !L9 = 5
+     -           '?,?,?,?,?,',                                           !L10 = 5
+     -           '?,?);'                                                 !L11 = 2 
+
       iRet = fsql3_prepare(IoutDBref,trim(SQLStmtStr)//CHAR(0))
       IF (iRet .NE. 0) THEN
         ISUMARY = 0
@@ -186,6 +159,9 @@ C
       iRet = fsql3_bind_int(IoutDBref,ColNumber,IMCUFT)
 
       ColNumber=ColNumber+1
+      iRet = fsql3_bind_int(IoutDBref,ColNumber,ISCUFT)
+
+      ColNumber=ColNumber+1
       iRet = fsql3_bind_int(IoutDBref,ColNumber,IBDFT)
 
       ColNumber=ColNumber+1
@@ -196,6 +172,9 @@ C
 
       ColNumber=ColNumber+1
       iRet = fsql3_bind_int(IoutDBref,ColNumber,IRMCUFT)
+
+      ColNumber=ColNumber+1
+      iRet = fsql3_bind_int(IoutDBref,ColNumber,IRSCUFT)
 
       ColNumber=ColNumber+1
       iRet = fsql3_bind_int(IoutDBref,ColNumber,IRBDFT)
@@ -264,16 +243,20 @@ C
 C
 COMMONS
 C
-      INTEGER IYEAR,ICCF,ITOPHT,IOSDI,IPRDLEN,IHRVC,IAGEOUT,IFRTP
+      INTEGER IYEAR,ICCF,ITOPHT,IOSDI,IPRDLEN,IHRVC,IAGEOUT,IFRTP,SDIX,
+     >        IZSDI, IRSDI
       DOUBLE PRECISION DPTPA,DPTPTPA,DPBA,DPQMD,DPTCUFT,DPTPTCUFT,
      > DPMCUFT,DPTPMCUFT,DPBDFT,DPTPBDFT,DPACC,DPMORT,DPMAI,DPRTPA,
-     > DPRTCUFT,DPRMCUFT,DPRBDFT
+     > DPRTCUFT,DPRMCUFT,DPRBDFT,DPSCUFT,DPTPSCUFT,DPRSCUFT,DPRELDEN,
+     > DPDR016
       INTEGER ColNumber,iRet,I
       CHARACTER*2000 SQLStmtStr
       CHARACTER*20 TABLENAME
 C
       integer fsql3_tableexists,fsql3_exec,fsql3_bind_int,fsql3_step,
-     >        fsql3_prepare,fsql3_bind_double,fsql3_finalize
+     >        fsql3_prepare,fsql3_bind_double,fsql3_finalize,
+     >        fsql3_addcolifabsent
+C
 
       IF(ISUMARY.NE.2) RETURN
 C
@@ -282,31 +265,40 @@ C
       ICCF     = IBTCCF(ICYC)
       ITOPHT   = IBTAVH(ICYC)
       IOSDI    = ISDI(ICYC)
+      IZSDI    = NINT(SDIBC2)
+      IRSDI    = NINT(SDIBC)
       DPTPA    = OLDTPA/GROSPC
       DPBA     = OLDBA/GROSPC
       DPQMD    = ORMSQD
+      DPDR016  = ODR016
       IHRVC    = 0
       IF (ICYC.GT.NCYC) THEN
         DPTCUFT  = OCVCUR(7)/GROSPC
         DPMCUFT  = OMCCUR(7)/GROSPC
+        DPSCUFT  = OSCCUR(7)/GROSPC
         DPBDFT   = OBFCUR(7)/GROSPC
       ELSE
         DPTCUFT  = TSTV1(4)
         DPMCUFT  = TSTV1(5)
+        DPSCUFT  = TSTV1(20)
         DPBDFT   = TSTV1(6)
       ENDIF
       DPTPTPA  = DPTPA   + (TRTPA/GROSPC)
       DPTPTCUFT= DPTCUFT + (TRTCUFT/GROSPC)
       DPTPMCUFT= DPMCUFT + (TRMCUFT/GROSPC)
+      DPTPSCUFT= DPSCUFT + (TRSCUFT/GROSPC)
       DPTPBDFT = DPBDFT  + (TRBDFT/GROSPC)
       DPRTPA   = 0.
       DPRTCUFT = 0.
       DPRMCUFT = 0.
+      DPRSCUFT = 0.
       DPRBDFT  = 0.
       IPRDLEN  = 0
       DPACC    = 0.
       DPMORT   = 0.
       IPRDLEN  = IOSUM(14,ICYC)
+      SDIX     = NINT(BTSDIX)
+      DPRELDEN = REAL(IOSDI)/BTSDIX
       IF (ICYC.LE.NCYC) THEN
 C       NO ACCCRETION OR MORTALITY ON LAST RECORD OF SUMMARY (END OF PROJECTION)
         DPACC    = OACC(7)/GROSPC
@@ -318,6 +310,7 @@ C       NO ACCCRETION OR MORTALITY ON LAST RECORD OF SUMMARY (END OF PROJECTION)
         DPRTPA   = ONTREM(7)/GROSPC
         DPRTCUFT = OCVREM(7)/GROSPC
         DPRMCUFT = OMCREM(7)/GROSPC
+        DPRSCUFT = OSCREM(7)/GROSPC
         DPRBDFT  = OBFREM(7)/GROSPC
         IF (DPRTPA.LE.0.) THEN
           IPRDLEN  = IOSUM(14,ICYC)
@@ -333,20 +326,11 @@ C       NO ACCCRETION OR MORTALITY ON LAST RECORD OF SUMMARY (END OF PROJECTION)
 
 C     DEFINE TABLENAME
 
-      IF ((VARACD .EQ. 'CS') .OR. (VARACD .EQ. 'LS') .OR.
-     >    (VARACD .EQ. 'NE') .OR. (VARACD .EQ. 'SN')) THEN
-        TABLENAME='FVS_Summary2_East'
-      ELSE
         TABLENAME='FVS_Summary2'
-      ENDIF
+
       iRet=fsql3_tableexists(IoutDBref,TRIM(TABLENAME)//CHAR(0))
       IF(iRet.EQ.0) THEN
-C
-C       EASTERN VARIANT VOLUME NOMENCLATURE
-C
-        IF ((VARACD .EQ. 'CS') .OR. (VARACD .EQ. 'LS') .OR.
-     >      (VARACD .EQ. 'NE') .OR. (VARACD .EQ. 'SN')) THEN
-C
+
           SQLStmtStr='CREATE TABLE '//TRIM(TABLENAME)//
      -               ' (CaseID text not null,'//
      -                 'StandID text not null,'//
@@ -357,52 +341,26 @@ C
      -                 'TPrdTpa real,'//
      -                 'BA real,'//
      -                 'SDI int,'//
+     -                 'ZeideSDI int,'//
+     -                 'ReinekeSDI int,'//
+     -                 'SDIMax int,'//
+     -                 'RDSDI real,'//
      -                 'CCF int,'//
      -                 'TopHt int,'//
      -                 'QMD real,'//
-     -                 'MCuFt real,'//
-     -                 'TPrdMCuFt real,'//
-     -                 'SCuFt real,'//
-     -                 'TPrdSCuFt real,'//
-     -                 'SBdFt real,'//
-     -                 'TPrdSBdFt real,'//
-     -                 'RTpa real,'//
-     -                 'RMCuFt real,'//
-     -                 'RSCuFt real,'//
-     -                 'RSBdFt real,'//
-     -                 'PrdLen int,'//
-     -                 'Acc real,'//
-     -                 'Mort real,'//
-     -                 'MAI real,'//
-     -                 'ForTyp int,'//
-     -                 'SizeCls int,'//
-     -                 'StkCls int);'//CHAR(0)
-        ELSE
-C
-C       WESTERN VARIANT VOLUME NOMENCLATURE
-C
-          SQLStmtStr='CREATE TABLE '//TRIM(TABLENAME)//
-     -               ' (CaseID text not null,'//
-     -                 'StandID text not null,'//
-     -                 'Year int,'//
-     -                 'RmvCode int,'//
-     -                 'Age int,'//
-     -                 'Tpa real,'//
-     -                 'TPrdTpa real,'//
-     -                 'BA real,'//
-     -                 'SDI int,'//
-     -                 'CCF int,'//
-     -                 'TopHt int,'//
-     -                 'QMD real,'//
+     -                 'GMD real,' //
      -                 'TCuFt real,'//
      -                 'TPrdTCuFt real,'//
      -                 'MCuFt real,'//
      -                 'TPrdMCuFt real,'//
+     -                 'SCuFt real,'//
+     -                 'TPrdSCuFt real,'//
      -                 'BdFt real,'//
      -                 'TPrdBdFt real,'//
      -                 'RTpa real,'//
      -                 'RTCuFt real,'//
      -                 'RMCuFt real,'//
+     -                 'RSCuFt real,'//
      -                 'RBdFt real,'//
      -                 'PrdLen int,'//
      -                 'Acc real,'//
@@ -411,41 +369,65 @@ C
      -                 'ForTyp int,'//
      -                 'SizeCls int,'//
      -                 'StkCls int);'//CHAR(0)
-        ENDIF
+
         iRet = fsql3_exec(IoutDBref,SQLStmtStr)
         IF (iRet .NE. 0) THEN
           ISUMARY = 0
           RETURN
         ENDIF
       ENDIF
+
+C--------
+C     CHECK EXISTING TABLE FOR COLUMN(S) ADDED WITH NVB UPGRADE (2024)
+C     `SCuFt`, 
+C     `TPrdSCuFt`,
+C     `RSCuFt`,
+C     TO ACCOUNT FOR ADDING TO DATABASE CREATED PROIR TO UPGRADE
+C--------
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
+     >        "SCuFt"//CHAR(0),"real"//CHAR(0))
+
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
+     >        "TPrdSCuFt"//CHAR(0),"real"//CHAR(0))
+
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
+     >        "RSCuFt"//CHAR(0),"real"//CHAR(0))
+
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
+     >        "SDIMax"//CHAR(0),"int"//CHAR(0))
+
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
+     >        "RDSDI"//CHAR(0),"real"//CHAR(0))
+
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
+     >        "GMD"//CHAR(0),"real"//CHAR(0))
+
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
+     >        "ZeideSDI"//CHAR(0),"int"//CHAR(0))
+
+      iRet= fsql3_addcolifabsent(IoutDBref,TRIM(TABLENAME)//CHAR(0),
+     >        "ReinekeSDI"//CHAR(0),"int"//CHAR(0))
+
       DO I=1,2
         IF (IHRVC.EQ.1) THEN
           DPTPTPA   = DPTPTPA   - DPRTPA
           DPTPTCUFT = DPTPTCUFT - DPRTCUFT
           DPTPMCUFT = DPTPMCUFT - DPRMCUFT
+          DPTPSCUFT = DPTPSCUFT - DPRSCUFT
           DPTPBDFT  = DPTPBDFT  - DPRBDFT
         ENDIF
-        IF ((VARACD .EQ. 'CS') .OR. (VARACD .EQ. 'LS') .OR.
-     >      (VARACD .EQ. 'NE') .OR. (VARACD .EQ. 'SN')) THEN
-C
+
          SQLStmtStr='INSERT INTO '//TRIM(TABLENAME)//
      -    ' (CaseID,StandID,Year,RmvCode,Age,Tpa,TPrdTpa,BA,SDI,'//
-     -    'CCF,TopHt,QMD,MCuFt,TPrdMCuFt,SCuFt,TPrdSCuFt,SBdFt,'//
-     -    'TPrdSBdFt,RTpa,RMCuFt,RSCuFt,RSBdFt,'//
+     -    'ZeideSDI,ReinekeSDI,SDIMax,RDSDI,'//
+     -    'CCF,TopHt,QMD,GMD,TCuFt,TPrdTCuFt,MCuFt,TPrdMCuFt,'//
+     -    'SCuFt,TPrdSCuFt,BdFt,'//
+     -    'TPrdBdFt,RTpa,RTCuFt,RMCuFt,RSCuFt,RBdFt,'//
      -    'PrdLen,Acc,Mort,MAI,ForTyp,SizeCls,StkCls'//
-     -    ")VALUES('"//CASEID//"','"//TRIM(NPLT)//"',?,?,?,?,?,"//
-     -    '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);'
+     -    ")VALUES('"//CASEID//"','"//TRIM(NPLT)//"',?,?,?,?,?,?,?,"//
+     -    '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);'
      -    //CHAR(0)
-        ELSE
-         SQLStmtStr='INSERT INTO '//TRIM(TABLENAME)//
-     -    ' (CaseID,StandID,Year,RmvCode,Age,Tpa,TPrdTpa,BA,SDI,'//
-     -    'CCF,TopHt,QMD,TCuFt,TPrdTCuFt,MCuFt,TPrdMCuFt,BdFt,'//
-     -    'TPrdBdFt,RTpa,RTCuFt,RMCuFt,RBdFt,'//
-     -    'PrdLen,Acc,Mort,MAI,ForTyp,SizeCls,StkCls'//
-     -    ")VALUES('"//CASEID//"','"//TRIM(NPLT)//"',?,?,?,?,?,"//
-     -    '?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);'
-     -    //CHAR(0)
-        ENDIF
+
         iRet = fsql3_prepare(IoutDBref,SQLStmtStr)
         IF (iRet .NE. 0) THEN
           ISUMARY = 0
@@ -466,11 +448,21 @@ C
         ColNumber=ColNumber+1
         iRet = fsql3_bind_int(IoutDBref,ColNumber,IOSDI)
         ColNumber=ColNumber+1
+        iRet = fsql3_bind_int(IoutDBref,ColNumber,IZSDI)
+        ColNumber=ColNumber+1
+        iRet = fsql3_bind_int(IoutDBref,ColNumber,IRSDI)
+        ColNumber=ColNumber+1
+        iRet = fsql3_bind_int(IoutDBref,ColNumber,SDIX)
+        ColNumber=ColNumber+1
+        iRet = fsql3_bind_double(IoutDBref,ColNumber,DPRELDEN)
+        ColNumber=ColNumber+1
         iRet = fsql3_bind_int(IoutDBref,ColNumber,ICCF)
         ColNumber=ColNumber+1
         iRet = fsql3_bind_int(IoutDBref,ColNumber,ITOPHT)
         ColNumber=ColNumber+1
         iRet = fsql3_bind_double(IoutDBref,ColNumber,DPQMD)
+        ColNumber=ColNumber+1
+        iRet = fsql3_bind_double(IoutDBref,ColNumber,DPDR016)
         ColNumber=ColNumber+1
         iRet = fsql3_bind_double(IoutDBref,ColNumber,DPTCUFT)
         ColNumber=ColNumber+1
@@ -479,6 +471,10 @@ C
         iRet = fsql3_bind_double(IoutDBref,ColNumber,DPMCUFT)
         ColNumber=ColNumber+1
         iRet = fsql3_bind_double(IoutDBref,ColNumber,DPTPMCUFT)
+        ColNumber=ColNumber+1
+        iRet = fsql3_bind_double(IoutDBref,ColNumber,DPSCUFT)
+        ColNumber=ColNumber+1
+        iRet = fsql3_bind_double(IoutDBref,ColNumber,DPTPSCUFT)
         ColNumber=ColNumber+1
         iRet = fsql3_bind_double(IoutDBref,ColNumber,DPBDFT)
         ColNumber=ColNumber+1
@@ -489,6 +485,8 @@ C
         iRet = fsql3_bind_double(IoutDBref,ColNumber,DPRTCUFT)
         ColNumber=ColNumber+1
         iRet = fsql3_bind_double(IoutDBref,ColNumber,DPRMCUFT)
+        ColNumber=ColNumber+1
+        iRet = fsql3_bind_double(IoutDBref,ColNumber,DPRSCUFT)
         ColNumber=ColNumber+1
         iRet = fsql3_bind_double(IoutDBref,ColNumber,DPRBDFT)
         ColNumber=ColNumber+1
@@ -509,18 +507,25 @@ C
         IF (IHRVC.EQ.0) exit
         IHRVC    = 2
         IOSDI    = ISDIAT(ICYC)
+        IZSDI    = NINT(SDIAC2)
+        IRSDI    = NINT(SDIAC)
         ICCF     = NINT(ATCCF/GROSPC)
         ITOPHT   = NINT(ATAVH)
         DPQMD    = ATAVD
+        DPDR016  = ATDR016
         DPBA     = ATBA/GROSPC
         DPTPA    = ATTPA/GROSPC
         DPTCUFT  = MAX(0.,DPTCUFT-DPRTCUFT)
         DPMCUFT  = MAX(0.,DPMCUFT-DPRMCUFT)
+        DPSCUFT  = MAX(0.,DPSCUFT-DPRSCUFT)
         DPBDFT   = MAX(0.,DPBDFT -DPRBDFT)
         DPRTPA   = 0.
         DPRTCUFT = 0.
         DPRMCUFT = 0.
+        DPRSCUFT = 0.
         DPRBDFT  = 0.
+        SDIX     = NINT(ATSDIX) 
+        DPRELDEN = REAL(IOSDI)/BTSDIX
       ENDDO
       iRet = fsql3_finalize(IoutDBref)
 

@@ -63,6 +63,52 @@ export FFLAGS = $(PIC) -g -cpp -DCMP${CC} -Wall -Wno-integer-division -ffpe-trap
 export CFLAGS = $(PIC) -DANSI -DCMP${CC} -DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION $(WIN) 
 export LD = gfortran
 
+# --------------------------------------------------------------------------
+# Version and build metadata
+#
+# Derived from git at make invocation time. All fields fall back to
+# 'unknown' if git is unavailable or the directory is not a git repo.
+#
+# A -dirty suffix indicates uncommitted changes in the working tree.
+# A -dirty binary should not be used in production or deliverable contexts.
+# --------------------------------------------------------------------------
+
+# Define source remote name for your environment. This is the remote that will be used to determine the git org and version.
+GIT_REMOTE_NAME := origin
+
+FVS_ROOT := $(abspath $(dir $(lastword $(MAKEFILE_LIST)))/..)
+
+GIT_REMOTE  := $(shell git -C $(FVS_ROOT) remote get-url $(GIT_REMOTE_NAME) 2>/dev/null || echo unknown)
+GIT_ORG     := $(shell u="$(GIT_REMOTE)"; \
+               o=$$(echo "$$u" | sed -E 's#.*[:/]([^/]+)/[^/]*(\.git)?$$#\1#'); \
+               test -n "$$o" && echo "$$o" || echo unknown)
+GIT_VERSION := $(shell git -C $(FVS_ROOT) describe --tags --exact-match 2>/dev/null || \
+               git -C $(FVS_ROOT) describe --tags 2>/dev/null || echo unknown)
+GIT_HASH    := $(shell git -C $(FVS_ROOT) rev-parse --short HEAD 2>/dev/null || echo unknown)
+GIT_DATE    := $(shell git -C $(FVS_ROOT) log -1 --format=%cd \
+               --date=format:%Y%m%d 2>/dev/null || echo unknown)
+GIT_BRANCH  := $(shell git -C $(FVS_ROOT) rev-parse --abbrev-ref HEAD 2>/dev/null || echo unknown)
+GIT_DIRTY   := $(shell git -C $(FVS_ROOT) status --porcelain 2>/dev/null)
+
+ifneq ($(GIT_DIRTY),)
+GIT_VERSION := $(GIT_VERSION)-dirty
+GIT_HASH    := $(GIT_HASH)-dirty
+$(warning WARNING: working tree has uncommitted changes.)
+$(warning WARNING: Version will be marked -dirty.)
+$(warning WARNING: Do not use this build in production or deliverable contexts.)
+endif
+
+VERSION_FLAGS = \
+  -DFVS_GIT_ORG='"$(GIT_ORG)"' \
+  -DFVS_GIT_VERSION='"$(GIT_VERSION)"' \
+  -DFVS_GIT_HASH='"$(GIT_HASH)"' \
+  -DFVS_GIT_DATE='"$(GIT_DATE)"' \
+  -DFVS_GIT_BRANCH='"$(GIT_BRANCH)"' \
+  -DFVS_GIT_REMOTE='"$(GIT_REMOTE)"'
+
+export FFLAGS += $(VERSION_FLAGS)
+# --------------------------------------------------------------------------
+
 # Lists are: FVSprgs (all varaints), CANprgs (Canada variants), USprgs (US variants)
 
 ifndef sourceFileList
@@ -85,7 +131,7 @@ ifdef sourceFileList
   export includes = $(notdir $(filter %.F77 %.INC %.h,$(sourceList)))
   export mods = $(notdir $(filter %_mod.f, $(sourceList)))
   export mods_mods = $(addsuffix .mod,$(basename $(mods)))
-  export source = $(notdir $(filter %.c %.f %.F %.for %.cpp, $(sourceList)))
+  export source = $(notdir $(filter %.c %.f %.f90 %.F %.for %.cpp, $(sourceList)))
   export object = $(addsuffix .o,$(basename $(source)))
  endif
 endif
@@ -188,6 +234,11 @@ endif
 .SUFFIXES :
 
 .PRECIOUS : $(object) $(mods_mods) 
+
+# FVSVERSION module (base/version.f90) — consumers must compile after version.o
+fvsversion.mod : version.o
+
+grohed.o main.o revise.o dbscase.o : fvsversion.mod
  
 ifeq (${OSARCH},w64) 
 %.prg : $(object) 
@@ -203,6 +254,9 @@ endif
 	$(FCprf)$(FC) $(FFLAGS) -c $<
 
 %.o : %.f $(includes) $(mods_mods)
+	$(FCprf)$(FC) $(FFLAGS) -c -o $@ $<
+
+%.o : %.f90 $(includes) $(mods_mods)
 	$(FCprf)$(FC) $(FFLAGS) -c -o $@ $<
 
 %.o : %.for $(includes) $(mods_mods)

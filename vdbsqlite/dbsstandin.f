@@ -61,15 +61,15 @@ COMMONS
       CHARACTER(LEN=*) SQLSTR
       CHARACTER(LEN=MxMsg) Msg
       CHARACTER*10 KARD2
-      CHARACTER(LEN=11) CHAB,CECOREG
+      CHARACTER(LEN=10) CHAB,CECOREG
       CHARACTER(LEN=15) CFotoCode
       CHARACTER(LEN=LEN(DBCN)+1) TMP_DBCN
       CHARACTER(LEN=LEN(NPLT)+1) CSTAND
       CHARACTER*10 CSITECODE
       CHARACTER*40 PHOTOREF(32), REF
       REAL ARRAY2,X(1)
-      REAL XXG,FOTODATA(2),RSTANDDATA(63),DUM1,XTMP
-      INTEGER(KIND=4) ISTANDDATA(63)
+      REAL XXG,FOTODATA(2),RSTANDDATA(64),DUM1,XTMP
+      INTEGER(KIND=4) ISTANDDATA(64)
       EQUIVALENCE (RSTANDDATA,ISTANDDATA)
       INTEGER J,I,KODE,FKOD,NUMPVREF,IXTMP,IXF,iRet
       INTEGER ColNumber,NameLen,ColumnCount
@@ -91,7 +91,7 @@ COMMONS
      -        Fuel025_LI,Fuel251_LI,Fuel20_LI,Fuel35_LI,Fuel50_LI,
      -        FotoRef_LI,FotoCode_LI,PvRefCode_LI,
      -        FuelS025_LI,FuelS251_LI,FuelS1_LI,FuelS3_LI,FuelS6_LI,
-     -        FuelS12_LI,FuelS20_LI,FuelS35_LI,FuelS50_LI
+     -        FuelS12_LI,FuelS20_LI,FuelS35_LI,FuelS50_LI,StdOrgCd_LI
 
       DATA PHOTOREF / 'Fischer INT-96                      ',
      >                'Fischer INT-97                      ',
@@ -189,6 +189,7 @@ COMMONS
       FuelS20_LI     = NullInt
       FuelS35_LI     = NullInt
       FuelS50_LI     = NullInt
+      StdOrgCd_LI    = NullInt
 
       IF(LKECHO)WRITE(JOSTND,'(/T12,''STAND-LEVEL DATA BASE READ:'')')
 
@@ -269,7 +270,8 @@ C     GET NUMBER OF COLUMNS RETURNED
           iRet = fsql3_coltext (IinDBref,ColNumber,CECOREG,
      >                          LEN(CECOREG),NullChar)
           if (iRet.LT.LEN(CECOREG)) CECOREG((iRet+1):) = ' '
-          IF (CECOREG .ne. NullChar) Ecoregion_LI = 1
+          IF (CECOREG .ne. NullChar 
+     >      .and. LEN_TRIM(ADJUSTL(CECOREG)) .GT. 0) Ecoregion_LI = 1
 
          CASE('LOCATION')
            ISTANDDATA(4) = fsql3_colint(IinDBref,ColNumber,NullInt)
@@ -338,20 +340,20 @@ C     GET NUMBER OF COLUMNS RETURNED
            IF (ISTANDDATA(17) .ne. NullInt) DGT_LI = 1
 
          CASE('DG_MEASURE')
-           ISTANDDATA(18) = fsql3_colint(IinDBref,ColNumber,NullInt)
-           IF (ISTANDDATA(18) .ne. NullInt) DGM_LI = 1
+           RSTANDDATA(18) = fsql3_colreal(IinDBref,ColNumber,NullReal)
+           IF (RSTANDDATA(18) .ne. NullReal) DGM_LI = 1
 
          CASE('HTG_TRANS')
            ISTANDDATA(19) = fsql3_colint(IinDBref,ColNumber,NullInt)
            IF (ISTANDDATA(19) .ne. NullInt) HTT_LI = 1
 
          CASE('HTG_MEASURE')
-           ISTANDDATA(20) = fsql3_colint(IinDBref,ColNumber,NullInt)
-           IF (ISTANDDATA(20) .ne. NullInt) HTM_LI = 1
+           RSTANDDATA(20) = fsql3_colreal(IinDBref,ColNumber,NullReal)
+           IF (RSTANDDATA(20) .ne. NullReal) HTM_LI = 1
 
          CASE('MORT_MEASURE')
-           ISTANDDATA(21) = fsql3_colint(IinDBref,ColNumber,NullInt)
-           IF (ISTANDDATA(21) .ne. NullInt) Mort_LI = 1
+           RSTANDDATA(21) = fsql3_colreal(IinDBref,ColNumber,NullReal)
+           IF (RSTANDDATA(21) .ne. NullReal) Mort_LI = 1
 
          CASE('SITE_SPECIES')
           iRet = fsql3_coltext (IinDBref,ColNumber,CSITECODE,
@@ -466,6 +468,9 @@ C     GET NUMBER OF COLUMNS RETURNED
      >                          LEN(CFotoCode),NullChar)
           if (iRet.LT.LEN(CFotoCode)) CFotoCode((iRet+1):) = ' '
           IF (CFotoCode .ne. ' ') FotoCode_LI = 1
+         CASE('STDORGCD')
+         ISTANDDATA(64) = fsql3_colint(IinDBref,ColNumber,NullInt)
+         IF (ISTANDDATA(64) .ne. NullInt) StdOrgCd_LI = 1
 
          END SELECT
 
@@ -600,8 +605,9 @@ C     SET DEFAULT LOCATION CODE IF NOT PRESENT IN INPUT DATA
       ENDIF
 
       IF(Ecoregion_LI.GT.0) THEN
+         CECOREG = ADJUSTL(CECOREG)
+         ECOREG = CECOREG(:4)
         IF (VARACD.EQ.'SN') THEN
-          CECOREG = ADJUSTL(CECOREG)
           READ (CECOREG,'(I10)',ERR=41)  ISTANDDATA(54)
           GOTO 46
    41     CONTINUE
@@ -691,24 +697,26 @@ C     SET DEFAULT LOCATION CODE IF NOT PRESENT IN INPUT DATA
          IF(LKECHO)WRITE(JOSTND,'(T12,''DG_TRANS: '',T34,I6)') IDG
       ENDIF
       IF(DGM_LI.NE.NullInt) THEN
-         IF(ISTANDDATA(18).GT.0.)IFINT = ISTANDDATA(18)
-         FINT = FLOAT(IFINT)
-         IF(LKECHO)WRITE(JOSTND,'(T12,''DG_MEASURE: '',T34,I6)') IFINT
+         IF(RSTANDDATA(18).GT.0.)FINT = RSTANDDATA(18)
+         IFINT = IFIX(FINT)
+         IF(LKECHO)WRITE(JOSTND,'(T12,''DG_MEASURE: '',T36,F4.1)') FINT
       ENDIF
       IF(HTT_LI.NE.NullInt) THEN
          IHTG = ISTANDDATA(19)
          IF(LKECHO)WRITE(JOSTND,'(T12,''HTG_TRANS: '',T34,I6)') IHTG
       ENDIF
       IF(HTM_LI.NE.NullInt) THEN
-         IF(ISTANDDATA(20).GT.0.)IFINTH = ISTANDDATA(20)
-         FINTH = FLOAT(IFINTH)
-         IF(LKECHO)WRITE(JOSTND,'(T12,''HTG_MEASURE: '',T34,I6)') IFINTH
+         IF(RSTANDDATA(20).GT.0.)FINTH = RSTANDDATA(20)
+         IFINTH = IFIX(FINTH)
+         IF(LKECHO)WRITE(JOSTND,'(T12,''HTG_MEASURE: '',T36,F4.1)')
+     >   FINTH
       ENDIF
       IF(Mort_LI.NE.NullInt) THEN
-         FINTM = FLOAT(ISTANDDATA(21))
+         FINTM = RSTANDDATA(21)
+
          IF(FINTM.LE.0.)FINTM=5.
-         IF(LKECHO)WRITE(JOSTND,'(T12,''MORT_MEASURE: '',T34,I6)')
-     >   IFIX(FINTM)
+         IF(LKECHO)WRITE(JOSTND,'(T12,''MORT_MEASURE: '',T36,F4.1)')
+     >   FINTM
       ENDIF
 
 C     SITE SPECIES CODE PROCESSING
@@ -984,6 +992,8 @@ C     FUEL LOAD PARAMETERS
          RSTANDDATA(63) = -1.
       ENDIF
 
+      IF(StdOrgCd_LI.NE.NullInt) ISTDORG = ISTANDDATA(64)
+
 C     FUEL MODEL
 
       LFMD = .FALSE.
@@ -1052,7 +1062,7 @@ C     selected is set, followed by tons/acre entered directly.
         WRITE(JOSTND,
      >  '(T12,''FIRE MODEL NOT LINKED, FUELS PHOTO DATA IGNORED.'')')
       ELSEIF ((FOTOREF_LI.GT.0).OR.(FotoCode_LI.GT.0)) THEN
-        WRITE(JOSTND,'(T12,''MISSING PHOTO ''
+        WRITE(JOSTND,'(T12,''MISSING PHOTO '',
      >  ''REFERENCE OR PHOTO CODE, FUELS PHOTO DATA IGNORED.'')')
       ENDIF
 

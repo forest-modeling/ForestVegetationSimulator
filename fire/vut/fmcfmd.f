@@ -477,8 +477,8 @@ C----------
               ENDDO
               XNEG1 = -1.0
               LMERCH = .FALSE.
-              CALL FMSVL2(ISP(I),DBH(I),HT(I),XNEG1,VT,
-     &            LMERCH,DEBUG,JOSTND)
+              CALL FMSVL2(ISP(I),DBH(I),HT(I),XNEG1,VT,ICR(I),
+     >                    'L',.FALSE.,.FALSE.,JOSTND)
               BL = BL + (FMPROB(I) * V2T(ISP(I)) * VT)
             ENDDO
             BD = 0.0
@@ -577,8 +577,8 @@ C----------
             ENDDO
             XNEG1  = -1.0
             LMERCH = .FALSE.
-            CALL FMSVL2(ISP(I),DBH(I),HT(I),XNEG1,VT,
-     &           LMERCH,DEBUG,JOSTND)
+            CALL FMSVL2(ISP(I),DBH(I),HT(I),XNEG1,VT,ICR(I),
+     >                  'L',LMERCH,DEBUG,JOSTND)
             BL = BL + (FMPROB(I) * V2T(ISP(I)) * VT)
           ENDIF
         ENDDO

@@ -188,8 +188,8 @@ C
       IF(JJ.GT.MAXSP)JJ=MAXSP
       WRITE(JOSTND,90)(NSP(K,1)(1:2),K=J,JJ)
    90 FORMAT(/'SPECIES ',5X,10(A2,6X))
-      WRITE(JOSTND,91)(SDIDEF(K),K=J,JJ )
-   91 FORMAT('SDI MAX ',   10F8.0)
+      WRITE(JOSTND,91)(NINT(SDIDEF(K)),K=J,JJ )
+   91 FORMAT('SDI MAX ',   10I8.0)
       IF(JJ .EQ. MAXSP)GO TO 93
    92 CONTINUE
    93 CONTINUE
@@ -258,6 +258,25 @@ C  SET BFTOPD DEFAULTS
             BFTOPD(ISPC) = 7
           END SELECT
         ENDIF
+C  SET SAWLOG CUBIC DEFAULTS
+        IF(SCFMIND(ISPC) .LE. 0) THEN
+            SELECT CASE(MERCHCAT)
+            CASE(1, 2, 3, 4)
+              SCFMIND(ISPC)= 9
+            CASE DEFAULT
+              SCFMIND(ISPC)= 9
+           END SELECT
+        ENDIF
+        IF(SCFTOPD(ISPC) .LE. 0) THEN
+          SELECT CASE(MERCHCAT)
+            CASE(1,2,4)
+              SCFTOPD(ISPC)= 6
+            CASE(3)
+              SCFTOPD(ISPC)= 7
+            CASE DEFAULT
+              SCFTOPD(ISPC) = 7
+          END SELECT
+        ENDIF
       ENDDO
 C----------
 C  LOAD VOLUME EQUATION ARRAYS FOR ALL SPECIES
@@ -286,15 +305,25 @@ C----------
         FORST='05'
       ENDIF
 C LOAD VOLUME ARRAYS USING VOLEQDEF
+      IF (LFIANVB) CALL NVB_REGION_CHECK
       DO ISPC=1,MAXSP
       READ(FIAJSP(ISPC),'(I4)')IFIASP
+      VOLEQ='           '
       IF(((METHC(ISPC).EQ.6).OR.(METHC(ISPC).EQ.9)).AND.
      &     (VEQNNC(ISPC).EQ.'           '))THEN
         CALL VOLEQDEF(VAR,IREGN,FORST,DIST,IFIASP,PROD,VOLEQ,ERRFLAG)
+        VOLEQ(11:11) = ' '
+        VEQNNC(ISPC)=VOLEQ
+        
+      ELSE IF((METHC(ISPC).EQ.10).AND.
+     &  (VEQNNC(ISPC).EQ.'          ')) THEN
+        IF (JSP(ISPC).EQ. 'LS') IFIASP = 94
+        CALL NVBEQDEF(IFIASP,VOLEQ)
         VEQNNC(ISPC)=VOLEQ
       ENDIF
       IF(((METHB(ISPC).EQ.6).OR.(METHB(ISPC).EQ.9)).AND.
      &     (VEQNNB(ISPC).EQ.'           '))THEN
+        VOLEQ='           '
         CALL VOLEQDEF(VAR,IREGN,FORST,DIST,IFIASP,PROD,VOLEQ,ERRFLAG)
         VEQNNB(ISPC)=VOLEQ
       ENDIF
@@ -312,7 +341,7 @@ C  WRITE VOLUME EQUATION NUMBER TABLE
 C----------
       CALL VOLEQHEAD(JOSTND)
       WRITE(JOSTND,230)(NSP(J,1)(1:2),VEQNNC(J),VEQNNB(J),J=1,MAXSP)
- 230  FORMAT(4(2X,A2,4X,A10,1X,A10,1X))
+ 230  FORMAT(4(2X,A2,4X,A11,1X,A10,1X))
 C
       RETURN
       END
