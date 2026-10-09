@@ -15,7 +15,7 @@ jobs:
         os: [windows-latest, ubuntu-latest]
         sys: [ucrt64] #,mingw64]
         #fvs_variant: [ak,bc,bm,ca,ci,cr,cs,ec,em,ie,kt,ls,nc,ne,oc,on,op,pn,sn,so,tt,ut,wc,ws]
-        fvs_variant: [ak,bm,ca,ci,cr,cs,ec,em,ie,kt,ls,nc,ne,oc,on,op,pn,sn,so,tt,ut,wc,ws]
+        fvs_variant: [ak,bm,ca,ci,cr,cs,ec,em,ie,kt,ls,nc,ne,oc,op,pn,sn,so,tt,ut,wc,ws]
         #fvs_variant: [pn,wc]
       
     runs-on: ${{ matrix.os }}
