@@ -15,32 +15,32 @@ jobs:
         #fvs_variant: [ak,bc,bm,ca,ci,cr,cs,ec,em,ie,kt,ls,nc,ne,oc,on,op,pn,sn,so,tt,ut,wc,ws]
         fvs_variant: [ak,bm,ca,ci,cr,cs,ec,em,ie,kt,ls,nc,ne,oc,op,pn,sn,so,tt,ut,wc,ws]
         #fvs_variant: [pn,wc]
+        compiler-version: [15, 16]
+        exclude:
+          - os: windows-latest
+            compiler-version: 16
+        include:
+          - os: ubuntu-latest
+            compiler: gcc
+          - os: macos-latest
+            compiler: gcc
+          - os: windows-latest
+            compiler: gcc
       
     runs-on: ${{ matrix.os }}
-    
+
     steps:
     - name: Checkout FVS
       uses: actions/checkout@v4
       with:
         submodules: true
 
-    - name: Install macOS dependencies
-      if: runner.os == 'macOS'
-      shell: bash
-      run: |
-        brew update
-        brew install gcc
-    
-    - name: Install MSYS2
-      if: runner.os == 'Windows'
-      # https://github.com/msys2/setup-msys2
-      uses: msys2/setup-msys2@v2
+    - name: Fortran Setup
+      uses: fortran-lang/setup-fortran@v1
+      id: setup-fortran
       with:
-        msystem: ucrt64
-        update: true
-        install: |
-          mingw-w64-ucrt-x86_64-gcc
-          mingw-w64-ucrt-x86_64-gcc-fortran
+        compiler: ${{ matrix.compiler }}
+        version: ${{ matrix.compiler-version }}
         
     - name: Compile
       working-directory: ./bin
@@ -64,7 +64,7 @@ jobs:
     - name: Archive Binaries
       uses: actions/upload-artifact@v7
       with:
-        name: fvs-${{ env.OS_NAME }}-${{ matrix.fvs_variant }}-${{ github.sha }}
+        name: fvs${{ matrix.fvs_variant }}-${{ matrix.os }}-${{ matrix.compiler }}${{ matrix.compiler-version }}-${{ github.sha }}
         path: |
           bin/FVS${{ matrix.fvs_variant }}${{ runner.os == 'Windows' && '.exe' || '' }}
           bin/FVS${{ matrix.fvs_variant }}${{ runner.os == 'Windows' && '.dll' || '.so' }}
@@ -72,6 +72,21 @@ jobs:
   release:
     needs: build
     if: github.event_name == 'push'
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        compiler-version: [15, 16]
+        exclude:
+          - os: windows-latest
+            compiler-version: 16
+        include:
+          - os: ubuntu-latest
+            compiler: gcc
+          - os: macos-latest
+            compiler: gcc
+          - os: windows-latest
+            compiler: gcc
+        
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -81,34 +96,18 @@ jobs:
       shell: bash
       run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
-    - name: Download Windows binaries
+    - name: Download binaries
       uses: actions/download-artifact@v4
       with:
-        pattern: fvs-windows-*-${{ github.sha }}
-        path: artifacts/windows
-        merge-multiple: true
-
-    - name: Download Ubuntu binaries
-      uses: actions/download-artifact@v4
-      with:
-        pattern: fvs-ubuntu-*-${{ github.sha }}
-        path: artifacts/ubuntu
-        merge-multiple: true
-
-    - name: Download macOS binaries
-      uses: actions/download-artifact@v4
-      with:
-        pattern: fvs-macos-*-${{ github.sha }}
-        path: artifacts/macos
+        pattern: fvs*-${{ matrix.os }}-${{ matrix.compiler }}${{ matrix.compiler-version }}-${{ github.sha }}
+        path: artifacts/${{ matrix.os }}
         merge-multiple: true
 
     - name: Create OS archives
       shell: bash
       run: |
         mkdir -p release-assets
-        zip -j "release-assets/fvs-windows-${{ steps.vars.outputs.SHORT_SHA }}.zip" artifacts/windows/*
-        zip -j "release-assets/fvs-ubuntu-${{ steps.vars.outputs.SHORT_SHA }}.zip" artifacts/ubuntu/*
-        zip -j "release-assets/fvs-macos-${{ steps.vars.outputs.SHORT_SHA }}.zip" artifacts/macos/*
+        zip -j "release-assets/fvs-${{ matrix.os }}-${{ matrix.compiler }}${{ matrix.compiler-version }}-${{ steps.vars.outputs.SHORT_SHA }}.zip" artifacts/${{ matrix.os }}/*
 
     - name: Create or update draft release
       env:
