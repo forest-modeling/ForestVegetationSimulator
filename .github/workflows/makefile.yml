@@ -50,7 +50,7 @@ jobs:
 
     - name: Test
       working-directory: ./tests
-      run: make FVS${{ matrix.fvs_variant }}
+      run: make FVS${{ matrix.fvs_variant }}.test
 
     - name: Set Env Vars
       id: vars
